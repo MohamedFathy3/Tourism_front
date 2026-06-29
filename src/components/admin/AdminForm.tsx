@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/admin/AdminForm.tsx
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FormConfigs, FormField } from "@/types/admin";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -17,6 +17,46 @@ interface AdminFormProps {
   title?: string;
 }
 
+// 🔥 دالة مساعدة لاستخراج رابط الصورة
+const getImageUrl = (data: any, fieldName: string): string | null => {
+  if (!data) return null;
+  
+  const value = data[fieldName];
+  if (!value) return null;
+  
+  // لو كان object فيه fullUrl
+  if (typeof value === 'object' && value !== null) {
+    return value.fullUrl || value.previewUrl || null;
+  }
+  
+  // لو كان string
+  if (typeof value === 'string') {
+    return value;
+  }
+  
+  return null;
+};
+
+// 🔥 دالة مساعدة لاستخراج ID الصورة
+const getImageId = (data: any, fieldName: string): number | null => {
+  if (!data) return null;
+  
+  const value = data[fieldName];
+  if (!value) return null;
+  
+  // لو كان object فيه id
+  if (typeof value === 'object' && value !== null) {
+    return value.id || null;
+  }
+  
+  // لو كان رقم
+  if (typeof value === 'number') {
+    return value;
+  }
+  
+  return null;
+};
+
 export const AdminForm = ({ 
   type, 
   initialData = {}, 
@@ -31,6 +71,12 @@ export const AdminForm = ({
   const config = FormConfigs[type];
   const [formData, setFormData] = useState<any>(initialData);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // ✅ تحديث الفورم لما تتغير initialData
+  useEffect(() => {
+    console.log('🔄 AdminForm - initialData changed:', initialData);
+    setFormData(initialData);
+  }, [initialData]);
 
   // منع التمرير خلف المودال
   useEffect(() => {
@@ -73,26 +119,22 @@ export const AdminForm = ({
   if (!isOpen) return null;
 
   return (
-    // 🔥 خلفية المودال - full screen مع تعتيم
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-      {/* خلفية معتمة */}
       <div 
         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onCancel}
       />
       
-      {/* 🔥 محتوى المودال - في المنتصف مع ميل للتحت شوية */}
       <div 
         className={`
           relative w-full max-w-3xl max-h-[80vh] overflow-hidden rounded-2xl shadow-2xl
           ${isDark ? 'bg-gray-900' : 'bg-white'}
           animate-in fade-in zoom-in duration-300
           border ${isDark ? 'border-gray-700' : 'border-gray-200'}
-          mt-10 md:mt-16 lg:mt-20
+          mt-0 md:mt-4 lg:mt-8
         `}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* رأس المودال */}
         <div className={`
           flex items-center justify-between px-6 py-4 border-b
           ${isDark ? 'border-gray-700' : 'border-gray-200'}
@@ -113,7 +155,6 @@ export const AdminForm = ({
           </button>
         </div>
 
-        {/* محتوى النموذج - قابل للتمرير */}
         <div className="px-6 py-4 overflow-y-auto max-h-[calc(80vh-140px)]">
           <form onSubmit={handleSubmit} className="space-y-6">
             {config.sections.map((section, idx) => (
@@ -177,6 +218,7 @@ export const AdminForm = ({
                           ))}
                         </select>
                       ) : field.type === 'file' ? (
+                        // 🔥 تمرير الصورة الحالية للـ FileUploader
                         <FileUploader
                           label={lang === 'ar' ? '📤 اختر ملف' : '📤 Choose file'}
                           onUploadSuccess={(fileId) => handleChange(field.name, fileId)}
@@ -184,16 +226,24 @@ export const AdminForm = ({
                           accept="image/*"
                           preview={true}
                           maxFiles={1}
+                          appendMode={false}
+                          defaultImageUrl={getImageUrl(formData, field.name)}
+                          defaultImageId={getImageId(formData, field.name)}
+                          onRemoveImage={() => handleChange(field.name, null)}
                         />
                       ) : field.type === 'gallery' ? (
+                        // 🔥 تمرير معرض الصور الحالي للـ FileUploader
                         <FileUploader
-                          label={lang === 'ar' ? '📤 اختر صور متعددة' : '📤 Choose multiple images'}
-                          onUploadSuccess={(fileIds) => handleChange(field.name, fileIds)}
-                          multiple={true}
-                          accept="image/*"
-                          preview={true}
-                          maxFiles={10}
-                        />
+    label={lang === 'ar' ? '📤 اختر صور متعددة' : '📤 Choose multiple images'}
+    onUploadSuccess={(fileIds) => handleChange(field.name, fileIds)}
+    multiple={true}
+    accept="image/*"
+    preview={true}
+    maxFiles={10}
+     appendMode={true}
+    defaultGallery={formData[field.name] || []}
+    onRemoveImage={() => handleChange(field.name, [])}
+  />
                       ) : null}
                       
                       {errors[field.name] && (
@@ -205,7 +255,6 @@ export const AdminForm = ({
               </div>
             ))}
             
-            {/* أزرار التحكم في أسفل المودال */}
             <div className="flex justify-end gap-2 pt-4 border-t border-gray-200 dark:border-gray-700 sticky bottom-0 bg-inherit">
               <button
                 type="button"

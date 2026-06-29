@@ -20,38 +20,26 @@ export function DashboardLayout({
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mounted, setMounted] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+  
+  // 🔥 خليه دايمًا Dark Mode
+  const isDark = true; // 👈 دايمًا true
 
   useEffect(() => {
     setMounted(true);
 
-    const checkTheme = () => {
-      const html = document.documentElement;
-
-      if (
-        html.classList.contains("dark") ||
-        localStorage.getItem("lms-theme") === "dark"
-      ) {
-        setIsDark(true);
-      } else {
-        setIsDark(false);
-      }
-    };
-
-    checkTheme();
+    // 🔥 أضف class dark للـ html عشان كل حاجة تبقى Dark
+    document.documentElement.classList.add('dark');
+    
+    // 🔥 خزن في localStorage عشان لو الراجعة للصفحة تفضل dark
+    localStorage.setItem('lms-theme', 'dark');
 
     if (window.innerWidth < 1024) {
       setSidebarOpen(false);
     }
 
-    const observer = new MutationObserver(checkTheme);
+    // مش محتاج الـ observer بتاع الـ theme دلوقتي
+    // لأننا بنخليه دايمًا dark
 
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
-    return () => observer.disconnect();
   }, []);
 
   if (!mounted) return null;
@@ -71,26 +59,21 @@ export function DashboardLayout({
       className={`
         relative flex min-h-screen overflow-hidden
         transition-all duration-500
-        ${
-          isDark
-            ? "bg-[#050816]"
-            : "bg-gradient-to-br from-[#f8fafc] via-white to-orange-50"
-        }
+        bg-[#050816] // 🔥 دايمًا dark
       `}
     >
       {/* BACKGROUND */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* GRID */}
+        {/* GRID - دايمًا dark */}
         <div
           className={`
             absolute inset-0 opacity-[0.05]
-            bg-[radial-gradient(#000000_1px,transparent_1px)]
-            dark:bg-[radial-gradient(#ffffff_1px,transparent_1px)]
+            bg-[radial-gradient(#ffffff_1px,transparent_1px)]
             bg-[length:24px_24px]
           `}
         />
 
-        {/* GLOW 1 */}
+        {/* GLOW 1 - دايمًا dark */}
         <motion.div
           animate={{
             x: [0, 80, 0],
@@ -104,15 +87,11 @@ export function DashboardLayout({
             absolute top-[-250px] left-[-250px]
             w-[600px] h-[600px]
             rounded-full blur-[160px]
-            ${
-              isDark
-                ? "bg-orange-500/20"
-                : "bg-orange-300/30"
-            }
+            bg-orange-500/20
           `}
         />
 
-        {/* GLOW 2 */}
+        {/* GLOW 2 - دايمًا dark */}
         <motion.div
           animate={{
             x: [0, -60, 0],
@@ -126,11 +105,7 @@ export function DashboardLayout({
             absolute bottom-[-300px] right-[-300px]
             w-[700px] h-[700px]
             rounded-full blur-[180px]
-            ${
-              isDark
-                ? "bg-purple-500/20"
-                : "bg-pink-300/30"
-            }
+            bg-purple-500/20
           `}
         />
       </div>
@@ -152,7 +127,7 @@ export function DashboardLayout({
         )}
       </AnimatePresence>
 
-      {/* DESKTOP SIDEBAR */}
+      {/* DESKTOP SIDEBAR - دايمًا dark */}
       <motion.div
         initial={false}
         animate={{
@@ -165,21 +140,10 @@ export function DashboardLayout({
         className={`
           relative z-50 hidden lg:flex
           border-r transition-all duration-500
-          ${
-            isDark
-              ? `
-                border-white/10
-                bg-white/5
-                backdrop-blur-3xl
-                shadow-[0_0_50px_rgba(255,140,0,0.06)]
-              `
-              : `
-                border-black/5
-                bg-white/80
-                backdrop-blur-3xl
-                shadow-[0_10px_40px_rgba(0,0,0,0.06)]
-              `
-          }
+          border-white/10
+          bg-white/5
+          backdrop-blur-3xl
+          shadow-[0_0_50px_rgba(255,140,0,0.06)]
         `}
       >
         <Sidebar
@@ -190,7 +154,7 @@ export function DashboardLayout({
         />
       </motion.div>
 
-      {/* MOBILE SIDEBAR */}
+      {/* MOBILE SIDEBAR - دايمًا dark */}
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
@@ -206,19 +170,9 @@ export function DashboardLayout({
               fixed top-0 left-0 bottom-0 z-50
               w-[280px]
               border-r lg:hidden
-              ${
-                isDark
-                  ? `
-                    border-white/10
-                    bg-[#07111f]/95
-                    backdrop-blur-3xl
-                  `
-                  : `
-                    border-black/5
-                    bg-white/90
-                    backdrop-blur-3xl
-                  `
-              }
+              border-white/10
+              bg-[#07111f]/95
+              backdrop-blur-3xl
             `}
           >
             <Sidebar
@@ -231,35 +185,24 @@ export function DashboardLayout({
         )}
       </AnimatePresence>
 
-      {/* MAIN */}
+      {/* MAIN - دايمًا dark */}
       <div className="relative z-10 flex min-w-0 flex-1 flex-col">
-        {/* TOPBAR */}
+        {/* TOPBAR - دايمًا dark */}
         <div
           className={`
             sticky top-0 z-30
             border-b transition-all duration-500
-            ${
-              isDark
-                ? `
-                  border-white/10
-                  bg-[#07111f]/70
-                  backdrop-blur-2xl
-                `
-                : `
-                  border-black/5
-                  bg-white/70
-                  backdrop-blur-2xl
-                  shadow-sm
-                `
-            }
+            border-white/10
+            bg-[#07111f]/70
+            backdrop-blur-2xl
           `}
         >
           <Topbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
         </div>
 
-        {/* PAGE */}
+        {/* PAGE - دايمًا dark */}
         <main className="relative flex-1 overflow-hidden">
-          {/* INNER GLOW */}
+          {/* INNER GLOW - دايمًا dark */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
             <motion.div
               animate={{
@@ -274,16 +217,12 @@ export function DashboardLayout({
                 absolute top-0 right-0
                 w-[400px] h-[400px]
                 rounded-full blur-[120px]
-                ${
-                  isDark
-                    ? "bg-orange-500/10"
-                    : "bg-orange-200/40"
-                }
+                bg-orange-500/10
               `}
             />
           </div>
 
-          {/* CONTENT */}
+          {/* CONTENT - دايمًا dark */}
           <motion.div
             initial={{
               opacity: 0,
@@ -306,21 +245,11 @@ export function DashboardLayout({
                 rounded-[32px]
                 border transition-all duration-500
                 p-5 sm:p-6 lg:p-8
-                ${
-                  isDark
-                    ? `
-                      border-white/10
-                      bg-white/5
-                      backdrop-blur-2xl
-                      shadow-[0_0_80px_rgba(255,140,0,0.05)]
-                    `
-                    : `
-                      border-black/5
-                      bg-white/70
-                      backdrop-blur-2xl
-                      shadow-[0_10px_50px_rgba(0,0,0,0.08)]
-                    `
-                }
+                mt-20
+                border-white/10
+                bg-white/5
+                backdrop-blur-2xl
+                shadow-[0_0_80px_rgba(255,140,0,0.05)]
               `}
             >
               {children}

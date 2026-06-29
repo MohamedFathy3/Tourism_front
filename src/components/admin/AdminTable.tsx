@@ -1,4 +1,4 @@
-// src/components/admin/AdminTable.tsx - كامل مع تحسينات الفلاتر
+// src/components/admin/AdminTable.tsx - كامل مع تحسينات الصور
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -65,6 +65,61 @@ export interface TableProps {
   // Switch
   onToggleStatus?: (id: number, active: boolean) => Promise<void>;
 }
+
+// ============================================
+// 🔥 دالة مساعدة لاستخراج رابط الصورة
+// ============================================
+
+const getImageUrl = (item: any): string => {
+  // 1. لو الصورة object كامل
+  if (item.image?.fullUrl) return item.image.fullUrl;
+  if (item.image?.previewUrl) return item.image.previewUrl;
+  
+  // 2. لو الصورة string مباشرة
+  if (item.imageUrl) return item.imageUrl;
+  if (item.image) return item.image;
+  
+  // 3. لو في sliderImage
+  if (item.sliderImage?.fullUrl) return item.sliderImage.fullUrl;
+  if (item.sliderImageUrl) return item.sliderImageUrl;
+  
+  // 4. لو في gallery - أول صورة
+  if (item.gallery && item.gallery.length > 0) {
+    const firstImage = item.gallery[0];
+    if (firstImage.fullUrl) return firstImage.fullUrl;
+    if (firstImage.previewUrl) return firstImage.previewUrl;
+    if (typeof firstImage === 'string') return firstImage;
+  }
+  
+  // 5. لو في ملفات متعددة
+  if (item.files && item.files.length > 0) {
+    const firstFile = item.files[0];
+    if (firstFile.fullUrl) return firstFile.fullUrl;
+    if (firstFile.previewUrl) return firstFile.previewUrl;
+    if (typeof firstFile === 'string') return firstFile;
+  }
+  
+  // 6. لو في images
+  if (item.images && item.images.length > 0) {
+    const firstImage = item.images[0];
+    if (firstImage.fullUrl) return firstImage.fullUrl;
+    if (firstImage.previewUrl) return firstImage.previewUrl;
+    if (typeof firstImage === 'string') return firstImage;
+  }
+  
+  // 7. لو في avatar أو profileImage
+  if (item.avatar?.fullUrl) return item.avatar.fullUrl;
+  if (item.avatar) return item.avatar;
+  if (item.profileImage?.fullUrl) return item.profileImage.fullUrl;
+  if (item.profileImage) return item.profileImage;
+  
+  // 8. لو في logo
+  if (item.logo?.fullUrl) return item.logo.fullUrl;
+  if (item.logo) return item.logo;
+  
+  // 9. placeholder لو مفيش صورة
+  return '/placeholder-image.png';
+};
 
 // ============================================
 
@@ -287,13 +342,23 @@ export const AdminTable = ({
                           {col.render ? (
                             col.render(item)
                           ) : col.type === 'image' ? (
-                            <img
-                              src={item[col.key]?.fullUrl || item[col.key] || item.imageUrl}
-                              alt={item.title || item.name}
-                              className="w-16 h-12 object-cover rounded-lg"
-                              loading="lazy"
-                            
-                            />
+                            <div className="relative group">
+                              <img
+                                src={getImageUrl(item)}
+                                alt={item.title || item.name || 'Image'}
+                                className="w-16 h-12 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+                                loading="lazy"
+                                onError={(e) => {
+                                  e.currentTarget.src = '/placeholder-image.png';
+                                }}
+                              />
+                              {/* عرض عدد الصور في الـ gallery */}
+                              {item.gallery && item.gallery.length > 1 && (
+                                <span className="absolute -top-1 -right-1 bg-[#e0b277] text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                                  {item.gallery.length}
+                                </span>
+                              )}
+                            </div>
                           ) : col.type === 'badge' ? (
                             <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
                               item[col.key] 
@@ -445,8 +510,6 @@ export const AdminTable = ({
 // 🔥 TableConfigs - إعدادات الجداول لكل نوع
 // ============================================
 
-// src/components/admin/AdminTable.tsx - أضف profile في TableConfigs
-
 export const TableConfigs = {
   slider: {
     columns: [
@@ -465,7 +528,7 @@ export const TableConfigs = {
       { key: 'description', label: 'الوصف', filterable: true },
     ] as TableColumn[],
   },
-   company: {
+  company: {
     columns: [
       { key: 'id', label: '#', width: 'w-16', type: 'number' },
       { key: 'image', label: 'الصورة', type: 'image', width: 'w-24' },
@@ -536,14 +599,22 @@ export const TableConfigs = {
       { key: 'createdAt', label: 'التاريخ', type: 'date' },
     ] as TableColumn[],
   },
-  // 👇 أضف هذا
   profile: {
     columns: [
       { key: 'id', label: '#', width: 'w-16', type: 'number' },
       { key: 'image', label: 'الصورة', type: 'image', width: 'w-24' },
       { key: 'title', label: 'العنوان', filterable: true },
-      { key: 'subTitle', label: 'العنوان الفرعي', filterable: true }, // 👈 أضف هذا
-      { key: 'linkDrive', label: 'رابط Drive', filterable: true }, // 👈 أضف هذا
+      { key: 'subTitle', label: 'العنوان الفرعي', filterable: true },
+      { key: 'linkDrive', label: 'رابط Drive', filterable: true },
+      { key: 'active', label: 'الحالة', type: 'switch', width: 'w-32', filterable: false },
+    ] as TableColumn[],
+  },
+  faq: {
+    columns: [
+      { key: 'id', label: '#', width: 'w-16', type: 'number' },
+      { key: 'name', label: 'السؤال', filterable: true },
+      { key: 'des', label: 'الإجابة', filterable: true },
+      { key: 'createdAt', label: 'التاريخ', type: 'date' },
       { key: 'active', label: 'الحالة', type: 'switch', width: 'w-32', filterable: false },
     ] as TableColumn[],
   },

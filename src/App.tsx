@@ -21,6 +21,7 @@ import ProjectDetails from "@/pages/ProjectDetails";
 import NewsLetters from "./pages/NewsLetters.tsx";
 import NewsLetterDetails from "@/pages/NewsLetterDetails";
 import JobApplication from "@/pages/JobApplication";
+import FAQ from "@/pages/FAQ";
 
 // Admin Pages
 import AdminLogin from "@/pages/admin/AdminLogin.tsx";
@@ -34,7 +35,7 @@ import AdminNewsletter from "@/pages/admin/AdminNewsletter.tsx";
 import AdminContact from "@/pages/admin/AdminContact.tsx";
 import AdminJobs from "@/pages/admin/AdminJobs.tsx";
 import AdminSettings from "@/pages/admin/AdminSettings.tsx";
-import FAQ from "@/pages/FAQ";
+import AdminFAQ from "@/pages/admin/AdminFAQ";
 
 // Components
 import ScrollToTop from "@/components/ScrollToTop";
@@ -65,6 +66,8 @@ const App = () => (
                   </AppProvider>
                 }
               >
+                <Route path="AdminFAQ" element={<AdminFAQ />} />
+
                 <Route index element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="slider" element={<AdminSlider />} />
@@ -92,6 +95,7 @@ const App = () => (
               <Route path="/services/:id" element={<ServiceDetails />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />
+              
             </Routes>
                         <FloatingButtons />
 

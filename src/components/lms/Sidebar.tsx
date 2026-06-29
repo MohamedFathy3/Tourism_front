@@ -54,6 +54,7 @@ const sidebarTranslations = {
     "contact us": "تواصل معنا",
     jobs: "الوظائف",
     settings: "الإعدادات",
+    AdminFAQ:"الاسئله الشائعه"
   },
   en: {
     dashboard: "Dashboard",
@@ -66,6 +67,7 @@ const sidebarTranslations = {
     "contact us": "Contact Us",
     jobs: "Jobs",
     settings: "Settings",
+    AdminFAQ:"AdminFAQ",
   },
 };
 
@@ -81,6 +83,7 @@ const adminNav: NavItem[] = [
   { to: "contact-us", labelKey: "contact us", icon: Mail },
   { to: "jobs", labelKey: "jobs", icon: Briefcase },
   { to: "settings", labelKey: "settings", icon: Settings },
+  { to: "AdminFAQ", labelKey: "AdminFAQ", icon: Settings },
 ];
 
 interface SidebarProps {

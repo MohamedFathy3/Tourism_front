@@ -440,7 +440,6 @@ export const FormConfigs = {
         fields: [
           { name: 'title', label: 'العنوان', type: 'text', required: true },
           { name: 'description', label: 'الوصف المختصر', type: 'textarea', required: true, rows: 3 },
-          { name: 'long_description', label: 'الوصف التفصيلي', type: 'textarea', required: true, rows: 6 },
           { name: 'location', label: 'الموقع', type: 'text', required: true },
           { name: 'active', label: 'نشط', type: 'toggle' },
           { name: 'image', label: 'الصورة الرئيسية', type: 'file', required: true },
@@ -526,6 +525,37 @@ export const FormConfigs = {
             { value: 'editor', label: 'محرر' },
             { value: 'user', label: 'مستخدم' },
           ]},
+        ]
+      }
+    ]
+  },
+    faq: {
+    title: 'FAQ',
+    sections: [
+      {
+        title: 'بيانات السؤال',
+        fields: [
+          {
+            name: 'name',
+            label: 'السؤال',
+            type: 'text',
+            required: true,
+            placeholder: 'أدخل السؤال...'
+          },
+          {
+            name: 'des',
+            label: 'الإجابة',
+            type: 'textarea',
+            required: true,
+            rows: 5,
+            placeholder: 'أدخل الإجابة...'
+          },
+          {
+            name: 'active',
+            label: 'حالة النشر',
+            type: 'toggle',
+            required: false
+          }
         ]
       }
     ]
