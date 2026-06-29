@@ -1,0 +1,123 @@
+.services-section {
+  background: var(--tg-body-background-color, #FEFFFB);
+  padding: 80px 0;
+  font-family: "El Messiri", Sans-serif;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-title h2 {
+  color: var(--tg-heading-font-color, #202020);
+  font-family: var(--tg-heading-font-family, "Vidaloka", serif);
+  font-size: 36px;
+  font-weight: var(--tg-heading-font-weight, 400);
+  margin-bottom: 15px;
+}
+
+.section-title h2 span {
+  color: var(--tg-primary-color, #BD9A68);
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.features-item {
+  text-align: center;
+  margin-bottom: 55px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.features-item:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tg-primary-color, #BD9A68);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.feature-icon svg {
+  color: white;
+  width: 40px;
+  height: 40px;
+  transition: all 0.3s ease;
+}
+
+.features-item:hover .feature-icon {
+  background: var(--tg-secondary-color, #000000);
+  transform: scale(1.05);
+}
+
+.feature-content .title {
+  color: var(--tg-heading-font-color, #202020);
+  font-family: var(--tg-heading-font-family, "Vidaloka", serif);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  transition: color 0.3s ease;
+}
+
+.features-item:hover .feature-content .title {
+  color: var(--tg-primary-color, #BD9A68);
+}
+
+.feature-content p {
+  color: var(--tg-body-font-color, #797978);
+  font-family: var(--tg-body-font-family, "Montserrat", sans-serif);
+  font-size: var(--tg-body-font-size, 15px);
+  line-height: var(--tg-body-line-height, 1.86);
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .services-section {
+    padding: 50px 0;
+  }
+  
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .features-item {
+    margin-bottom: 35px;
+  }
+  
+  .feature-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .feature-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .feature-content .title {
+    font-size: 18px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+  }
+}
