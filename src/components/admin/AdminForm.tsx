@@ -97,24 +97,45 @@ export const AdminForm = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors: Record<string, string> = {};
-    config.sections.forEach(section => {
-      section.fields.forEach(field => {
-        if (field.required && !formData[field.name]) {
-          newErrors[field.name] = `${field.label} مطلوب`;
-        }
-      });
+// src/components/admin/AdminForm.tsx
+// عدل handleSubmit عشان تحول البيانات للشكل المطلوب
+
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  const newErrors: Record<string, string> = {};
+  config.sections.forEach(section => {
+    section.fields.forEach(field => {
+      if (field.required && !formData[field.name]) {
+        newErrors[field.name] = `${field.label} مطلوب`;
+      }
     });
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
+  });
+  
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+  
+  // 🔥 تحويل البيانات قبل الإرسال
+  const submitData = { ...formData };
+  
+  // تحويل image من مصفوفة إلى رقم (أول عنصر)
+  if (Array.isArray(submitData.image) && submitData.image.length > 0) {
+    submitData.image = submitData.image[0];
+  } else if (Array.isArray(submitData.image) && submitData.image.length === 0) {
+    submitData.image = null;
+  }
+  if (Array.isArray(submitData.gallery) && submitData.gallery.length > 0) {
+    if (typeof submitData.gallery[0] === 'number') {
+      submitData.gallery = submitData.gallery.map(id => ({
+        id: id,
+      }));
     }
-    
-    onSubmit(formData);
-  };
+  }
+  
+  console.log('📤 Submitting data:', submitData);
+  onSubmit(submitData);
+};
 
   if (!isOpen) return null;
 
