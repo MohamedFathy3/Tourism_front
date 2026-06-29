@@ -226,7 +226,7 @@ export const AdminForm = ({
                           accept="image/*"
                           preview={true}
                           maxFiles={1}
-                          appendMode={false}
+                          // appendMode={false}
                           defaultImageUrl={getImageUrl(formData, field.name)}
                           defaultImageId={getImageId(formData, field.name)}
                           onRemoveImage={() => handleChange(field.name, null)}
