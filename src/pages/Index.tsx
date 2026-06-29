@@ -10,7 +10,6 @@ import FloatingButtons from "@/components/FloatingButtons";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { motion } from "framer-motion";
 import About from "@/components/about";
-import Hafe from "@/components/about copy";
 import DownloadSection from "@/components/dwonload";
 
 const Index = () => {
@@ -61,7 +60,6 @@ const Index = () => {
         
 
           <About />
-          {/* <Hafe /> */}
           <ServicesSection />
             {/* <DownloadSection /> */}
           <ProjectsPreview />
