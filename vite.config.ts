@@ -31,16 +31,16 @@ export default defineConfig(({ mode }) => {
   const devServerHost = getEnvVar('VITE_DEV_SERVER_HOST', '::');
   const devServerPort = parseInt(getEnvVar('VITE_DEV_SERVER_PORT', '7000'));
   const previewServerHost = getEnvVar('VITE_PREVIEW_SERVER_HOST', '::');
-  const previewServerPort = parseInt(getEnvVar('VITE_PREVIEW_SERVER_PORT', '7000'));
+  const previewServerPort = parseInt(getEnvVar('VITE_PREVIEW_SERVER_PORT', '7002'));
   
-  const apiTarget = getEnvVar('VITE_API_TARGET', 'https://tourism.injazyemen.cloud/');
+  const apiTarget = getEnvVar('VITE_API_TARGET', 'https://selimfaraggroup.com/');
   const apiRewritePath = getEnvVar('VITE_API_REWRITE_PATH', '/api');
   const apiHeaderName = getEnvVar('VITE_API_HEADER_NAME', 'X-Requested-With');
   const apiHeaderValue = getEnvVar('VITE_API_HEADER_VALUE', 'XMLHttpRequest');
   
-  const sanctumTarget = getEnvVar('VITE_SANCTUM_TARGET', 'https://tourism.injazyemen.cloud/');
+  const sanctumTarget = getEnvVar('VITE_SANCTUM_TARGET', 'https://selimfaraggroup.com/');
   
-  const allowedHostsEnv = getEnvVar('VITE_ALLOWED_HOSTS', 'injazyemen.cloud,localhost,127.0.0.1,::1,.tourism.injazyemen.cloud');
+  const allowedHostsEnv = getEnvVar('VITE_ALLOWED_HOSTS', 'injazyemen.cloud,localhost,127.0.0.1,::1,.selimfaraggroup.com');
   const allowedHosts = getAllowedHosts(allowedHostsEnv);
 
   return {
