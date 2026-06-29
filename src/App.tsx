@@ -24,7 +24,7 @@ import JobApplication from "@/pages/JobApplication";
 
 // Admin Pages
 import AdminLogin from "@/pages/admin/AdminLogin.tsx";
-import Dashboard from "@/pages/admin/Dashboard.tsx";
+import Dashboard from "@/pages/admin/dashboard.tsx";
 import AdminSlider from "@/pages/admin/AdminSlider.tsx";
 import AdminAbout from "@/pages/admin/AdminAbout.tsx";
 import AdminProjects from "@/pages/admin/AdminProjects.tsx";
