@@ -48,7 +48,7 @@ export class AboutService extends BaseService<About> {
       perPage: params?.perPage || 10,
       page: params?.page || 1,
       paginate: true,
-      filters: {},
+       filters: { active: true },
     });
 
     return response.data || [];

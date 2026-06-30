@@ -408,6 +408,21 @@ export const FormConfigs = {
       }
     ]
   },
+   profile: {
+    title: 'الملف التعريفي',
+    sections: [
+      {
+        title: 'البيانات الأساسية',
+        fields: [
+          { name: 'title', label: 'العنوان', type: 'text', required: true },
+          { name: 'subTitle', label: 'العنوان الفرعي', type: 'text' },
+          // { name: 'description', label: 'الوصف', type: 'textarea' },
+          { name: 'image', label: 'الصورة', type: 'file' },
+          { name: 'active', label: 'نشط', type: 'toggle' },
+        ]
+      }
+    ]
+  },
   company: {
     title: 'الشركة',
     sections: [

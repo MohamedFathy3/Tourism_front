@@ -1,14 +1,23 @@
 // src/components/FloatingButtons.tsx
 import { Phone, MessageCircle } from "lucide-react";
 import { useContact } from "@/hooks/useContact";
+import { useLocation } from 'react-router-dom'; // ✅ استورد useLocation
 
 const FloatingButtons = () => {
   const { contactData, loading } = useContact();
-
+const location = useLocation(); 
   // استخدام رقم الهاتف من الـ API أو fallback
   const phoneNumber = contactData?.phone_one || "";
   // تنظيف رقم الهاتف (إزالة أي مسافات أو أحرف غير رقمية)
   const cleanPhone = phoneNumber.replace(/\s/g, '').replace(/^\+/, '');
+  const isAdminRoute = location.pathname.startsWith('/admin') || 
+                       location.pathname.startsWith('/dashboard') ||
+                       location.pathname.includes('admin');
+
+  // ✅ لو في الـ Admin، متظهرش
+  if (isAdminRoute) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-6 start-6 z-50 flex flex-col gap-3">

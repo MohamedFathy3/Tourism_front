@@ -55,10 +55,8 @@ const AdminProfile = () => {
     }
   };
 
-  // 🔥 دالة تغيير الحالة - دي اللي هتخلق الـ Switch يشتغل
   const handleToggleStatus = async (id: number, active: boolean) => {
     await updateItem(id, { active });
-    // بعد التحديث، refresh عشان نجيب البيانات الجديدة
     await refresh();
   };
 
@@ -87,6 +85,9 @@ const AdminProfile = () => {
     },
   ];
 
+  // 🔥 تحديد إذا كان فيه بيانات بالفعل
+  const hasData = profiles && profiles.length > 0;
+
   return (
     <>
       <AdminTable
@@ -96,7 +97,7 @@ const AdminProfile = () => {
         loading={loading}
         error={error}
         onRefresh={refresh}
-        onAdd={handleAdd}
+        onAdd={!hasData ? handleAdd : undefined}
         addLabel={lang === 'ar' ? 'إضافة ملف تعريفي' : 'Add Profile'}
         currentPage={currentPage}
         totalPages={totalPages}
@@ -156,4 +157,4 @@ const AdminProfile = () => {
   );
 };
 
-export default AdminProfile;
+export default AdminProfile;  

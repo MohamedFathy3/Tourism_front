@@ -38,7 +38,12 @@ const FAQ = () => {
   const fetchFAQs = async () => {
     try {
       setLoading(true);
-      const response = await api.post('faq/index');
+      const response = await api.post('faq/index',{
+        
+filters
+: 
+{active: true}
+      });
       console.log('FAQ Response:', response.data); // للتأكد من البيانات
       
       if (response.data.status === 200 && response.data.result === 'Success') {
@@ -118,7 +123,7 @@ const FAQ = () => {
               <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
                 isDark ? 'text-white' : 'text-gray-800'
               }`}>
-                {lang === 'ar' ? '❓ لا توجد أسئلة شائعة' : '❓ No FAQs Available'}
+                {lang === 'ar' ? ' لا توجد أسئلة شائعة' : ' No FAQs Available'}
               </h2>
               <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 {lang === 'ar' ? 'سيتم إضافة الأسئلة قريباً' : 'FAQs will be added soon'}

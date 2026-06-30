@@ -61,7 +61,7 @@ const Index = () => {
 
           <About />
           <ServicesSection />
-            {/* <DownloadSection /> */}
+            <DownloadSection />
           <ProjectsPreview />
         </main>
 

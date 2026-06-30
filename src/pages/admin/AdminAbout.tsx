@@ -69,6 +69,7 @@ const AdminAbout = () => {
     { label: 'Edit', icon: Edit, onClick: handleEdit, color: 'primary' as const },
     { label: 'Delete', icon: Trash2, onClick: handleDelete, color: 'danger' as const },
   ];
+  const hasData = aboutData && aboutData.length > 0;
 
   return (
     <>
@@ -79,7 +80,7 @@ const AdminAbout = () => {
         loading={loading}
         error={error}
         onRefresh={refresh}
-        onAdd={handleAdd}
+        onAdd={!hasData ? handleAdd : undefined}
         addLabel={lang === 'ar' ? 'إضافة عن من نحن' : 'Add About'}
         currentPage={currentPage}
         totalPages={totalPages}

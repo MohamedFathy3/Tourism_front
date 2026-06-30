@@ -82,7 +82,6 @@ const adminNav: NavItem[] = [
   { to: "newsletter", labelKey: "newsletter", icon: Newspaper },
   { to: "contact-us", labelKey: "contact us", icon: Mail },
   { to: "jobs", labelKey: "jobs", icon: Briefcase },
-  { to: "settings", labelKey: "settings", icon: Settings },
   { to: "AdminFAQ", labelKey: "AdminFAQ", icon: Settings },
 ];
 

@@ -58,7 +58,7 @@ export class ContactService extends BaseService<ContactData> {
   async getContactPage(): Promise<ContactPageResponse | null> {
     try {
       const response = await api.post('/page-contact-us/index', {
-     
+     filters: { active: true },
       });
       
       return response.data;

@@ -110,7 +110,7 @@ const NewsLetters = () => {
               <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
                 isDark ? 'text-white' : 'text-gray-800'
               }`}>
-                {lang === 'ar' ? '📰 لا توجد أخبار' : '📰 No News Available'}
+                {lang === 'ar' ? ' لا توجد أخبار' : '📰 No News Available'}
               </h2>
               <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 {lang === 'ar' ? 'سيتم إضافة الأخبار قريباً' : 'News will be added soon'}
