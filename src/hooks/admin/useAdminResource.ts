@@ -72,7 +72,7 @@ export function useAdminResource<T>(
   // 📥 جلب البيانات مع الفلاتر والـ Pagination
   const fetchData = useCallback(async (params?: Partial<PaginationParams>) => {
     try {
-      setLoading(true);
+      setLoading(false);
       setError(null);
       
       const response = await service.getAll({
@@ -135,7 +135,7 @@ export function useAdminResource<T>(
   // ➕ إنشاء عنصر جديد
   const createItem = useCallback(async (formData: any): Promise<T> => {
     try {
-      setLoading(true);
+      setLoading(false);
       const response = await service.create(formData);
       
       toast({
@@ -161,7 +161,7 @@ export function useAdminResource<T>(
   // ✏️ تحديث عنصر
   const updateItem = useCallback(async (id: number, formData: any): Promise<T> => {
     try {
-      setLoading(true);
+      setLoading(false);
       const response = await service.update(id, formData);
       
       toast({
@@ -187,7 +187,7 @@ export function useAdminResource<T>(
   // 🗑️ حذف عنصر
   const deleteItem = useCallback(async (id: number): Promise<void> => {
     try {
-      setLoading(true);
+      setLoading(false);
       await service.delete(id);
       
       toast({
@@ -212,7 +212,7 @@ export function useAdminResource<T>(
   // 🗑️ حذف عدة عناصر
   const deleteMultiple = useCallback(async (ids: number[]): Promise<void> => {
     try {
-      setLoading(true);
+      setLoading(false);
       await service.deleteMultiple(ids);
       
       toast({
@@ -237,7 +237,7 @@ export function useAdminResource<T>(
   // 🔄 تغيير حالة العنصر
   const toggleStatus = useCallback(async (id: number, active: boolean): Promise<T> => {
     try {
-      setLoading(true);
+      setLoading(false);
       const response = await service.toggleStatus(id, active);
       
       toast({

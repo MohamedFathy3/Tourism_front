@@ -54,6 +54,11 @@ const AdminContact = () => {
       await deleteItem(item.id);
     }
   };
+  const handleToggleStatus = async (id: number, active: boolean) => {
+    await updateItem(id, { active });
+    // بعد التحديث، refresh عشان نجيب البيانات الجديدة
+    await refresh();
+  };
 
   const handleSubmit = async (data: any) => {
     if (editingItem) {
@@ -97,6 +102,7 @@ const AdminContact = () => {
         onPerPageChange={changePerPage}
         perPage={5}
         filters={filters}
+                onToggleStatus={handleToggleStatus}
         onFilterChange={setFilter}
         onClearFilters={clearFilters}
         searchable={true}

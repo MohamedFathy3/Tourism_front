@@ -55,6 +55,13 @@ const AdminCompany = () => {
     }
   };
 
+  // 🔥 دالة تغيير الحالة - دي اللي هتخلق الـ Switch يشتغل
+  const handleToggleStatus = async (id: number, active: boolean) => {
+    await updateItem(id, { active });
+    // بعد التحديث، refresh عشان نجيب البيانات الجديدة
+    await refresh();
+  };
+
   const handleSubmit = async (data: any) => {
     if (editingItem) {
       await updateItem(editingItem.id, data);
@@ -102,6 +109,8 @@ const AdminCompany = () => {
         searchable={true}
         onSearch={(query) => setFilter('title', query)}
         searchPlaceholder={lang === 'ar' ? 'بحث في الشركات...' : 'Search companies...'}
+        // 🔥 إضافة onToggleStatus عشان الـ Switch يشتغل
+        onToggleStatus={handleToggleStatus}
       />
 
       {/* Modal */}

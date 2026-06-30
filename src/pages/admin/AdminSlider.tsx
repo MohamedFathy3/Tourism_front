@@ -55,6 +55,13 @@ const AdminSlider = () => {
     }
   };
 
+  // 🔥 دالة تغيير الحالة - دي اللي هتخلق الـ Switch يشتغل
+  const handleToggleStatus = async (id: number, active: boolean) => {
+    await updateItem(id, { active });
+    // بعد التحديث، refresh عشان نجيب البيانات الجديدة
+    await refresh();
+  };
+
   const handleSubmit = async (data: any) => {
     if (editingItem) {
       await updateItem(editingItem.id, data);
@@ -84,12 +91,16 @@ const AdminSlider = () => {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={goToPage}
+        onPerPageChange={changePerPage}
+        perPage={5}
         filters={filters}
         onFilterChange={setFilter}
         onClearFilters={clearFilters}
         searchable={true}
         onSearch={(query) => setFilter('title', query)}
         searchPlaceholder={lang === 'ar' ? 'بحث في السلايدرات...' : 'Search sliders...'}
+        // 🔥 إضافة onToggleStatus عشان الـ Switch يشتغل
+        onToggleStatus={handleToggleStatus}
       />
 
       {/* Modal */}

@@ -1,6 +1,6 @@
-// src/components/admin/AdminTable.tsx - كامل مع تحسينات الصور
+// src/components/admin/AdminTable.tsx
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion } from "framer-motion";
@@ -16,6 +16,7 @@ import {
   X,
   Filter,
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch"; // 🔥 استيراد الـ Switch
 
 // ============================================
 // 🔥 أنواع الـ Table
@@ -71,19 +72,13 @@ export interface TableProps {
 // ============================================
 
 const getImageUrl = (item: any): string => {
-  // 1. لو الصورة object كامل
   if (item.image?.fullUrl) return item.image.fullUrl;
   if (item.image?.previewUrl) return item.image.previewUrl;
-  
-  // 2. لو الصورة string مباشرة
   if (item.imageUrl) return item.imageUrl;
   if (item.image) return item.image;
-  
-  // 3. لو في sliderImage
   if (item.sliderImage?.fullUrl) return item.sliderImage.fullUrl;
   if (item.sliderImageUrl) return item.sliderImageUrl;
   
-  // 4. لو في gallery - أول صورة
   if (item.gallery && item.gallery.length > 0) {
     const firstImage = item.gallery[0];
     if (firstImage.fullUrl) return firstImage.fullUrl;
@@ -91,7 +86,6 @@ const getImageUrl = (item: any): string => {
     if (typeof firstImage === 'string') return firstImage;
   }
   
-  // 5. لو في ملفات متعددة
   if (item.files && item.files.length > 0) {
     const firstFile = item.files[0];
     if (firstFile.fullUrl) return firstFile.fullUrl;
@@ -99,7 +93,6 @@ const getImageUrl = (item: any): string => {
     if (typeof firstFile === 'string') return firstFile;
   }
   
-  // 6. لو في images
   if (item.images && item.images.length > 0) {
     const firstImage = item.images[0];
     if (firstImage.fullUrl) return firstImage.fullUrl;
@@ -107,17 +100,13 @@ const getImageUrl = (item: any): string => {
     if (typeof firstImage === 'string') return firstImage;
   }
   
-  // 7. لو في avatar أو profileImage
   if (item.avatar?.fullUrl) return item.avatar.fullUrl;
   if (item.avatar) return item.avatar;
   if (item.profileImage?.fullUrl) return item.profileImage.fullUrl;
   if (item.profileImage) return item.profileImage;
-  
-  // 8. لو في logo
   if (item.logo?.fullUrl) return item.logo.fullUrl;
   if (item.logo) return item.logo;
   
-  // 9. placeholder لو مفيش صورة
   return '/placeholder-image.png';
 };
 
@@ -150,7 +139,16 @@ export const AdminTable = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [togglingId, setTogglingId] = useState<number | null>(null);
+  
+  // 🔥 STATE للـ Switch المحلي
+  const [localData, setLocalData] = useState(data);
 
+  // 🔥 تحديث الـ localData لما تتغير الـ data من الـ API
+  useEffect(() => {
+    setLocalData(data);
+  }, [data]);
+
+  const isRTL = lang === 'ar';
   const cardBg = isDark ? 'bg-gray-800/50' : 'bg-white';
   const cardBorder = isDark ? 'border-gray-700' : 'border-gray-200';
   const textPrimary = isDark ? 'text-white' : 'text-gray-800';
@@ -162,55 +160,68 @@ export const AdminTable = ({
     if (onSearch) onSearch(value);
   };
 
-  // عدد الفلاتر النشطة
   const activeFiltersCount = Object.keys(filters).filter(key => {
     const val = filters[key];
     return val !== '' && val !== null && val !== undefined;
   }).length;
 
-  // معالج الـ Switch
+  // 🔥 معالج الـ Switch باستخدام الـ Component بتاعك
   const handleToggle = async (id: number, currentStatus: boolean) => {
-    if (onToggleStatus) {
-      setTogglingId(id);
-      try {
-        await onToggleStatus(id, !currentStatus);
-      } catch (error) {
-        console.error('Error toggling status:', error);
-      } finally {
-        setTogglingId(null);
-      }
+    if (!onToggleStatus) return;
+    
+    setTogglingId(id);
+    try {
+      // 🔥 نغير الحالة محلياً أولاً
+      setLocalData(prevData => 
+        prevData.map(item => 
+          item.id === id ? { ...item, active: !currentStatus } : item
+        )
+      );
+      
+      // 🔥 نرسل الـ API
+      await onToggleStatus(id, !currentStatus);
+    } catch (error) {
+      console.error('Error toggling status:', error);
+      // 🔥 لو فيه خطأ نرجع الحالة القديمة
+      setLocalData(prevData => 
+        prevData.map(item => 
+          item.id === id ? { ...item, active: currentStatus } : item
+        )
+      );
+    } finally {
+      setTogglingId(null);
     }
   };
 
+  const displayData = localData;
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-3">
+      <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
+        <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <h2 className={`text-xl font-bold ${textPrimary}`}>
             {lang === 'ar' ? 'البيانات' : 'Data'}
           </h2>
           <span className={`text-sm ${textSecondary}`}>
-            ({data.length} {lang === 'ar' ? 'عنصر' : 'items'})
+            ({displayData.length} {lang === 'ar' ? 'عنصر' : 'items'})
           </span>
         </div>
         
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Search */}
+        <div className={`flex items-center gap-2 flex-wrap ${isRTL ? 'flex-row-reverse' : ''}`}>
           {searchable && (
             <div className="relative">
-              <Search className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${textSecondary}`} />
+              <Search className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-4 h-4 ${textSecondary}`} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 placeholder={searchPlaceholder || (lang === 'ar' ? 'بحث...' : 'Search...')}
-                className={`w-48 sm:w-64 pl-10 pr-4 py-2 rounded-lg border ${cardBorder} ${inputBg} ${textPrimary} placeholder:${textSecondary} focus:outline-none focus:ring-2 focus:ring-[#e0b277]/50 text-sm`}
+                className={`w-48 sm:w-64 ${isRTL ? 'pr-10 pl-4' : 'pl-10 pr-4'} py-2 rounded-lg border ${cardBorder} ${inputBg} ${textPrimary} placeholder:${textSecondary} focus:outline-none focus:ring-2 focus:ring-[#e0b277]/50 text-sm`}
               />
             </div>
           )}
           
-          {/* Filter Button */}
           {onFilterChange && (
             <button
               onClick={() => setShowFilters(!showFilters)}
@@ -225,7 +236,6 @@ export const AdminTable = ({
             </button>
           )}
           
-          {/* Refresh */}
           {onRefresh && (
             <button
               onClick={onRefresh}
@@ -235,11 +245,10 @@ export const AdminTable = ({
             </button>
           )}
           
-          {/* Add */}
           {onAdd && (
             <button
               onClick={onAdd}
-              className="px-4 py-2 rounded-lg bg-[#e0b277] hover:bg-[#b88d2e] text-white transition-colors flex items-center gap-2 text-sm"
+              className="px-4 py-2 rounded-lg bg-[#e0b277] hover:bg-[#b88d2e] text-white transition-colors flex items-center gap-2 text-sm whitespace-nowrap"
             >
               <Plus className="w-4 h-4" />
               {addLabel || (lang === 'ar' ? 'إضافة جديد' : 'Add New')}
@@ -248,10 +257,10 @@ export const AdminTable = ({
         </div>
       </div>
 
-      {/* Filter Panel - إخفاء الصور من الفلاتر */}
+      {/* Filter Panel */}
       {showFilters && onFilterChange && (
         <div className={`p-4 rounded-xl ${cardBg} border ${cardBorder}`}>
-          <div className="flex justify-between items-center mb-3">
+          <div className={`flex justify-between items-center mb-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <h3 className={`text-sm font-semibold ${textPrimary}`}>
               {lang === 'ar' ? 'تصفية البيانات' : 'Filter Data'}
             </h3>
@@ -263,7 +272,7 @@ export const AdminTable = ({
               {lang === 'ar' ? 'مسح الكل' : 'Clear All'}
             </button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 ${isRTL ? 'text-right' : ''}`}>
             {columns
               .filter(col => col.filterable !== false && col.type !== 'image' && col.type !== 'switch')
               .map(col => (
@@ -275,7 +284,7 @@ export const AdminTable = ({
                     type="text"
                     value={filters[col.key] || ''}
                     onChange={(e) => onFilterChange(col.key, e.target.value)}
-                    className={`w-full px-3 py-1.5 text-sm rounded-lg border ${cardBorder} ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-[#e0b277]/50`}
+                    className={`w-full px-3 py-1.5 text-sm rounded-lg border ${cardBorder} ${inputBg} ${textPrimary} focus:outline-none focus:ring-2 focus:ring-[#e0b277]/50 ${isRTL ? 'text-right' : ''}`}
                     placeholder={`${lang === 'ar' ? 'بحث' : 'Filter'}...`}
                   />
                 </div>
@@ -301,7 +310,7 @@ export const AdminTable = ({
       {/* Table */}
       {!loading && !error && (
         <div className={`rounded-xl ${cardBg} border ${cardBorder} overflow-hidden`}>
-          {data.length === 0 ? (
+          {displayData.length === 0 ? (
             <div className="text-center py-12">
               <ImageIcon className={`w-16 h-16 mx-auto ${textSecondary} mb-4`} />
               <p className={`text-lg ${textPrimary}`}>
@@ -313,23 +322,23 @@ export const AdminTable = ({
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full">
+              <table className="w-full min-w-[600px]">
                 <thead className={`border-b ${cardBorder}`}>
                   <tr className={`text-xs uppercase tracking-wider ${textSecondary}`}>
                     {columns.map((col) => (
-                      <th key={col.key} className={`px-4 py-3 text-left ${col.width || ''}`}>
+                      <th key={col.key} className={`px-4 py-3 ${isRTL ? 'text-right' : 'text-left'} ${col.width || ''} whitespace-nowrap`}>
                         {col.label}
                       </th>
                     ))}
                     {actions.length > 0 && (
-                      <th className="px-4 py-3 text-center">
+                      <th className={`px-4 py-3 ${isRTL ? 'text-right' : 'text-left'} whitespace-nowrap`}>
                         {lang === 'ar' ? 'إجراءات' : 'Actions'}
                       </th>
                     )}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {data.map((item, index) => (
+                  {displayData.map((item, index) => (
                     <motion.tr
                       key={item.id}
                       initial={{ opacity: 0, y: 10 }}
@@ -337,88 +346,82 @@ export const AdminTable = ({
                       transition={{ delay: index * 0.03 }}
                       className={`${isDark ? 'hover:bg-gray-700/50' : 'hover:bg-gray-50'} transition-colors`}
                     >
-                      {columns.map((col) => (
-                        <td key={col.key} className="px-4 py-3">
-                          {col.render ? (
-                            col.render(item)
-                          ) : col.type === 'image' ? (
-                            <div className="relative group">
-                              <img
-                                src={getImageUrl(item)}
-                                alt={item.title || item.name || 'Image'}
-                                className="w-16 h-12 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
-                                loading="lazy"
-                                onError={(e) => {
-                                  e.currentTarget.src = '/placeholder-image.png';
-                                }}
-                              />
-                              {/* عرض عدد الصور في الـ gallery */}
-                              {item.gallery && item.gallery.length > 1 && (
-                                <span className="absolute -top-1 -right-1 bg-[#e0b277] text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                                  {item.gallery.length}
-                                </span>
-                              )}
-                            </div>
-                          ) : col.type === 'badge' ? (
-                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                              item[col.key] 
-                                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                                : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
-                            }`}>
-                              {item[col.key] 
-                                ? (lang === 'ar' ? 'نشط' : 'Active')
-                                : (lang === 'ar' ? 'غير نشط' : 'Inactive')}
-                            </span>
-                          ) : col.type === 'switch' ? (
-                            <div className="flex items-center">
-                              <button
-                                onClick={() => handleToggle(item.id, item[col.key])}
-                                disabled={togglingId === item.id}
-                                className={`relative w-12 h-6 rounded-full transition-colors ${
-                                  item[col.key] ? 'bg-[#e0b277]' : 'bg-gray-400 dark:bg-gray-600'
-                                } ${togglingId === item.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                              >
-                                <span
-                                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
-                                    item[col.key] ? 'translate-x-6' : 'translate-x-0.5'
-                                  }`}
+                      {columns.map((col) => {
+                        const value = item[col.key];
+                        
+                        return (
+                          <td key={col.key} className={`px-4 py-3 ${isRTL ? 'text-right' : 'text-left'}`}>
+                            {col.render ? (
+                              col.render(item)
+                            ) : col.type === 'image' ? (
+                              <div className={`relative group ${isRTL ? 'flex justify-end' : ''}`}>
+                                <img
+                                  src={getImageUrl(item)}
+                                  alt={item.title || item.name || 'Image'}
+                                  className="w-16 h-12 object-cover rounded-lg border border-gray-200 dark:border-gray-600 flex-shrink-0"
+                                  loading="lazy"
+                                  onError={(e) => {
+                                    e.currentTarget.src = '/placeholder-image.png';
+                                  }}
                                 />
-                                {togglingId === item.id && (
-                                  <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-                                  </div>
+                                {item.gallery && item.gallery.length > 1 && (
+                                  <span className={`absolute -top-1 ${isRTL ? '-left-1' : '-right-1'} bg-[#e0b277] text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center font-bold`}>
+                                    {item.gallery.length}
+                                  </span>
                                 )}
-                              </button>
-                              <span className={`ml-2 text-xs ${textSecondary}`}>
-                                {item[col.key] 
+                              </div>
+                            ) : col.type === 'badge' ? (
+                              <span className={`px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
+                                value 
+                                  ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                  : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
+                              }`}>
+                                {value 
                                   ? (lang === 'ar' ? 'نشط' : 'Active')
                                   : (lang === 'ar' ? 'غير نشط' : 'Inactive')}
                               </span>
-                            </div>
-                          ) : col.type === 'date' ? (
-                            <span className={`text-sm ${textSecondary}`}>
-                              {new Date(item[col.key]).toLocaleDateString()}
-                            </span>
-                          ) : col.type === 'status' ? (
-                            <span className={`text-sm ${item[col.key] ? 'text-green-500' : 'text-gray-400'}`}>
-                              {item[col.key] 
-                                ? (lang === 'ar' ? '✅ نشط' : '✅ Active')
-                                : (lang === 'ar' ? '❌ غير نشط' : '❌ Inactive')}
-                            </span>
-                          ) : col.type === 'number' ? (
-                            <span className={`text-sm font-medium ${textPrimary}`}>
-                              {item[col.key] || 0}
-                            </span>
-                          ) : (
-                            <span className={`text-sm ${textPrimary}`}>
-                              {item[col.key] || '-'}
-                            </span>
-                          )}
-                        </td>
-                      ))}
+                            ) : col.type === 'switch' ? (
+                              <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                <Switch
+                                  checked={value}
+                                  onCheckedChange={() => handleToggle(item.id, value)}
+                                  disabled={togglingId === item.id}
+                                  className={`${isRTL ? 'flex-row-reverse' : ''}`}
+                                />
+                                {togglingId === item.id && (
+                                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-[#e0b277]"></div>
+                                )}
+                                <span className={`text-xs ${textSecondary} whitespace-nowrap`}>
+                                  {value 
+                                    ? (lang === 'ar' ? 'نشط' : 'Active')
+                                    : (lang === 'ar' ? 'غير نشط' : 'Inactive')}
+                                </span>
+                              </div>
+                            ) : col.type === 'date' ? (
+                              <span className={`text-sm ${textSecondary} whitespace-nowrap`}>
+                                {new Date(value).toLocaleDateString(isRTL ? 'ar-EG' : 'en-US')}
+                              </span>
+                            ) : col.type === 'status' ? (
+                              <span className={`text-sm ${value ? 'text-green-500' : 'text-gray-400'} whitespace-nowrap`}>
+                                {value 
+                                  ? (lang === 'ar' ? '✅ نشط' : '✅ Active')
+                                  : (lang === 'ar' ? '❌ غير نشط' : '❌ Inactive')}
+                              </span>
+                            ) : col.type === 'number' ? (
+                              <span className={`text-sm font-medium ${textPrimary}`}>
+                                {value || 0}
+                              </span>
+                            ) : (
+                              <span className={`text-sm ${textPrimary} break-words`}>
+                                {value || '-'}
+                              </span>
+                            )}
+                          </td>
+                        );
+                      })}
                       {actions.length > 0 && (
-                        <td className="px-4 py-3">
-                          <div className="flex items-center justify-center gap-1">
+                        <td className={`px-4 py-3 ${isRTL ? 'text-right' : 'text-left'}`}>
+                          <div className={`flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                             {actions.map((action, idx) => {
                               const Icon = action.icon;
                               const show = action.show ? action.show(item) : true;
@@ -458,18 +461,17 @@ export const AdminTable = ({
           
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className={`flex items-center justify-between px-4 py-3 border-t ${cardBorder}`}>
-              <div className="flex items-center gap-4">
-                <span className={`text-sm ${textSecondary}`}>
+            <div className={`flex items-center justify-between px-4 py-3 border-t ${cardBorder} ${isRTL ? 'flex-row-reverse' : ''} flex-wrap gap-2`}>
+              <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''} flex-wrap`}>
+                <span className={`text-sm ${textSecondary} whitespace-nowrap`}>
                   {lang === 'ar' 
                     ? `الصفحة ${currentPage} من ${totalPages}`
                     : `Page ${currentPage} of ${totalPages}`}
                 </span>
-                {/* Per Page */}
                 <select
                   value={perPage}
                   onChange={(e) => onPerPageChange?.(Number(e.target.value))}
-                  className={`text-sm rounded-lg border ${cardBorder} ${inputBg} ${textPrimary} px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#e0b277]/50`}
+                  className={`text-sm rounded-lg border ${cardBorder} ${inputBg} ${textPrimary} px-2 py-1 focus:outline-none focus:ring-2 focus:ring-[#e0b277]/50 ${isRTL ? 'text-right' : ''}`}
                 >
                   <option value="5">5</option>
                   <option value="10">10</option>
@@ -478,7 +480,7 @@ export const AdminTable = ({
                   <option value="100">100</option>
                 </select>
               </div>
-              <div className="flex gap-2">
+              <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <button
                   onClick={() => onPageChange?.(currentPage - 1)}
                   disabled={currentPage === 1}
@@ -486,7 +488,7 @@ export const AdminTable = ({
                     currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                   } transition-colors`}
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  {isRTL ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
                 </button>
                 <button
                   onClick={() => onPageChange?.(currentPage + 1)}
@@ -495,7 +497,7 @@ export const AdminTable = ({
                     currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                   } transition-colors`}
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  {isRTL ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
                 </button>
               </div>
             </div>
@@ -507,7 +509,7 @@ export const AdminTable = ({
 };
 
 // ============================================
-// 🔥 TableConfigs - إعدادات الجداول لكل نوع
+// 🔥 TableConfigs
 // ============================================
 
 export const TableConfigs = {

@@ -54,7 +54,11 @@ const AdminNewsletter = () => {
       await deleteItem(item.id);
     }
   };
-
+ const handleToggleStatus = async (id: number, active: boolean) => {
+    await updateItem(id, { active });
+    // بعد التحديث، refresh عشان نجيب البيانات الجديدة
+    await refresh();
+  };
   const handleSubmit = async (data: any) => {
     if (editingItem) {
       await updateItem(editingItem.id, data);
@@ -93,6 +97,7 @@ const AdminNewsletter = () => {
         addLabel={lang === 'ar' ? 'إضافة نشرة بريدية' : 'Add Newsletter'}
         currentPage={currentPage}
         totalPages={totalPages}
+                onToggleStatus={handleToggleStatus}
         onPageChange={goToPage}
         onPerPageChange={changePerPage}
         perPage={5}
