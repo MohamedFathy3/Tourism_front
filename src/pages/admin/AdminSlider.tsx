@@ -34,7 +34,7 @@ const AdminSlider = () => {
     changePerPage,
   } = useAdminResource(sliderAdminService, { 
     perPage: 5,
-    initialFilters: { active: true },
+    initialFilters: {  },
     orderBy: 'id',
     orderByDirection: 'desc'
   });
