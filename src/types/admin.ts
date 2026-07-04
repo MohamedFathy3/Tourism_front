@@ -430,17 +430,7 @@ export const FormConfigs = {
         title: 'المعلومات الأساسية',
         fields: [
           { name: 'title', label: 'اسم الشركة', type: 'text', required: true },
-          { name: 'description', label: 'الوصف المختصر', type: 'textarea', required: true, rows: 3 },
           { name: 'long_description', label: 'الوصف التفصيلي', type: 'textarea', required: true, rows: 6 },
-          { name: 'location', label: 'الموقع', type: 'text', required: true },
-          { name: 'founded', label: 'سنة التأسيس', type: 'text' },
-          { name: 'website', label: 'الموقع الإلكتروني', type: 'text' },
-          { name: 'email', label: 'البريد الإلكتروني', type: 'email' },
-          { name: 'phone', label: 'الهاتف', type: 'phone' },
-          { name: 'teamSize', label: 'حجم الفريق', type: 'text' },
-          { name: 'type', label: 'نوع الشركة', type: 'text' },
-          { name: 'status', label: 'الحالة', type: 'text' },
-          { name: 'active', label: 'نشط', type: 'toggle' },
           { name: 'image', label: 'الصورة الرئيسية', type: 'file' },
           { name: 'gallery', label: 'معرض الصور', type: 'gallery' },
         ]

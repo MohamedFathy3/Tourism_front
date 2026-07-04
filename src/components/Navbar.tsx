@@ -21,7 +21,7 @@ const Navbar = () => {
   
   // 🔥 جلب البيانات
   const { services } = useServices({ perPage: 10 });
-  const { company } = useCompany();
+  const { companies } = useCompany({ perPage: 10 });
   const { contactData } = useContact();
 
   // 🔥 حالة الفتح للـ Dropdown
@@ -212,72 +212,54 @@ const Navbar = () => {
                     </button>
                     
                     {/* 🔥 Dropdown الشركات */}
-                    <AnimatePresence>
-                      {openDropdown === 'company' && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                          transition={{ duration: 0.2 }}
-                          className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 rounded-xl shadow-2xl overflow-hidden ${
-                            isDark ? 'bg-gray-900 border border-gray-700' : 'bg-white border border-gray-200'
-                          }`}
-                        >
-                          <div className="py-2 max-h-72 overflow-y-auto">
-                            {company ? (
-                              <>
-                                <Link
-                                  to={`/projects/${company.id}`}
-                                  onClick={() => setOpenDropdown(null)}
-                                  className={`block px-4 py-2 text-sm transition-colors ${
-                                    isDark 
-                                      ? 'text-gray-300 hover:bg-gray-800 hover:text-[#e0b277]' 
-                                      : 'text-gray-700 hover:bg-gray-50 hover:text-[#e0b277]'
-                                  }`}
-                                >
-                                  {company.title}
-                                </Link>
-                                {/* عرض معرض الصور كقائمة */}
-                                {company.gallery && company.gallery.length > 0 && (
-                                  <div className={`border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} mt-2 pt-2`}>
-                                    <div className="px-4 py-1 text-xs text-gray-400">
-                                      {lang === 'ar' ? 'المشاريع' : 'Projects'}
-                                    </div>
-                                    {company.gallery.slice(0, 3).map((image, index) => (
-                                      <Link
-                                        key={index}
-                                        to={`/projects/${company.id}`}
-                                        onClick={() => setOpenDropdown(null)}
-                                        className={`block px-4 py-1.5 text-xs transition-colors ${
-                                          isDark 
-                                            ? 'text-gray-400 hover:bg-gray-800 hover:text-[#e0b277]' 
-                                            : 'text-gray-500 hover:bg-gray-50 hover:text-[#e0b277]'
-                                        }`}
-                                      >
-                                        {lang === 'ar' ? `مشروع ${index + 1}` : `Project ${index + 1}`}
-                                      </Link>
-                                    ))}
-                                  </div>
-                                )}
-                              </>
-                            ) : (
-                              <div className={`px-4 py-2 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                                {lang === 'ar' ? 'لا توجد شركات' : 'No companies'}
-                              </div>
-                            )}
-                            <div className={`border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} mt-2 pt-2`}>
-                              <Link
-                                to="/projects"
-                                onClick={() => setOpenDropdown(null)}
-                                className={`block px-4 py-2 text-sm font-semibold text-[#e0b277] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors`}
-                              >
-                                {lang === 'ar' ? 'عرض جميع المشاريع →' : 'View all projects →'}
-                              </Link>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                   {/* 🔥 Dropdown الشركات - التعديل */}
+{/* 🔥 Dropdown الشركات - عرض كل الشركات */}
+<AnimatePresence>
+  {openDropdown === 'company' && (
+    <motion.div
+      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+      transition={{ duration: 0.2 }}
+      className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 rounded-xl shadow-2xl overflow-hidden ${
+        isDark ? 'bg-gray-900 border border-gray-700' : 'bg-white border border-gray-200'
+      }`}
+    >
+      <div className="py-2 max-h-72 overflow-y-auto">
+        {companies.length > 0 ? (
+          // 🔥 عرض كل الشركات (أو أول 10)
+          companies.slice(0, 10).map((company) => (
+            <Link
+              key={company.id}
+              to={`/projects/${company.id}`}
+              onClick={() => setOpenDropdown(null)}
+              className={`block px-4 py-2 text-sm transition-colors ${
+                isDark 
+                  ? 'text-gray-300 hover:bg-gray-800 hover:text-[#e0b277]' 
+                  : 'text-gray-700 hover:bg-gray-50 hover:text-[#e0b277]'
+              }`}
+            >
+              {company.title}
+            </Link>
+          ))
+        ) : (
+          <div className={`px-4 py-2 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+            {lang === 'ar' ? 'لا توجد شركات' : 'No companies'}
+          </div>
+        )}
+        <div className={`border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} mt-2 pt-2`}>
+          <Link
+            to="/projects"
+            onClick={() => setOpenDropdown(null)}
+            className={`block px-4 py-2 text-sm font-semibold text-[#e0b277] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors`}
+          >
+            {lang === 'ar' ? 'عرض جميع المشاريع →' : 'View all projects →'}
+          </Link>
+        </div>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
                   </div>
                 );
               }
