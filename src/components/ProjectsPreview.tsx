@@ -38,7 +38,7 @@ const ServicesSection = () => {
         title: service.title || `خدمة ${index + 1}`,
         description: service.description || service.location || "خدمة مميزة",
         image: service.image?.fullUrl || service.imageUrl ,
-        location: service.location || "جدة",
+        location: service.location || "القاهره",
         active: service.active,
       }));
     }
@@ -49,7 +49,7 @@ const ServicesSection = () => {
       id: index + 1,
       title: service.title || `خدمة ${index + 1}`,
       description: service.description || "خدمة مميزة",
-      location: "جدة",
+      location: "القاهره",
       active: true,
     }));
   };

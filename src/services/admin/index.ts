@@ -10,3 +10,4 @@ export * from './newsletter.admin.service';
 export * from './job.admin.service';
 export * from './profile.admin.service'; 
 export * from './faq.admin.service';
+export * from './contact-message.admin.service'

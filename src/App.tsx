@@ -36,6 +36,7 @@ import AdminContact from "@/pages/admin/AdminContact.tsx";
 import AdminJobs from "@/pages/admin/AdminJobs.tsx";
 import AdminSettings from "@/pages/admin/AdminSettings.tsx";
 import AdminFAQ from "@/pages/admin/AdminFAQ";
+import AdminContactMessages from '@/pages/admin/AdminContactMessages';
 
 // Components
 import ScrollToTop from "@/components/ScrollToTop";
@@ -79,6 +80,7 @@ const App = () => (
                 <Route path="contact-us" element={<AdminContact />} />
                 <Route path="jobs" element={<AdminJobs />} />
                 <Route path="settings" element={<AdminSettings />} />
+                <Route path="contact-messages" element={<AdminContactMessages />} />
                 <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
               </Route>
 

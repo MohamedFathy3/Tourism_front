@@ -38,6 +38,7 @@ const AdminContact = () => {
     orderBy: 'id',
     orderByDirection: 'desc'
   });
+  const hasData = contacts && contacts.length > 0;
 
   const handleEdit = (item: any) => {
     setEditingItem(item);
@@ -94,7 +95,7 @@ const AdminContact = () => {
         loading={loading}
         error={error}
         onRefresh={refresh}
-        onAdd={handleAdd}
+       onAdd={!hasData ? handleAdd : undefined}
         addLabel={lang === 'ar' ? 'إضافة بيانات تواصل' : 'Add Contact'}
         currentPage={currentPage}
         totalPages={totalPages}

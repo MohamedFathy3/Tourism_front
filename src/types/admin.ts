@@ -138,6 +138,8 @@ export interface CompanyType {
   id: number;
   title: string;
   long_description: string;
+  year_founded: string; // ✅ أضف هذا - سنة التأسيس
+  location: string; // ✅ أضف هذا - الموقع
   active: boolean;
   imageUrl: string;
   image: ImageType;
@@ -149,11 +151,14 @@ export interface CompanyType {
 export interface CompanyFormData {
   title: string;
   long_description: string;
+  year_founded: string; // ✅ أضف هذا
+  location: string; // ✅ أضف هذا
   active: boolean;
   image: number | null;
   sliderImage: number | null;
   gallery: number[];
 }
+
 
 export interface CompanyResponse extends ApiResponse<CompanyType> {}
 export interface CompanyListResponse extends ApiListResponse<CompanyType> {}
@@ -430,6 +435,8 @@ export const FormConfigs = {
         title: 'المعلومات الأساسية',
         fields: [
           { name: 'title', label: 'اسم الشركة', type: 'text', required: true },
+          { name: 'year_founded', label: 'سنة التأسيس', type: 'text', required: true },
+          { name: 'location', label: 'الموقع', type: 'text', required: true, rows: 6 },
           { name: 'long_description', label: 'الوصف التفصيلي', type: 'textarea', required: true, rows: 6 },
           { name: 'image', label: 'الصورة الرئيسية', type: 'file' },
           { name: 'gallery', label: 'معرض الصور', type: 'gallery' },
@@ -478,6 +485,9 @@ export const FormConfigs = {
         fields: [
           { name: 'phone_one', label: 'الهاتف الأول', type: 'phone', required: true },
           { name: 'phone_two', label: 'الهاتف الثاني', type: 'phone' },
+                    { name: 'address', label: 'العنوان', type: 'text', required: true },
+                    { name: 'address_iframe', label: 'لينك الموقع', type: 'text', required: true },
+
           { name: 'work_hours', label: 'ساعات العمل', type: 'text', required: true },
           { name: 'email', label: 'البريد الإلكتروني', type: 'email', required: true },
           { name: 'active', label: 'نشط', type: 'toggle' },

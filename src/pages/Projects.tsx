@@ -50,7 +50,7 @@ const ProjectsPreview = () => {
           en: company.long_description || "A leading company in its field" 
         },
         location: { 
-          ar: company.location || "مدينة جدة", 
+          ar: company.location || "مدينة القاهره", 
           en: company.location || "JEDDAH CITY" 
         },
       }));
@@ -60,7 +60,7 @@ const ProjectsPreview = () => {
     return [{
       id: 1,
       title: { ar: "شركة OEC", en: "OEC Company" },
-      location: { ar: "مدينة جدة", en: "JEDDAH CITY" },
+      location: { ar: "مدينة القاهره", en: "JEDDAH CITY" },
       image: "/placeholder-company.jpg",
       description: { 
         ar: "شركة رائدة في مجال المقاولات والتطوير العقاري",

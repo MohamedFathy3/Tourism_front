@@ -114,6 +114,20 @@ const Contact = () => {
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`, '_blank');
   };
 
+  // 🔥 استخراج عنوان الـ iframe من الـ API
+  const getIframeSrc = (iframeString: string): string => {
+    if (!iframeString) return '';
+    
+    // استخراج الـ src من الـ iframe
+    const srcMatch = iframeString.match(/src="([^"]*)"/);
+    if (srcMatch && srcMatch[1]) {
+      return srcMatch[1];
+    }
+    
+    // لو مفيش src، نرجع العنوان كـ query
+    return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(contactPage?.address || '')}`;
+  };
+
   // حالة التحميل
   if (loading) {
     return (
@@ -168,21 +182,23 @@ const Contact = () => {
     );
   }
 
-  // صورة الخلفية من API أو صورة افتراضية
-  const heroImage = contactPage?.image?.fullUrl || 'https://via.placeholder.com/1920x600/1a1a1a/e0b277?text=Contact+Us';
+  // ✅ صورة الخلفية من API أو صورة افتراضية
+  const heroImage = contactPage?.image?.fullUrl || contactPage?.imageUrl || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=600&fit=crop';
 
-  // 🔥 العنوان من API أو افتراضي
-  const address = contactPage?.address || (lang === 'ar' ? 'جدة، المملكة العربية السعودية' : 'Jeddah, Saudi Arabia');
+  // ✅ العنوان من API أو افتراضي
+  const address = contactPage?.address || (lang === 'ar' ? 'القاهرة، مصر' : 'Cairo, Egypt');
 
-  // 🔥 رابط الخريطة المضمنة (Embedded Map)
-  const mapEmbedUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(address)}`;
+  // ✅ رابط الخريطة من الـ iframe في الـ API أو رابط افتراضي
+  const iframeSrc = contactPage?.address_iframe 
+    ? getIframeSrc(contactPage.address_iframe)
+    : `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(address)}`;
 
   return (
     <>
       <Navbar />
       <div className={`min-h-screen ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
         
-        {/* Hero Section */}
+        {/* ✅ Hero Section مع الصورة من الـ API */}
         <div className="relative h-[50vh] min-h-[350px] md:min-h-[450px] overflow-hidden">
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -199,7 +215,7 @@ const Contact = () => {
               className="text-center"
             >
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
-                {lang === 'ar' ? ' اتصل بنا' : ' Contact Us'}
+                {lang === 'ar' ? '📞 اتصل بنا' : '📞 Contact Us'}
               </h1>
               <div className="w-20 h-1 bg-[#e0b277] mx-auto mb-4 rounded-full" />
               <p className="text-base md:text-lg max-w-2xl mx-auto text-gray-200">
@@ -305,49 +321,61 @@ const Contact = () => {
                   )}
 
                   {/* العنوان */}
-                  <div 
-                    className="flex items-start gap-4 group hover:translate-x-2 transition-transform duration-300 cursor-pointer"
-                    onClick={() => openMap(address)}
-                  >
-                    <div className="bg-[#e0b277]/20 p-3 rounded-full flex-shrink-0 group-hover:bg-[#e0b277]/30 transition-colors">
-                      <MapPin className="w-6 h-6 text-[#e0b277]" />
-                    </div>
-                    <div className="flex-1">
-                      <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                        {lang === 'ar' ? '📍 العنوان' : '📍 Address'}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <p className={`font-semibold hover:text-[#e0b277] transition-colors ${
-                          isDark ? 'text-white' : 'text-gray-800'
-                        }`}>
-                          {address}
-                        </p>
-                        <ExternalLink className="w-4 h-4 text-[#e0b277] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {address && (
+                    <div 
+                      className="flex items-start gap-4 group hover:translate-x-2 transition-transform duration-300 cursor-pointer"
+                      onClick={() => openMap(address)}
+                    >
+                      <div className="bg-[#e0b277]/20 p-3 rounded-full flex-shrink-0 group-hover:bg-[#e0b277]/30 transition-colors">
+                        <MapPin className="w-6 h-6 text-[#e0b277]" />
                       </div>
-                      <p className="text-xs text-[#e0b277] mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        {lang === 'ar' ? '👆 اضغط لفتح الخريطة' : '👆 Click to open map'}
-                      </p>
+                      <div className="flex-1">
+                        <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                          {lang === 'ar' ? '📍 العنوان' : '📍 Address'}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className={`font-semibold hover:text-[#e0b277] transition-colors ${
+                            isDark ? 'text-white' : 'text-gray-800'
+                          }`}>
+                            {address}
+                          </p>
+                          <ExternalLink className="w-4 h-4 text-[#e0b277] opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
+                        <p className="text-xs text-[#e0b277] mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {lang === 'ar' ? '👆 اضغط لفتح الخريطة' : '👆 Click to open map'}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
-              {/* 🔥 خريطة صغيرة */}
+              {/* ✅ الخريطة - باستخدام الـ iframe من الـ API */}
               <div className={`rounded-2xl overflow-hidden shadow-lg ${
                 isDark ? 'bg-gray-800/50' : 'bg-white'
               }`}>
                 <div className="relative">
-                  <iframe
-                    title="Location Map"
-                    src={mapEmbedUrl}
-                    width="100%"
-                    height="250"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    className="w-full"
-                  />
+                  {iframeSrc ? (
+                    <iframe
+                      title="Location Map"
+                      src={iframeSrc}
+                      width="100%"
+                      height="300"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      className="w-full"
+                    />
+                  ) : (
+                    <div className={`h-[300px] flex items-center justify-center ${
+                      isDark ? 'bg-gray-700' : 'bg-gray-100'
+                    }`}>
+                      <p className={`text-center ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                        {lang === 'ar' ? 'لا توجد خريطة' : 'No map available'}
+                      </p>
+                    </div>
+                  )}
                   <button
                     onClick={() => openMap(address)}
                     className="absolute bottom-3 right-3 bg-[#e0b277] hover:bg-[#b88d2e] text-white p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110"
@@ -366,7 +394,7 @@ const Contact = () => {
               </div>
             </motion.div>
 
-            {/* نموذج الاتصال */}
+            {/* نموذج الاتصال - نفس الكود */}
             <motion.div
               initial={{ opacity: 0, x: isRTL ? -50 : 50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -378,7 +406,7 @@ const Contact = () => {
               <h2 className={`text-2xl md:text-3xl font-bold mb-6 ${
                 isDark ? 'text-white' : 'text-gray-800'
               }`}>
-                {lang === 'ar' ? ' أرسل رسالة' : ' Send a Message'}
+                {lang === 'ar' ? '📧 أرسل رسالة' : '📧 Send a Message'}
               </h2>
 
               {/* رسالة النجاح */}
@@ -483,48 +511,6 @@ const Contact = () => {
                     <p className="text-red-500 text-sm mt-1">{formErrors.phone}</p>
                   )}
                 </div>
-
-                {/* العنوان (اختياري) */}
-                {/* <div>
-                  <label className={`block text-sm font-medium mb-1 ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    {lang === 'ar' ? 'العنوان' : 'Address'}
-                  </label>
-                  <input
-                    type="text"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-2 rounded-lg border transition-colors ${
-                      isDark
-                        ? 'border-gray-600 bg-gray-700 text-white focus:border-[#e0b277]'
-                        : 'border-gray-300 bg-white text-gray-900 focus:border-[#e0b277]'
-                    }`}
-                    placeholder={lang === 'ar' ? 'أدخل عنوانك' : 'Enter your address'}
-                  />
-                </div> */}
-
-                {/* الموضوع (اختياري) */}
-                {/* <div>
-                  <label className={`block text-sm font-medium mb-1 ${
-                    isDark ? 'text-gray-300' : 'text-gray-700'
-                  }`}>
-                    {lang === 'ar' ? 'الموضوع' : 'Subject'}
-                  </label>
-                  <input
-                    type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-2 rounded-lg border transition-colors ${
-                      isDark
-                        ? 'border-gray-600 bg-gray-700 text-white focus:border-[#e0b277]'
-                        : 'border-gray-300 bg-white text-gray-900 focus:border-[#e0b277]'
-                    }`}
-                    placeholder={lang === 'ar' ? 'أدخل موضوع الرسالة' : 'Enter message subject'}
-                  />
-                </div> */}
 
                 {/* الرسالة */}
                 <div>

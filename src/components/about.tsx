@@ -133,7 +133,7 @@ const About = () => {
               </h2>
               
               <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
-                {aboutData.long_description || aboutData.description || t.about.desc}
+                {aboutData.description || aboutData.description || t.about.desc}
               </p>
 
               <Link to="/about" className="inline-block">

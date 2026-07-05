@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/pages/CompanyDetails.tsx
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useCompanyById } from "@/hooks/useCompany";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -13,7 +13,11 @@ import {
   Share2,
   Heart,
   Eye,
-  Globe
+  Globe,
+  Building,
+  Award,
+  Users,
+  Clock
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
@@ -21,7 +25,12 @@ import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import Marquee from "react-marquee-slider";
 
-
+// ✅ صور احتياطية
+const fallbackImages = [
+  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&h=600&fit=crop',
+];
 
 const CompanyDetails = () => {
   const { id } = useParams();
@@ -82,17 +91,18 @@ const CompanyDetails = () => {
     );
   }
 
-  // بناء بيانات الشركة
+  // ✅ بناء بيانات الشركة - نضيف year_founded و location
   const companyData = {
     id: company.id,
     name: company.title || company.name || `شركة ${company.id}`,
     description: company.long_description || company.description || "شركة رائدة في مجالها",
     image: company.image?.fullUrl || company.imageUrl || fallbackImages[0],
     gallery: company.gallery || [],
-    location: company.location || "جدة",
-    founded: company.founded || "2010",
+    location: company.location || "غير محدد", // ✅ من الـ API
+    founded: company.year_founded || "غير محدد", // ✅ من الـ API
+    year_founded: company.year_founded || "غير محدد",
     website: company.website || "",
-    status: company.status || "نشطة",
+    active: company.active ?? true,
   };
 
   // تجهيز صور المعرض المتحرك
@@ -111,7 +121,6 @@ const CompanyDetails = () => {
             src={companyData.image}
             alt={companyData.name}
             className="w-full h-full object-cover"
-         
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
           
@@ -156,35 +165,27 @@ const CompanyDetails = () => {
               transition={{ duration: 0.6 }}
               className="text-center text-white"
             >
-              {/* حالة الشركة */}
-              <div className="inline-block bg-[#e0b277] text-white px-4 py-1 rounded-full text-sm font-semibold mb-4">
-                {companyData.status}
-              </div>
+             
               
               <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3">
                 {companyData.name}
               </h1>
               
               <div className="flex flex-wrap items-center justify-center gap-4 text-gray-200 text-sm md:text-base">
-                <div className="flex items-center gap-2">
+                {/* ✅ الموقع */}
+                <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
                   <MapPin className="w-4 h-4" />
                   <span>{companyData.location}</span>
                 </div>
-                <div className="flex items-center gap-2">
+                
+                {/* ✅ سنة التأسيس */}
+                <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
                   <Calendar className="w-4 h-4" />
                   <span>{lang === 'ar' ? 'تأسست: ' : 'Founded: '}{companyData.founded}</span>
                 </div>
-                {companyData.website && (
-                  <a 
-                    href={companyData.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 hover:text-[#e0b277] transition-colors"
-                  >
-                    <Globe className="w-4 h-4" />
-                    <span>{lang === 'ar' ? 'الموقع' : 'Website'}</span>
-                  </a>
-                )}
+                
+                {/* ✅ حالة النشاط */}
+              
               </div>
             </motion.div>
           </div>
@@ -197,6 +198,63 @@ const CompanyDetails = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
+            {/* ✅ بطاقة المعلومات السريعة */}
+            <div className={`rounded-2xl p-6 md:p-8 mb-8 ${
+              isDark ? 'bg-gray-800/50' : 'bg-white'
+            } shadow-lg`}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* الموقع */}
+                <div className={`flex items-center gap-3 p-4 rounded-xl ${
+                  isDark ? 'bg-gray-700/50' : 'bg-gray-50'
+                }`}>
+                  <MapPin className={`w-8 h-8 text-[#e0b277]`} />
+                  <div>
+                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                      {lang === 'ar' ? 'الموقع' : 'Location'}
+                    </p>
+                    <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                      {companyData.location}
+                    </p>
+                  </div>
+                </div>
+
+                {/* سنة التأسيس */}
+                <div className={`flex items-center gap-3 p-4 rounded-xl ${
+                  isDark ? 'bg-gray-700/50' : 'bg-gray-50'
+                }`}>
+                  <Calendar className={`w-8 h-8 text-[#e0b277]`} />
+                  <div>
+                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                      {lang === 'ar' ? 'سنة التأسيس' : 'Founded'}
+                    </p>
+                    <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                      {companyData.founded}
+                    </p>
+                  </div>
+                </div>
+
+                {/* حالة الشركة */}
+                <div className={`flex items-center gap-3 p-4 rounded-xl ${
+                  isDark ? 'bg-gray-700/50' : 'bg-gray-50'
+                }`}>
+                  <Award className={`w-8 h-8 text-[#e0b277]`} />
+                  <div>
+                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                      {lang === 'ar' ? 'الحالة' : 'Status'}
+                    </p>
+                    <p className={`font-semibold ${
+                      companyData.active ? 'text-green-500' : 'text-red-500'
+                    }`}>
+                      {companyData.active 
+                        ? (lang === 'ar' ? '✅ نشطة' : '✅ Active')
+                        : (lang === 'ar' ? '❌ غير نشطة' : '❌ Inactive')
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* وصف الشركة */}
             <div className={`rounded-2xl p-6 md:p-8 mb-8 ${
               isDark ? 'bg-gray-800/50' : 'bg-white'

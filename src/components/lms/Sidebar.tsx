@@ -54,7 +54,8 @@ const sidebarTranslations = {
     "contact us": "تواصل معنا",
     jobs: "الوظائف",
     settings: "الإعدادات",
-    AdminFAQ:"الاسئله الشائعه"
+    AdminFAQ:"الاسئله الشائعه",
+    contactMessages:"رسائل التواصل"
   },
   en: {
     dashboard: "Dashboard",
@@ -68,6 +69,7 @@ const sidebarTranslations = {
     jobs: "Jobs",
     settings: "Settings",
     AdminFAQ:"AdminFAQ",
+    contactMessages:"Contact Messages"
   },
 };
 
@@ -80,6 +82,7 @@ const adminNav: NavItem[] = [
   { to: "our-company", labelKey: "our company", icon: Users },
   { to: "profile-company", labelKey: "profile company", icon: FileText },
   { to: "newsletter", labelKey: "newsletter", icon: Newspaper },
+  { to: "contact-messages", labelKey: "contactMessages", icon: Mail },
   { to: "contact-us", labelKey: "contact us", icon: Mail },
   { to: "jobs", labelKey: "jobs", icon: Briefcase },
   { to: "AdminFAQ", labelKey: "AdminFAQ", icon: Settings },
