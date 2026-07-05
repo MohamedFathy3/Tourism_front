@@ -493,7 +493,7 @@ export const FormConfigs = {
         title: 'معلومات النشرة',
         fields: [
           { name: 'title', label: 'العنوان', type: 'text', required: true },
-          { name: 'content', label: 'المحتوى', type: 'textarea', required: true, rows: 8 },
+          { name: 'description', label: 'المحتوى', type: 'textarea', required: true, rows: 8 },
           { name: 'active', label: 'نشط', type: 'toggle' },
           { name: 'image', label: 'الصورة', type: 'file' },
         ]
