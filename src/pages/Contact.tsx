@@ -202,7 +202,6 @@ const Contact = () => {
         <div className="relative h-[50vh] min-h-[350px] md:min-h-[450px] overflow-hidden">
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: `url(${heroImage})` }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
           </div>
@@ -215,7 +214,7 @@ const Contact = () => {
               className="text-center"
             >
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
-                {lang === 'ar' ? '📞 اتصل بنا' : '📞 Contact Us'}
+                {lang === 'ar' ? ' اتصل بنا' : ' Contact Us'}
               </h1>
               <div className="w-20 h-1 bg-[#e0b277] mx-auto mb-4 rounded-full" />
               <p className="text-base md:text-lg max-w-2xl mx-auto text-gray-200">
