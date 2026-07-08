@@ -341,7 +341,7 @@ const Contact = () => {
                       </div>
                       <div className="flex-1">
                         <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                          {lang === 'ar' ? '📍 العنوان' : '📍 Address'}
+                          {lang === 'ar' ? ' العنوان' : ' Address'}
                         </p>
                         <div className="flex items-center gap-2">
                           <p className={`font-semibold hover:text-[#e0b277] transition-colors ${

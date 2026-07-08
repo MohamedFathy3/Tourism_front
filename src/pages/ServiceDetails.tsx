@@ -78,7 +78,7 @@ const ProjectDetails = () => {
             <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 px-6 py-4 rounded-lg max-w-md mx-auto">
               <p className="font-semibold text-lg">⚠️ {error || (lang === 'ar' ? 'المشروع غير موجود' : 'Project not found')}</p>
               <button 
-                onClick={() => navigate('/projects')}
+                onClick={() => navigate('/services')}
                 className="mt-4 bg-[#e0b277] hover:bg-[#b88d2e] text-white px-6 py-2 rounded-full transition-colors"
               >
                 {lang === 'ar' ? 'العودة للمشاريع' : 'Back to Projects'}
@@ -139,7 +139,7 @@ const ProjectDetails = () => {
           
           {/* زر العودة */}
           <button
-            onClick={() => navigate('/projects')}
+            onClick={() => navigate('/services')}
             className={`absolute top-4 ${isRTL ? 'right-4' : 'left-4'} z-20 bg-white/20 backdrop-blur-sm p-2 md:p-3 rounded-full hover:bg-white/30 transition-all duration-300 hover:scale-110`}
             aria-label={lang === 'ar' ? 'العودة' : 'Back'}
           >
@@ -357,7 +357,7 @@ const ProjectDetails = () => {
             } shadow-lg`}>
               <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
                 <button
-                  onClick={() => navigate('/projects')}
+                  onClick={() => navigate('/services')}
                   className={`flex items-center gap-2 text-[#e0b277] hover:text-[#b88d2e] transition-colors font-semibold ${
                     isRTL ? 'flex-row-reverse' : ''
                   }`}
