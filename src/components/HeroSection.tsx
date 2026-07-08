@@ -160,7 +160,8 @@ const HeroSection = () => {
             >
               <Link
                 to="/about"
-                className="inline-block mt-6 sm:mt-8 px-6 sm:px-8 py-2.5 sm:py-3 border-2 border-white text-white rounded-full text-sm sm:text-base font-semibold hover:bg-primary hover:border-primary transition-all duration-300 hover:scale-105 transform"
+                className="inline-block mt-6 sm:mt-8 px-6 sm:px-8 py-2.5 sm:py-3 border-2 border-white text-white  text-sm sm:text-base font-semibold hover:bg-primary hover:border-primary transition-all duration-300 hover:scale-105 transform"
+                style={{borderRadius:"10px"}}
               >
                 {t.hero.cta}
               </Link>

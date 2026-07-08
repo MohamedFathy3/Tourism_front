@@ -20,11 +20,20 @@ import {
   Home,
   PaintRoller,
   Fuel,
-  Coffee
+  Coffee,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+
+// ✅ استيراد Swiper
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 const ProjectDetails = () => {
   const { id } = useParams();
@@ -35,6 +44,12 @@ const ProjectDetails = () => {
   const isRTL = dir === "rtl";
   const [isLiked, setIsLiked] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
+  const swiperRef = useRef<any>(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // حالة التحميل
   if (loading) {
@@ -75,17 +90,22 @@ const ProjectDetails = () => {
     );
   }
 
-  // معرض الصور - عرض كل الصور
+  // معرض الصور
   const galleryImages = service.gallery || [];
   const hasGallery = galleryImages.length > 0;
 
-  // ميزات المشروع (افتراضية)
-  const features = [
-    { ar: "جودة عالية", en: "High Quality", icon: CheckCircle },
-    { ar: "تنفيذ احترافي", en: "Professional Execution", icon: Clock },
-    { ar: "فريق متخصص", en: "Specialized Team", icon: User },
-    { ar: "ضمان الجودة", en: "Quality Guarantee", icon: Star },
-  ];
+  // دوال التحكم في الـ Swiper
+  const goPrev = () => {
+    if (swiperRef.current) {
+      swiperRef.current.slidePrev();
+    }
+  };
+
+  const goNext = () => {
+    if (swiperRef.current) {
+      swiperRef.current.slideNext();
+    }
+  };
 
   // أيقونة حسب نوع المشروع
   const getProjectIcon = (title: string) => {
@@ -107,7 +127,6 @@ const ProjectDetails = () => {
         
         {/* Hero Section */}
         <div className="relative h-[60vh] min-h-[400px] md:min-h-[500px]">
-          {/* صورة الخلفية */}
           <img
             src={service.image?.fullUrl || service.imageUrl}
             alt={service.title}
@@ -192,7 +211,7 @@ const ProjectDetails = () => {
               <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${
                 isDark ? 'text-white' : 'text-gray-800'
               }`}>
-                {lang === 'ar' ? '📋 وصف المشروع' : '📋 Project Description'}
+                {lang === 'ar' ? 'وصف المشروع' : 'Project Description'}
               </h2>
               <p className={`text-base md:text-lg leading-relaxed ${
                 isDark ? 'text-gray-300' : 'text-gray-700'
@@ -201,46 +220,136 @@ const ProjectDetails = () => {
               </p>
             </div>
 
-      
-
-            {/* معرض الصور - عرض كل الصور */}
-            {hasGallery && (
+            {/* ✅ معرض الصور - Swiper مع تحكم كامل */}
+            {isClient && hasGallery && (
               <div className={`rounded-2xl p-6 md:p-8 mb-8 ${
                 isDark ? 'bg-gray-800/50' : 'bg-white'
               } shadow-lg`}>
-                <h3 className={`text-2xl md:text-3xl font-bold mb-6 ${
-                  isDark ? 'text-white' : 'text-gray-800'
-                }`}>
-                  {lang === 'ar' ? '🖼️ معرض الصور' : '🖼️ Gallery'}
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {galleryImages.map((image, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
-                      className="relative group rounded-xl overflow-hidden cursor-pointer aspect-square"
-                      onClick={() => setSelectedImage(image.fullUrl)}
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className={`text-2xl md:text-3xl font-bold ${
+                    isDark ? 'text-white' : 'text-gray-800'
+                  }`}>
+                    {lang === 'ar' ? 'معرض الصور' : 'Gallery'}
+                  </h3>
+                  
+                  {/* ✅ أزرار التحكم */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={goPrev}
+                      className={`p-2 rounded-full transition-all duration-300 ${
+                        isDark 
+                          ? 'bg-gray-700 hover:bg-gray-600 text-white' 
+                          : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                      }`}
+                      aria-label="Previous"
                     >
-                      <img
-                        src={image.fullUrl}
-                        alt={`${service.title} - ${index + 1}`}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        loading="lazy"
-                        onError={(e) => {
-                          e.currentTarget.src = "https://via.placeholder.com/400x400/2a2a2a/e0b277?text=Image";
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <Eye className="w-8 h-8 text-white" />
-                      </div>
-                    </motion.div>
-                  ))}
+                      <ChevronLeft className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
+                    </button>
+                    <button
+                      onClick={goNext}
+                      className={`p-2 rounded-full transition-all duration-300 ${
+                        isDark 
+                          ? 'bg-gray-700 hover:bg-gray-600 text-white' 
+                          : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                      }`}
+                      aria-label="Next"
+                    >
+                      <ChevronRight className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="relative">
+                  <Swiper
+                    modules={[Navigation, Pagination, Autoplay]}
+                    spaceBetween={20}
+                    slidesPerView={1}
+                    navigation={false}
+                    pagination={{ 
+                      clickable: true,
+                      dynamicBullets: true,
+                    }}
+                    autoplay={false}
+                    speed={500}
+                    loop={galleryImages.length > 1}
+                    onSwiper={(swiper) => {
+                      swiperRef.current = swiper;
+                    }}
+                    className="gallery-swiper"
+                    breakpoints={{
+                      640: {
+                        slidesPerView: 1,
+                        spaceBetween: 20,
+                      },
+                      768: {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                      },
+                      1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 30,
+                      },
+                    }}
+                  >
+                    {galleryImages.map((image, index) => (
+                      <SwiperSlide key={index}>
+                        <div 
+                          className="relative group rounded-xl overflow-hidden cursor-pointer aspect-[4/3]"
+                          onClick={() => setSelectedImage(image.fullUrl)}
+                        >
+                          <img
+                            src={image.fullUrl}
+                            alt={`${service.title} - ${index + 1}`}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.src = "https://via.placeholder.com/400x400/2a2a2a/e0b277?text=Image";
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <Eye className="w-10 h-10 text-white" />
+                            <span className="absolute bottom-4 left-4 text-white text-sm bg-black/50 px-3 py-1 rounded-full">
+                              {index + 1} / {galleryImages.length}
+                            </span>
+                          </div>
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+
+                  {/* ✅ Pagination مخصصة */}
+                  <style jsx>{`
+                    .gallery-swiper :global(.swiper-pagination) {
+                      position: relative;
+                      margin-top: 20px;
+                      display: flex;
+                      justify-content: center;
+                      gap: 8px;
+                    }
+                    
+                    .gallery-swiper :global(.swiper-pagination-bullet) {
+                      width: 10px;
+                      height: 10px;
+                      background: ${isDark ? '#4a4a4a' : '#d1d5db'};
+                      opacity: 1;
+                      border-radius: 50%;
+                      transition: all 0.3s ease;
+                    }
+                    
+                    .gallery-swiper :global(.swiper-pagination-bullet-active) {
+                      background: #e0b277;
+                      transform: scale(1.2);
+                      width: 14px;
+                      height: 14px;
+                    }
+                    
+                    .gallery-swiper :global(.swiper-pagination-bullet):hover {
+                      transform: scale(1.1);
+                    }
+                  `}</style>
                 </div>
               </div>
             )}
-
 
             {/* أزرار التنقل */}
             <div className={`rounded-2xl p-6 md:p-8 ${
@@ -261,7 +370,7 @@ const ProjectDetails = () => {
                   to="/contact"
                   className="bg-[#e0b277] hover:bg-[#b88d2e] text-white px-6 md:px-8 py-3 rounded-full font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
                 >
-                  {lang === 'ar' ? '📞 استفسر عن المشروع' : '📞 Inquire About Project'}
+                  {lang === 'ar' ? 'استفسر عن المشروع' : 'Inquire About Project'}
                   <ArrowRight className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
                 </Link>
               </div>

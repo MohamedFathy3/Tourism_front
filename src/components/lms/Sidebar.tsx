@@ -80,7 +80,7 @@ const adminNav: NavItem[] = [
   { to: "about", labelKey: "about", icon: Info },
   { to: "our-project", labelKey: "our project", icon: Building2 },
   { to: "our-company", labelKey: "our company", icon: Users },
-  { to: "profile-company", labelKey: "profile company", icon: FileText },
+  // { to: "profile-company", labelKey: "profile company", icon: FileText },
   { to: "newsletter", labelKey: "newsletter", icon: Newspaper },
   { to: "contact-messages", labelKey: "contactMessages", icon: Mail },
   { to: "contact-us", labelKey: "contact us", icon: Mail },

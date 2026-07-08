@@ -17,13 +17,22 @@ import {
   Building,
   Award,
   Users,
-  Clock
+  Clock,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
-import Marquee from "react-marquee-slider";
+
+// ✅ استيراد Swiper
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/effect-fade';
 
 // ✅ صور احتياطية
 const fallbackImages = [
@@ -42,6 +51,7 @@ const CompanyDetails = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const swiperRef = useRef<any>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -78,7 +88,7 @@ const CompanyDetails = () => {
             <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 px-6 py-4 rounded-lg max-w-md mx-auto">
               <p className="font-semibold text-lg">⚠️ {error || (lang === 'ar' ? 'الشركة غير موجودة' : 'Company not found')}</p>
               <button 
-                onClick={() => navigate('/companies')}
+                onClick={() => navigate('/projects')}
                 className="mt-4 bg-[#e0b277] hover:bg-[#b88d2e] text-white px-6 py-2 rounded-full transition-colors"
               >
                 {lang === 'ar' ? 'العودة للشركات' : 'Back to Companies'}
@@ -91,24 +101,37 @@ const CompanyDetails = () => {
     );
   }
 
-  // ✅ بناء بيانات الشركة - نضيف year_founded و location
+  // ✅ بناء بيانات الشركة
   const companyData = {
     id: company.id,
     name: company.title || company.name || `شركة ${company.id}`,
     description: company.long_description || company.description || "شركة رائدة في مجالها",
     image: company.image?.fullUrl || company.imageUrl || fallbackImages[0],
     gallery: company.gallery || [],
-    location: company.location || "غير محدد", // ✅ من الـ API
-    founded: company.year_founded || "غير محدد", // ✅ من الـ API
+    location: company.location || "غير محدد",
+    founded: company.year_founded || "غير محدد",
     year_founded: company.year_founded || "غير محدد",
     website: company.website || "",
     active: company.active ?? true,
   };
 
-  // تجهيز صور المعرض المتحرك
+  // تجهيز صور المعرض
   const galleryImages = companyData.gallery.length > 0 
-    ? companyData.gallery.map(img => img.fullUrl)
+    ? companyData.gallery.map((img: any) => img.fullUrl)
     : [companyData.image, companyData.image, companyData.image, companyData.image];
+
+  // دوال التحكم في الـ Swiper
+  const goPrev = () => {
+    if (swiperRef.current) {
+      swiperRef.current.slidePrev();
+    }
+  };
+
+  const goNext = () => {
+    if (swiperRef.current) {
+      swiperRef.current.slideNext();
+    }
+  };
 
   return (
     <>
@@ -165,27 +188,22 @@ const CompanyDetails = () => {
               transition={{ duration: 0.6 }}
               className="text-center text-white"
             >
-             
-              
               <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3">
                 {companyData.name}
               </h1>
               
               <div className="flex flex-wrap items-center justify-center gap-4 text-gray-200 text-sm md:text-base">
-                {/* ✅ الموقع */}
+                {/* الموقع */}
                 <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
                   <MapPin className="w-4 h-4" />
                   <span>{companyData.location}</span>
                 </div>
                 
-                {/* ✅ سنة التأسيس */}
+                {/* سنة التأسيس */}
                 <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
                   <Calendar className="w-4 h-4" />
                   <span>{lang === 'ar' ? 'تأسست: ' : 'Founded: '}{companyData.founded}</span>
                 </div>
-                
-                {/* ✅ حالة النشاط */}
-              
               </div>
             </motion.div>
           </div>
@@ -246,8 +264,8 @@ const CompanyDetails = () => {
                       companyData.active ? 'text-green-500' : 'text-red-500'
                     }`}>
                       {companyData.active 
-                        ? (lang === 'ar' ? '✅ نشطة' : '✅ Active')
-                        : (lang === 'ar' ? '❌ غير نشطة' : '❌ Inactive')
+                        ? (lang === 'ar' ? 'نشطة' : 'Active')
+                        : (lang === 'ar' ? 'غير نشطة' : 'Inactive')
                       }
                     </p>
                   </div>
@@ -262,7 +280,7 @@ const CompanyDetails = () => {
               <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${
                 isDark ? 'text-white' : 'text-gray-800'
               }`}>
-                {lang === 'ar' ? '📋 عن الشركة' : '📋 About Company'}
+                {lang === 'ar' ? 'عن الشركة' : 'About Company'}
               </h2>
               <p className={`text-base md:text-lg leading-relaxed ${
                 isDark ? 'text-gray-300' : 'text-gray-700'
@@ -271,37 +289,88 @@ const CompanyDetails = () => {
               </p>
             </div>
 
-            {/* معرض الصور المتحرك - Marquee */}
+            {/* ✅ معرض الصور - Swiper مع تحكم كامل */}
             {isClient && galleryImages.length > 0 && (
               <div className={`rounded-2xl p-6 md:p-8 mb-8 ${
                 isDark ? 'bg-gray-800/50' : 'bg-white'
-              } shadow-lg overflow-hidden`}>
-                <h3 className={`text-2xl md:text-3xl font-bold mb-6 ${
-                  isDark ? 'text-white' : 'text-gray-800'
-                }`}>
-                  {lang === 'ar' ? '🖼️ معرض الصور' : '🖼️ Gallery'}
-                </h3>
+              } shadow-lg`}>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className={`text-2xl md:text-3xl font-bold ${
+                    isDark ? 'text-white' : 'text-gray-800'
+                  }`}>
+                    {lang === 'ar' ? 'معرض الصور' : 'Gallery'}
+                  </h3>
+                  
+                  {/* ✅ أزرار التحكم */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={goPrev}
+                      className={`p-2 rounded-full transition-all duration-300 ${
+                        isDark 
+                          ? 'bg-gray-700 hover:bg-gray-600 text-white' 
+                          : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                      }`}
+                      aria-label="Previous"
+                    >
+                      <ChevronLeft className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
+                    </button>
+                    <button
+                      onClick={goNext}
+                      className={`p-2 rounded-full transition-all duration-300 ${
+                        isDark 
+                          ? 'bg-gray-700 hover:bg-gray-600 text-white' 
+                          : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                      }`}
+                      aria-label="Next"
+                    >
+                      <ChevronRight className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
+                    </button>
+                  </div>
+                </div>
                 
-                <div className="relative w-full overflow-hidden">
-                  <Marquee
-                    velocity={8}
-                    direction={isRTL ? "rtl" : "ltr"}
-                    resetAfterTries={200}
-                    scatterRandomly={false}
-                    onInit={() => {}}
-                    onFinish={() => {}}
+                <div className="relative">
+                  <Swiper
+                    modules={[Navigation, Pagination, Autoplay, EffectFade]}
+                    spaceBetween={20}
+                    slidesPerView={1}
+                    navigation={false}
+                    pagination={{ 
+                      clickable: true,
+                      dynamicBullets: true,
+                    }}
+                    autoplay={false}
+                    effect="slide"
+                    speed={500}
+                    loop={galleryImages.length > 1}
+                    onSwiper={(swiper) => {
+                      swiperRef.current = swiper;
+                    }}
+                    className="gallery-swiper"
+                    breakpoints={{
+                      640: {
+                        slidesPerView: 1,
+                        spaceBetween: 20,
+                      },
+                      768: {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                      },
+                      1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 30,
+                      },
+                    }}
                   >
-                    {galleryImages.map((imageUrl, index) => (
-                      <div 
-                        key={index} 
-                        className="marquee-item cursor-pointer"
-                        onClick={() => setSelectedImage(imageUrl)}
-                      >
-                        <div className="relative group rounded-xl overflow-hidden">
+                    {galleryImages.map((imageUrl: string, index: number) => (
+                      <SwiperSlide key={index}>
+                        <div 
+                          className="relative group rounded-xl overflow-hidden cursor-pointer aspect-[4/3]"
+                          onClick={() => setSelectedImage(imageUrl)}
+                        >
                           <img
                             src={imageUrl}
                             alt={`${companyData.name} - ${index + 1}`}
-                            className="marquee-image"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             loading="lazy"
                             onError={(e) => {
                               const fallbackIndex = index % fallbackImages.length;
@@ -309,12 +378,46 @@ const CompanyDetails = () => {
                             }}
                           />
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                            <Eye className="w-8 h-8 text-white" />
+                            <Eye className="w-10 h-10 text-white" />
+                            <span className="absolute bottom-4 left-4 text-white text-sm bg-black/50 px-3 py-1 rounded-full">
+                              {index + 1} / {galleryImages.length}
+                            </span>
                           </div>
                         </div>
-                      </div>
+                      </SwiperSlide>
                     ))}
-                  </Marquee>
+                  </Swiper>
+
+                  {/* ✅ Pagination مخصصة */}
+                  <style jsx>{`
+                    .gallery-swiper :global(.swiper-pagination) {
+                      position: relative;
+                      margin-top: 20px;
+                      display: flex;
+                      justify-content: center;
+                      gap: 8px;
+                    }
+                    
+                    .gallery-swiper :global(.swiper-pagination-bullet) {
+                      width: 10px;
+                      height: 10px;
+                      background: ${isDark ? '#4a4a4a' : '#d1d5db'};
+                      opacity: 1;
+                      border-radius: 50%;
+                      transition: all 0.3s ease;
+                    }
+                    
+                    .gallery-swiper :global(.swiper-pagination-bullet-active) {
+                      background: #e0b277;
+                      transform: scale(1.2);
+                      width: 14px;
+                      height: 14px;
+                    }
+                    
+                    .gallery-swiper :global(.swiper-pagination-bullet):hover {
+                      transform: scale(1.1);
+                    }
+                  `}</style>
                 </div>
               </div>
             )}
@@ -336,9 +439,10 @@ const CompanyDetails = () => {
                 
                 <Link
                   to="/contact"
-                  className="bg-[#e0b277] hover:bg-[#b88d2e] text-white px-6 md:px-8 py-3 rounded-full font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
+                  className="bg-[#e0b277] hover:bg-[#b88d2e] text-white px-6 md:px-8 py-3 font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
+                  style={{borderRadius: '10px'}}
                 >
-                  {lang === 'ar' ? '📞 تواصل معنا' : '📞 Contact Us'}
+                  {lang === 'ar' ? 'تواصل معنا' : 'Contact Us'}
                   <ArrowRight className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
                 </Link>
               </div>
@@ -380,57 +484,6 @@ const CompanyDetails = () => {
         )}
       </AnimatePresence>
       <Footer />
-
-      <style jsx>{`
-        .marquee-item {
-          padding: 0 15px;
-          display: inline-block;
-        }
-        
-        .marquee-image {
-          height: 200px;
-          width: 320px;
-          padding: 8px;
-          border-radius: 12px;
-          transition: all 0.3s ease;
-          object-fit: cover;
-          background: ${isDark ? '#1f2937' : '#f3f4f6'};
-        }
-        
-        .marquee-image:hover {
-          transform: scale(1.05);
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-        }
-        
-        :global(.dark) .marquee-image {
-          background: #1f2937;
-          filter: brightness(0.9);
-        }
-        
-        :global(.dark) .marquee-image:hover {
-          filter: brightness(1);
-          background: #374151;
-        }
-        
-        @media (max-width: 768px) {
-          .marquee-item {
-            padding: 0 10px;
-          }
-          .marquee-image {
-            height: 150px;
-            width: 240px;
-            padding: 6px;
-          }
-        }
-        
-        @media (max-width: 480px) {
-          .marquee-image {
-            height: 120px;
-            width: 180px;
-            padding: 4px;
-          }
-        }
-      `}</style>
     </>
   );
 };

@@ -20,13 +20,15 @@ export interface ContactData {
   phone_two: string;
   work_hours: string;
   email: string;
+  address: string; // ✅ تم إضافة address
+  address_iframe: string; // ✅ تم إضافة address_iframe
   active: boolean;
   imageUrl: string;
   image: ContactImage;
 }
 
 export interface ContactPageResponse {
-  data: ContactData[];
+  data: ContactData[]; // ✅ مصفوفة
   links: any;
   meta: any;
   result: string;
@@ -58,8 +60,11 @@ export class ContactService extends BaseService<ContactData> {
   async getContactPage(): Promise<ContactPageResponse | null> {
     try {
       const response = await api.post('/page-contact-us/index', {
-     filters: { active: true },
+        filters: { active: true },
       });
+      
+      // ✅ طباعة الرد للتصحيح
+      console.log('📡 API Response:', response.data);
       
       return response.data;
     } catch (error) {

@@ -27,6 +27,7 @@ export const useServices = (options?: {
       const data = await serviceService.getActiveServices({
         perPage: options?.perPage || 20,
         page: options?.page || 1,
+        orderByDirection: 'asc',
       });
       
       setServices(data);

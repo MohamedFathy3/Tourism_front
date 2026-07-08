@@ -28,9 +28,11 @@ export const useContact = (): UseContactReturn => {
       
       const response = await contactService.getContactPage();
       
-      if (response && response.data && response.data.length > 0) {
+      // ✅ التحقق من وجود data ومصفوفة
+      if (response?.data && Array.isArray(response.data) && response.data.length > 0) {
         setContactPage(response);
-        setContactData(response.data[0]);
+        setContactData(response.data[0]); // ✅ أول عنصر في المصفوفة
+        console.log('✅ Contact Data Loaded:', response.data[0]); // للتصحيح
       } else {
         setContactPage(null);
         setContactData(null);

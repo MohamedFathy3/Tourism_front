@@ -106,7 +106,7 @@ const About = () => {
               viewport={{ once: true }}
               className="order-2 lg:order-1"
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative rounded-2xl overflow-hidden ">
                 <img 
                   src={aboutData.image?.fullUrl || aboutData.imageUrl || section}
                   alt={aboutData.title || "About"}
@@ -137,7 +137,7 @@ const About = () => {
               </p>
 
               <Link to="/about" className="inline-block">
-                <button className="bg-[#e0b277] hover:bg-[#b58a2e] text-white px-8 py-3 rounded-full font-semibold transition-colors duration-300">
+                <button className="bg-[#e0b277] hover:bg-[#b58a2e] text-white px-8 py-3  font-semibold transition-colors duration-300"style={{borderRadius: '10px'}}>
                   {t.hero.cta}
                 </button>
               </Link> 

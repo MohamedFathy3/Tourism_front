@@ -23,7 +23,7 @@ import {
 const Contact = () => {
   const { lang, dir } = useLanguage();
   const { isDark } = useTheme();
-  const { contactPage, loading, error, sendMessage, isSending } = useContact();
+  const { contactData, loading, error, sendMessage, isSending } = useContact();
   const isRTL = dir === "rtl";
 
   // حالة النموذج
@@ -107,26 +107,36 @@ const Contact = () => {
     }
   };
 
-  // 🔥 دالة فتح الخريطة في تبويب جديد
+  // دالة فتح الخريطة في تبويب جديد
   const openMap = (address: string) => {
     if (!address) return;
     const encodedAddress = encodeURIComponent(address);
     window.open(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`, '_blank');
   };
 
-  // 🔥 استخراج عنوان الـ iframe من الـ API
+  // استخراج عنوان الـ iframe من الـ API
   const getIframeSrc = (iframeString: string): string => {
     if (!iframeString) return '';
     
-    // استخراج الـ src من الـ iframe
     const srcMatch = iframeString.match(/src="([^"]*)"/);
     if (srcMatch && srcMatch[1]) {
       return srcMatch[1];
     }
     
-    // لو مفيش src، نرجع العنوان كـ query
-    return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(contactPage?.address || '')}`;
+    return `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(contactData?.address || '')}`;
   };
+
+  // استخراج البيانات من contactData
+  const heroImage = contactData?.image?.fullUrl || contactData?.imageUrl || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=600&fit=crop';
+  const address = contactData?.address || (lang === 'ar' ? 'القاهرة، مصر' : 'Cairo, Egypt');
+  const phoneOne = contactData?.phone_one || '';
+  const phoneTwo = contactData?.phone_two || '';
+  const email = contactData?.email || '';
+  const workHours = contactData?.work_hours || '9 AM TO 5 PM';
+  
+  const iframeSrc = contactData?.address_iframe 
+    ? getIframeSrc(contactData.address_iframe)
+    : `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(address)}`;
 
   // حالة التحميل
   if (loading) {
@@ -182,23 +192,12 @@ const Contact = () => {
     );
   }
 
-  // ✅ صورة الخلفية من API أو صورة افتراضية
-  const heroImage = contactPage?.image?.fullUrl || contactPage?.imageUrl || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&h=600&fit=crop';
-
-  // ✅ العنوان من API أو افتراضي
-  const address = contactPage?.address || (lang === 'ar' ? 'القاهرة، مصر' : 'Cairo, Egypt');
-
-  // ✅ رابط الخريطة من الـ iframe في الـ API أو رابط افتراضي
-  const iframeSrc = contactPage?.address_iframe 
-    ? getIframeSrc(contactPage.address_iframe)
-    : `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodeURIComponent(address)}`;
-
   return (
     <>
       <Navbar />
       <div className={`min-h-screen ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
         
-        {/* ✅ Hero Section مع الصورة من الـ API */}
+        {/* Hero Section مع الصورة من الـ API */}
         <div className="relative h-[50vh] min-h-[350px] md:min-h-[450px] overflow-hidden">
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -214,7 +213,7 @@ const Contact = () => {
               className="text-center"
             >
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
-                {lang === 'ar' ? ' اتصل بنا' : ' Contact Us'}
+                {lang === 'ar' ? 'اتصل بنا' : 'Contact Us'}
               </h1>
               <div className="w-20 h-1 bg-[#e0b277] mx-auto mb-4 rounded-full" />
               <p className="text-base md:text-lg max-w-2xl mx-auto text-gray-200">
@@ -246,8 +245,8 @@ const Contact = () => {
                 </h2>
                 
                 <div className="space-y-6">
-                  {/* الهاتف */}
-                  {contactPage?.phone_one && (
+                  {/* الهاتف الأول */}
+                  {phoneOne && (
                     <div className="flex items-start gap-4 group hover:translate-x-2 transition-transform duration-300">
                       <div className="bg-[#e0b277]/20 p-3 rounded-full flex-shrink-0 group-hover:bg-[#e0b277]/30 transition-colors">
                         <Phone className="w-6 h-6 text-[#e0b277]" />
@@ -257,29 +256,41 @@ const Contact = () => {
                           {lang === 'ar' ? 'الهاتف' : 'Phone'}
                         </p>
                         <a 
-                          href={`tel:${contactPage.phone_one}`}
+                          href={`tel:${phoneOne}`}
                           className={`font-semibold hover:text-[#e0b277] transition-colors ${
                             isDark ? 'text-white' : 'text-gray-800'
                           }`}
                         >
-                          {contactPage.phone_one}
+                          {phoneOne}
                         </a>
-                        {contactPage.phone_two && (
-                          <a 
-                            href={`tel:${contactPage.phone_two}`}
-                            className={`block font-semibold hover:text-[#e0b277] transition-colors ${
-                              isDark ? 'text-white' : 'text-gray-800'
-                            }`}
-                          >
-                            {contactPage.phone_two}
-                          </a>
-                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* الهاتف الثاني */}
+                  {phoneTwo && (
+                    <div className="flex items-start gap-4 group hover:translate-x-2 transition-transform duration-300">
+                      <div className="bg-[#e0b277]/20 p-3 rounded-full flex-shrink-0 group-hover:bg-[#e0b277]/30 transition-colors">
+                        <Phone className="w-6 h-6 text-[#e0b277]" />
+                      </div>
+                      <div>
+                        <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                          {lang === 'ar' ? 'هاتف آخر' : 'Phone 2'}
+                        </p>
+                        <a 
+                          href={`tel:${phoneTwo}`}
+                          className={`font-semibold hover:text-[#e0b277] transition-colors ${
+                            isDark ? 'text-white' : 'text-gray-800'
+                          }`}
+                        >
+                          {phoneTwo}
+                        </a>
                       </div>
                     </div>
                   )}
 
                   {/* البريد الإلكتروني */}
-                  {contactPage?.email && (
+                  {email && (
                     <div className="flex items-start gap-4 group hover:translate-x-2 transition-transform duration-300">
                       <div className="bg-[#e0b277]/20 p-3 rounded-full flex-shrink-0 group-hover:bg-[#e0b277]/30 transition-colors">
                         <Mail className="w-6 h-6 text-[#e0b277]" />
@@ -289,19 +300,19 @@ const Contact = () => {
                           {lang === 'ar' ? 'البريد الإلكتروني' : 'Email'}
                         </p>
                         <a 
-                          href={`mailto:${contactPage.email}`}
+                          href={`mailto:${email}`}
                           className={`font-semibold hover:text-[#e0b277] transition-colors ${
                             isDark ? 'text-white' : 'text-gray-800'
                           }`}
                         >
-                          {contactPage.email}
+                          {email}
                         </a>
                       </div>
                     </div>
                   )}
 
                   {/* ساعات العمل */}
-                  {contactPage?.work_hours && (
+                  {workHours && (
                     <div className="flex items-start gap-4 group hover:translate-x-2 transition-transform duration-300">
                       <div className="bg-[#e0b277]/20 p-3 rounded-full flex-shrink-0 group-hover:bg-[#e0b277]/30 transition-colors">
                         <Clock className="w-6 h-6 text-[#e0b277]" />
@@ -313,7 +324,7 @@ const Contact = () => {
                         <p className={`font-semibold ${
                           isDark ? 'text-white' : 'text-gray-800'
                         }`}>
-                          {contactPage.work_hours}
+                          {workHours}
                         </p>
                       </div>
                     </div>
@@ -349,7 +360,7 @@ const Contact = () => {
                 </div>
               </div>
 
-              {/* ✅ الخريطة - باستخدام الـ iframe من الـ API */}
+              {/* الخريطة */}
               <div className={`rounded-2xl overflow-hidden shadow-lg ${
                 isDark ? 'bg-gray-800/50' : 'bg-white'
               }`}>
@@ -393,7 +404,7 @@ const Contact = () => {
               </div>
             </motion.div>
 
-            {/* نموذج الاتصال - نفس الكود */}
+            {/* نموذج الاتصال */}
             <motion.div
               initial={{ opacity: 0, x: isRTL ? -50 : 50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -452,7 +463,6 @@ const Contact = () => {
                           ? 'border-gray-600 bg-gray-700 text-white focus:border-[#e0b277]'
                           : 'border-gray-300 bg-white text-gray-900 focus:border-[#e0b277]'
                     }`}
-                    placeholder={lang === 'ar' ? 'أدخل اسمك الكامل' : 'Enter your full name'}
                   />
                   {formErrors.name && (
                     <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>
@@ -478,7 +488,6 @@ const Contact = () => {
                           ? 'border-gray-600 bg-gray-700 text-white focus:border-[#e0b277]'
                           : 'border-gray-300 bg-white text-gray-900 focus:border-[#e0b277]'
                     }`}
-                    placeholder={lang === 'ar' ? 'أدخل بريدك الإلكتروني' : 'Enter your email'}
                   />
                   {formErrors.email && (
                     <p className="text-red-500 text-sm mt-1">{formErrors.email}</p>
@@ -504,7 +513,6 @@ const Contact = () => {
                           ? 'border-gray-600 bg-gray-700 text-white focus:border-[#e0b277]'
                           : 'border-gray-300 bg-white text-gray-900 focus:border-[#e0b277]'
                     }`}
-                    placeholder={lang === 'ar' ? 'أدخل رقم هاتفك' : 'Enter your phone number'}
                   />
                   {formErrors.phone && (
                     <p className="text-red-500 text-sm mt-1">{formErrors.phone}</p>
@@ -530,7 +538,6 @@ const Contact = () => {
                           ? 'border-gray-600 bg-gray-700 text-white focus:border-[#e0b277]'
                           : 'border-gray-300 bg-white text-gray-900 focus:border-[#e0b277]'
                     }`}
-                    placeholder={lang === 'ar' ? 'اكتب رسالتك هنا...' : 'Write your message here...'}
                   />
                   {formErrors.message && (
                     <p className="text-red-500 text-sm mt-1">{formErrors.message}</p>
