@@ -352,7 +352,7 @@ const Contact = () => {
                           <ExternalLink className="w-4 h-4 text-[#e0b277] opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
                         <p className="text-xs text-[#e0b277] mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          {lang === 'ar' ? '👆 اضغط لفتح الخريطة' : '👆 Click to open map'}
+                          {lang === 'ar' ? ' اضغط لفتح الخريطة' : ' Click to open map'}
                         </p>
                       </div>
                     </div>
@@ -398,7 +398,7 @@ const Contact = () => {
                   isDark ? 'bg-gray-800' : 'bg-white'
                 }`}>
                   <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                    {lang === 'ar' ? '📍 موقعنا على الخريطة' : '📍 Our location on map'}
+                    {lang === 'ar' ? ' موقعنا على الخريطة' : ' Our location on map'}
                   </p>
                 </div>
               </div>
@@ -548,7 +548,7 @@ const Contact = () => {
                 <button
                   type="submit"
                   disabled={isSending}
-                  className={`w-full bg-[#e0b277] hover:bg-[#b88d2e] text-white py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                  className={`w-full bg-[#e0b277] hover:bg-[#b88d2e] text-black py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
                     isSending ? 'opacity-70 cursor-not-allowed' : 'hover:scale-[1.02] shadow-lg hover:shadow-[#e0b277]/30'
                   }`}
                 >

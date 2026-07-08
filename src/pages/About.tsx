@@ -139,7 +139,7 @@ const About = () => {
               <Link
                 to="/contact"
                 style={{borderRadius:"10px"}}
-                className="inline-flex items-center gap-2 bg-[#e0b277] hover:bg-[#b88d2e] text-white px-8 py-3  font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/50"
+                className="inline-flex items-center gap-2 bg-[#e0b277] hover:bg-[#b88d2e] text-black px-8 py-3  font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/50"
               >
                 {lang === 'ar' ? ' تواصل معنا' : ' Contact Us'}
                 <ArrowRight className={`w-4 h-4 ${dir === 'rtl' ? 'rotate-180' : ''}`} />

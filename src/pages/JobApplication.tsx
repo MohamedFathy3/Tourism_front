@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/pages/JobApplication.tsx
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion } from "framer-motion";
@@ -27,7 +27,7 @@ const JobApplication = () => {
   const navigate = useNavigate();
   const isRTL = dir === "rtl";
 
-  // 🔥 Ref لإعادة تعيين FileUploader
+  // Ref لإعادة تعيين FileUploader
   const fileUploaderKeyRef = useRef(0);
 
   // حالة النموذج
@@ -37,7 +37,7 @@ const JobApplication = () => {
     phone: '',
     linkedin: '',
     job_title: '',
-    cv: null as number | null,
+    cv: null as number | null, // ✅ رقم واحد مش Array
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -75,7 +75,7 @@ const JobApplication = () => {
     return Object.keys(errors).length === 0;
   };
 
-  // 🔥 دالة إعادة تعيين النموذج بالكامل
+  // دالة إعادة تعيين النموذج بالكامل
   const resetForm = () => {
     setFormData({
       name: '',
@@ -86,8 +86,20 @@ const JobApplication = () => {
       cv: null,
     });
     setFormErrors({});
-    // 🔥 تغيير الـ key لإعادة تعيين FileUploader
     fileUploaderKeyRef.current += 1;
+  };
+
+  // ✅ معالجة رفع السيرة الذاتية - التأكد من استقبال ID صحيح
+  const handleCvUpload = (fileId: number | number[]) => {
+    // ✅ لو جات مصفوفة، خد أول عنصر
+    const id = Array.isArray(fileId) ? fileId[0] : fileId;
+    
+    console.log('📄 CV Uploaded - File ID:', id); // للتصحيح
+    
+    setFormData(prev => ({ ...prev, cv: id }));
+    if (formErrors.cv) {
+      setFormErrors(prev => ({ ...prev, cv: '' }));
+    }
   };
 
   // معالجة إرسال النموذج
@@ -103,21 +115,24 @@ const JobApplication = () => {
     setIsSubmitting(true);
 
     try {
-      const result = await jobService.submitApplication({
+      // ✅ التأكد من أن cv رقم
+      const payload = {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        linkedin: formData.linkedin,
+        linkedin: formData.linkedin || '',
         job_title: formData.job_title,
-        cv: formData.cv!,
-      });
+        cv: formData.cv!, // ✅ رقم وليس Array
+      };
+
+      console.log('📤 Submitting payload:', payload); // للتصحيح
+
+      const result = await jobService.submitApplication(payload);
 
       if (result.success) {
         setFormSuccess(true);
-        // 🔥 إعادة تعيين النموذج بالكامل
         resetForm();
         
-        // إخفاء رسالة النجاح بعد 5 ثواني
         setTimeout(() => {
           setFormSuccess(false);
         }, 5000);
@@ -125,6 +140,7 @@ const JobApplication = () => {
         setFormError(result.message || (lang === 'ar' ? 'فشل في تقديم الطلب' : 'Failed to submit application'));
       }
     } catch (error: any) {
+      console.error('❌ Submit error:', error);
       setFormError(error?.message || (lang === 'ar' ? 'حدث خطأ غير متوقع' : 'An unexpected error occurred'));
     } finally {
       setIsSubmitting(false);
@@ -140,32 +156,20 @@ const JobApplication = () => {
     }
   };
 
-  // معالجة رفع السيرة الذاتية
-  const handleCvUpload = (fileId: number) => {
-    setFormData(prev => ({ ...prev, cv: fileId }));
-    if (formErrors.cv) {
-      setFormErrors(prev => ({ ...prev, cv: '' }));
-    }
-  };
-
   return (
     <>
       <Navbar />
       <div className={`min-h-screen ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
         
-        {/* Hero Section - مع صورة الخلفية */}
+        {/* Hero Section */}
         <div className="relative h-[70vh] min-h-[250px] flex items-center justify-center overflow-hidden">
-          {/* صورة الخلفية */}
           <img
             src={heroImage}
             alt="Job Application"
             className="absolute inset-0 w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-black/60" />
           
-          {/* طبقة التعتيم */}
-          <div className="absolute inset-0 bg-black/60 " />
-          
-          {/* المحتوى */}
           <div className="relative z-10 flex flex-col items-center justify-center text-white px-4 text-center">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
@@ -362,25 +366,21 @@ const JobApplication = () => {
                   {lang === 'ar' ? 'رابط LinkedIn' : 'LinkedIn URL'}
                   <span className="text-xs text-gray-400 ml-1">({lang === 'ar' ? 'اختياري' : 'Optional'})</span>
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  </div>
-                  <input
-                    type="url"
-                    name="linkedin"
-                    value={formData.linkedin}
-                    onChange={handleChange}
-                    className={`w-full pl-10 pr-4 py-2 rounded-lg border transition-colors ${
-                      isDark
-                        ? 'border-gray-600 bg-gray-700 text-white focus:border-[#e0b277]'
-                        : 'border-gray-300 bg-white text-gray-900 focus:border-[#e0b277]'
-                    }`}
-                    placeholder="https://linkedin.com/in/your-profile"
-                  />
-                </div>
+                <input
+                  type="url"
+                  name="linkedin"
+                  value={formData.linkedin}
+                  onChange={handleChange}
+                  className={`w-full px-4 py-2 rounded-lg border transition-colors ${
+                    isDark
+                      ? 'border-gray-600 bg-gray-700 text-white focus:border-[#e0b277]'
+                      : 'border-gray-300 bg-white text-gray-900 focus:border-[#e0b277]'
+                  }`}
+                  placeholder="https://linkedin.com/in/your-profile"
+                />
               </div>
 
-              {/* 🔥 رفع السيرة الذاتية مع Key لإعادة التعيين */}
+              {/* ✅ رفع السيرة الذاتية */}
               <div>
                 <label className={`block text-sm font-medium mb-1 ${
                   isDark ? 'text-gray-300' : 'text-gray-700'
@@ -388,9 +388,9 @@ const JobApplication = () => {
                   {lang === 'ar' ? 'السيرة الذاتية' : 'CV / Resume'} *
                 </label>
                 <FileUploader
-                  key={fileUploaderKeyRef.current} // 🔥 مفتاح لإعادة التعيين
+                  key={fileUploaderKeyRef.current}
                   label={lang === 'ar' ? '📄 ارفع سيرتك الذاتية (PDF, DOC, DOCX)' : '📄 Upload your CV (PDF, DOC, DOCX)'}
-                  onUploadSuccess={handleCvUpload}
+                  onUploadSuccess={handleCvUpload} // ✅ هتستقبل ID واحد
                   multiple={false}
                   accept=".pdf,.doc,.docx"
                   preview={true}
@@ -412,7 +412,7 @@ const JobApplication = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full bg-[#e0b277] hover:bg-[#b88d2e] text-white py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                className={`w-full bg-[#e0b277] hover:bg-[#b88d2e] text-black py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
                   isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:scale-[1.02] shadow-lg hover:shadow-[#e0b277]/30'
                 }`}
               >

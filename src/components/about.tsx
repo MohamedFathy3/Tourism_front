@@ -133,7 +133,7 @@ const About = () => {
               </p>
 
               <Link to="/about" className="inline-block">
-                <button className="bg-[#e0b277] hover:bg-[#b58a2e] text-white px-8 py-3  font-semibold transition-colors duration-300"style={{borderRadius: '10px'}}>
+                <button className="bg-[#e0b277] hover:bg-[#b58a2e] text-black px-8 py-3  font-semibold transition-colors duration-300"style={{borderRadius: '10px'}}>
                   {t.hero.cta}
                 </button>
               </Link> 

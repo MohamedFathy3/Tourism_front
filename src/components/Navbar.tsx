@@ -98,8 +98,8 @@ const Navbar = () => {
               style={{borderRadius:"10px"}}
               className={`flex items-center gap-2 px-4 py-2  transition-all duration-300 font-medium ${
                 isDark 
-                  ? 'bg-[#e0b277] hover:bg-[#b88d2e] text-white' 
-                  : 'bg-[#e0b277] hover:bg-[#b88d2e] text-white'
+                  ? 'bg-[#e0b277] hover:bg-[#b88d2e] text-black' 
+                  : 'bg-[#e0b277] hover:bg-[#b88d2e] text-black'
               } shadow-lg hover:shadow-[#e0b277]/30 hover:scale-105`}
             >
               <MessageCircle size={16} />
