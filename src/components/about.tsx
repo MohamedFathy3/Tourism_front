@@ -111,12 +111,8 @@ const About = () => {
                   src={aboutData.image?.fullUrl || aboutData.imageUrl || section}
                   alt={aboutData.title || "About"}
                   className="w-full h-auto object-cover rounded-2xl"
-                  onError={(e) => {
-                    // لو فشل تحميل الصورة من API، استخدم الصورة المحلية
-                    e.currentTarget.src = section;
-                  }}
+             
                 />
-                <div className="absolute inset-0 bg-[#e0b277]/20"></div>
               </div>
             </motion.div>
 

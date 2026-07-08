@@ -416,7 +416,7 @@ const Contact = () => {
               <h2 className={`text-2xl md:text-3xl font-bold mb-6 ${
                 isDark ? 'text-white' : 'text-gray-800'
               }`}>
-                {lang === 'ar' ? '📧 أرسل رسالة' : '📧 Send a Message'}
+                {lang === 'ar' ? ' أرسل رسالة' : ' Send a Message'}
               </h2>
 
               {/* رسالة النجاح */}
