@@ -148,16 +148,7 @@ const NewsLetterDetails = () => {
                 {newsLetter.title}
               </h1>
               
-              <div className="flex flex-wrap items-center justify-center gap-4 text-gray-200 text-sm md:text-base">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  <span>{new Date().toLocaleDateString()}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  <span>{new Date().toLocaleTimeString()}</span>
-                </div>
-              </div>
+          
             </motion.div>
           </div>
         </div>
@@ -176,7 +167,7 @@ const NewsLetterDetails = () => {
               <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${
                 isDark ? 'text-white' : 'text-gray-800'
               }`}>
-                {lang === 'ar' ? '📋 عن الخبر' : '📋 About'}
+                {lang === 'ar' ? ' عن الخبر' : ' About'}
               </h2>
               <div className={`text-base md:text-lg leading-relaxed whitespace-pre-line ${
                 isDark ? 'text-gray-300' : 'text-gray-700'
@@ -253,7 +244,7 @@ const NewsLetterDetails = () => {
                   to="/contact"
                   className="bg-[#e0b277] hover:bg-[#b88d2e] text-white px-6 md:px-8 py-3 rounded-full font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
                 >
-                  {lang === 'ar' ? '📞 تواصل معنا' : '📞 Contact Us'}
+                  {lang === 'ar' ? ' تواصل معنا' : ' Contact Us'}
                   <ArrowRight className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
                 </Link>
               </div>
