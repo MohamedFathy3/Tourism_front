@@ -3,9 +3,11 @@ import { BaseAdminService } from './base.admin.service';
 
 // نوع البيانات
 export interface FAQType {
-  id: number;
-  name: string;      // السؤال
-  des: string;       // الإجابة
+ id: number;
+  name: string;
+  name_en: string;
+  des: string;
+  des_en: string;    // الإجابة
   active: boolean;
   deleted: boolean;
   deletedAt: string | null;

@@ -40,63 +40,30 @@ const AdminFAQ = () => {
   });
 
   const handleEdit = (item: any) => {
-    console.log('📝 Edit clicked:', item);
     setEditingItem(item);
     setShowModal(true);
   };
 
   const handleAdd = () => {
-    console.log('➕ Add clicked');
     setEditingItem(null);
     setShowModal(true);
   };
 
   const handleDelete = async (item: any) => {
-    if (confirm(lang === 'ar' ? `حذف "${item.name}"؟` : `Delete "${item.name}"?`)) {
-      console.log('🗑️ Deleting:', item.id);
+    if (confirm(lang === 'ar' ? `حذف السؤال "${item.name}"؟` : `Delete question "${item.name}"?`)) {
       await deleteItem(item.id);
     }
   };
 
-  const handleToggleStatus = async (id: number, active: boolean) => {
-    console.log(`🔄 Toggling status for ${id} to ${active}`);
-    await updateItem(id, { active });
-    await refresh();
-  };
-
-// في AdminFAQ.tsx - handleSubmit
-const handleSubmit = async (data: any) => {
-  console.log('📤 1. Form submitted with raw data:', data);
-  
-  // ✅ نبعت كل البيانات للـ API (زي ما هي)
-  const formData = {
-    name: data.name || '',
-    name_en: data.name_en || '',  // ✅ أضف هذا
-    des: data.des || '',
-    des_en: data.des_en || '',    // ✅ أضف هذا
-    active: data.active ?? true,
-  };
-  
-  console.log('📤 2. Sending to API:', formData);
-  
-  try {
+  const handleSubmit = async (data: any) => {
     if (editingItem) {
-      console.log(`📤 Updating item ${editingItem.id}...`);
-      await updateItem(editingItem.id, formData);
+      await updateItem(editingItem.id, data);
     } else {
-      console.log('📤 Creating new item...');
-      await createItem(formData);
+      await createItem(data);
     }
-    
-    await refresh();
     setShowModal(false);
     setEditingItem(null);
-    toast.success(editingItem ? 'تم التحديث بنجاح' : 'تم الإضافة بنجاح');
-  } catch (error: any) {
-    console.error('❌ Error:', error);
-    toast.error(error?.response?.data?.message || 'فشل الحفظ');
-  }
-};
+  };
 
   const actions = [
     { 
@@ -123,7 +90,7 @@ const handleSubmit = async (data: any) => {
         error={error}
         onRefresh={refresh}
         onAdd={handleAdd}
-        addLabel={lang === 'ar' ? 'إضافة سؤال جديد' : 'Add New FAQ'}
+        addLabel={lang === 'ar' ? 'إضافة سؤال شائع' : 'Add FAQ'}
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={goToPage}
@@ -134,10 +101,10 @@ const handleSubmit = async (data: any) => {
         onClearFilters={clearFilters}
         searchable={true}
         onSearch={(query) => setFilter('name', query)}
-        searchPlaceholder={lang === 'ar' ? 'بحث عن سؤال...' : 'Search for a question...'}
-        onToggleStatus={handleToggleStatus}
+        searchPlaceholder={lang === 'ar' ? 'بحث في الأسئلة الشائعة...' : 'Search FAQs...'}
       />
 
+      {/* Modal */}
       <AnimatePresence>
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -150,12 +117,11 @@ const handleSubmit = async (data: any) => {
               <div className="flex justify-between items-start mb-4">
                 <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>
                   {editingItem 
-                    ? (lang === 'ar' ? '✏️ تعديل السؤال' : '✏️ Edit FAQ')
-                    : (lang === 'ar' ? '➕ إضافة سؤال جديد' : '➕ Add New FAQ')}
+                    ? (lang === 'ar' ? '✏️ تعديل السؤال الشائع' : '✏️ Edit FAQ')
+                    : (lang === 'ar' ? '➕ إضافة سؤال شائع جديد' : '➕ Add New FAQ')}
                 </h2>
                 <button
                   onClick={() => {
-                    console.log('❌ Modal closed');
                     setShowModal(false);
                     setEditingItem(null);
                   }}
@@ -164,25 +130,11 @@ const handleSubmit = async (data: any) => {
                   <X className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
                 </button>
               </div>
-              
               <AdminForm
                 type="faq"
-                initialData={editingItem ? {
-                  name: editingItem.name,
-                  name_en: editingItem.name,
-                  des: editingItem.des,
-                  des_en: editingItem.des,
-                  active: editingItem.active ?? true,
-                } : { 
-                  active: true,
-                  name: '',
-                  name_en: '',
-                  des: '',
-                  des_en: ''
-                }}
+                initialData={editingItem || { name: '', name_en: '', des: '', des_en: '' }}
                 onSubmit={handleSubmit}
                 onCancel={() => {
-                  console.log('❌ Form cancelled');
                   setShowModal(false);
                   setEditingItem(null);
                 }}

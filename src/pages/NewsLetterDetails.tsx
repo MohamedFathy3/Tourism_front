@@ -104,7 +104,6 @@ const NewsLetterDetails = () => {
     createdAt: newsLetter.createdAt || newsLetter.created_at,
   };
 
-  // ✅ ترجمات ثابتة
   const translations = {
     about: lang === 'ar' ? 'عن الخبر' : 'About',
     publisher: lang === 'ar' ? 'الناشر' : 'Publisher',
@@ -117,14 +116,12 @@ const NewsLetterDetails = () => {
     newsNotFound: lang === 'ar' ? 'الخبر غير موجود' : 'News not found',
   };
 
-  // صورة الخبر
   const newsImage = newsData.image;
 
   return (
     <>
       <Navbar />
       <div className={`min-h-screen ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
-        
         {/* Hero Section مع الصورة */}
         <div className="relative h-[50vh] min-h-[350px] md:min-h-[450px] overflow-hidden">
           <img
