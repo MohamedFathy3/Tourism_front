@@ -30,6 +30,20 @@ const NewsLetterDetails = () => {
   const isRTL = dir === "rtl";
   const [isLiked, setIsLiked] = useState(false);
 
+  // ✅ دالة مساعدة لجلب النص حسب اللغة
+  const getLocalizedText = (item: any, field: 'title' | 'description' | 'long_description') => {
+    if (!item) return '';
+    
+    const isEnglish = lang === 'en';
+    const enField = `${field}_en`;
+    
+    if (isEnglish && item[enField]) {
+      return item[enField];
+    }
+    
+    return item[field] || '';
+  };
+
   // حالة التحميل
   if (loading) {
     return (
@@ -78,8 +92,33 @@ const NewsLetterDetails = () => {
     );
   }
 
+  // ✅ بناء بيانات الخبر مع دعم اللغات
+  const newsData = {
+    id: newsLetter.id,
+    title: getLocalizedText(newsLetter, 'title') || newsLetter.title,
+    description: getLocalizedText(newsLetter, 'description') || 
+                 getLocalizedText(newsLetter, 'long_description') || 
+                 newsLetter.description || 
+                 "",
+    image: newsLetter.image?.fullUrl || newsLetter.imageUrl || 'https://via.placeholder.com/1200x600/1a1a1a/e0b277?text=News',
+    createdAt: newsLetter.createdAt || newsLetter.created_at,
+  };
+
+  // ✅ ترجمات ثابتة
+  const translations = {
+    about: lang === 'ar' ? 'عن الخبر' : 'About',
+    publisher: lang === 'ar' ? 'الناشر' : 'Publisher',
+    editorialTeam: lang === 'ar' ? 'فريق التحرير' : 'Editorial Team',
+    category: lang === 'ar' ? 'التصنيف' : 'Category',
+    companyNews: lang === 'ar' ? 'أخبار الشركة' : 'Company News',
+    published: lang === 'ar' ? 'تاريخ النشر' : 'Published',
+    backToNews: lang === 'ar' ? 'العودة للأخبار' : 'Back to News',
+    contactUs: lang === 'ar' ? 'تواصل معنا' : 'Contact Us',
+    newsNotFound: lang === 'ar' ? 'الخبر غير موجود' : 'News not found',
+  };
+
   // صورة الخبر
-  const newsImage = newsLetter.image?.fullUrl || newsLetter.imageUrl || 'https://via.placeholder.com/1200x600/1a1a1a/e0b277?text=News';
+  const newsImage = newsData.image;
 
   return (
     <>
@@ -90,7 +129,7 @@ const NewsLetterDetails = () => {
         <div className="relative h-[50vh] min-h-[350px] md:min-h-[450px] overflow-hidden">
           <img
             src={newsImage}
-            alt={newsLetter.title}
+            alt={newsData.title}
             className="w-full h-full object-cover"
             onError={(e) => {
               e.currentTarget.src = "https://via.placeholder.com/1200x600/1a1a1a/e0b277?text=News";
@@ -120,8 +159,8 @@ const NewsLetterDetails = () => {
               onClick={() => {
                 if (navigator.share) {
                   navigator.share({
-                    title: newsLetter.title,
-                    text: newsLetter.description,
+                    title: newsData.title,
+                    text: newsData.description,
                     url: window.location.href,
                   });
                 }
@@ -139,16 +178,28 @@ const NewsLetterDetails = () => {
               transition={{ duration: 0.6 }}
               className="text-center text-white"
             >
-              {/* رقم الخبر */}
+              {/* ✅ رقم الخبر */}
               <div className="inline-block bg-[#e0b277] text-white px-4 py-1 rounded-full text-sm font-semibold mb-4">
-                #{String(newsLetter.id).padStart(3, '0')}
+                #{String(newsData.id).padStart(3, '0')}
               </div>
               
+              {/* ✅ العنوان - حسب اللغة */}
               <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-3">
-                {newsLetter.title}
+                {newsData.title}
               </h1>
               
-          
+              {/* ✅ التاريخ - حسب اللغة */}
+              {newsData.createdAt && (
+                <div className="flex items-center justify-center gap-2 text-gray-200 text-sm md:text-base">
+                  <Calendar className="w-4 h-4" />
+                  <span>
+                    {new Date(newsData.createdAt).toLocaleDateString(
+                      lang === 'ar' ? 'ar-EG' : 'en-US',
+                      { year: 'numeric', month: 'long', day: 'numeric' }
+                    )}
+                  </span>
+                </div>
+              )}
             </motion.div>
           </div>
         </div>
@@ -160,65 +211,74 @@ const NewsLetterDetails = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            {/* وصف الخبر */}
+            {/* ✅ وصف الخبر - حسب اللغة */}
             <div className={`rounded-2xl p-6 md:p-8 mb-8 ${
               isDark ? 'bg-gray-800/50' : 'bg-white'
             } shadow-lg`}>
               <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${
                 isDark ? 'text-white' : 'text-gray-800'
               }`}>
-                {lang === 'ar' ? ' عن الخبر' : ' About'}
+                {translations.about}
               </h2>
+              
+              {/* ✅ الوصف مع دعم الفقرات */}
               <div className={`text-base md:text-lg leading-relaxed whitespace-pre-line ${
                 isDark ? 'text-gray-300' : 'text-gray-700'
               }`}>
-                {newsLetter.description}
+                {newsData.description.split('\n').map((paragraph: string, index: number) => (
+                  <p key={index} className="mb-4 last:mb-0">
+                    {paragraph.trim()}
+                  </p>
+                ))}
               </div>
             </div>
 
-            {/* معلومات إضافية */}
+            {/* ✅ معلومات إضافية - حسب اللغة */}
             <div className={`rounded-2xl p-6 md:p-8 mb-8 ${
               isDark ? 'bg-gray-800/50' : 'bg-white'
             } shadow-lg`}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* الناشر */}
                 <div className="flex items-center gap-4">
                   <div className="bg-[#e0b277]/20 p-3 rounded-full">
                     <User className="w-6 h-6 text-[#e0b277]" />
                   </div>
                   <div>
                     <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                      {lang === 'ar' ? 'الناشر' : 'Publisher'}
+                      {translations.publisher}
                     </p>
                     <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                      {lang === 'ar' ? 'فريق التحرير' : 'Editorial Team'}
+                      {translations.editorialTeam}
                     </p>
                   </div>
                 </div>
 
+                {/* التصنيف */}
                 <div className="flex items-center gap-4">
                   <div className="bg-[#e0b277]/20 p-3 rounded-full">
                     <Tag className="w-6 h-6 text-[#e0b277]" />
                   </div>
                   <div>
                     <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                      {lang === 'ar' ? 'التصنيف' : 'Category'}
+                      {translations.category}
                     </p>
                     <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                      {lang === 'ar' ? 'أخبار الشركة' : 'Company News'}
+                      {translations.companyNews}
                     </p>
                   </div>
                 </div>
 
+                {/* ✅ تاريخ النشر - حسب اللغة */}
                 <div className="flex items-center gap-4">
                   <div className="bg-[#e0b277]/20 p-3 rounded-full">
                     <Clock className="w-6 h-6 text-[#e0b277]" />
                   </div>
                   <div>
                     <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                      {lang === 'ar' ? 'تاريخ النشر' : 'Published'}
+                      {translations.published}
                     </p>
                     <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                      {new Date().toLocaleDateString()}
+                      {newsData.createdAt}
                     </p>
                   </div>
                 </div>
@@ -237,14 +297,15 @@ const NewsLetterDetails = () => {
                   }`}
                 >
                   <ArrowLeft className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
-                  {lang === 'ar' ? 'العودة للأخبار' : 'Back to News'}
+                  {translations.backToNews}
                 </button>
                 
                 <Link
                   to="/contact"
-                  className="bg-[#e0b277] hover:bg-[#b88d2e] text-white px-6 md:px-8 py-3 rounded-full font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
+                  className="bg-[#e0b277] hover:bg-[#b88d2e] text-black px-6 md:px-8 py-3 font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
+                  style={{borderRadius: '10px'}}
                 >
-                  {lang === 'ar' ? ' تواصل معنا' : ' Contact Us'}
+                  {translations.contactUs}
                   <ArrowRight className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
                 </Link>
               </div>

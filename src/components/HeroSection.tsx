@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/HeroSection.tsx
 import { useLanguage } from "@/i18n/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,7 +8,7 @@ import { useHeroSlider } from "@/hooks/useHeroSlider";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const HeroSection = () => {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage(); // ✅ أضف lang
   const { 
     sliders, 
     currentSlider, 
@@ -20,13 +21,29 @@ const HeroSection = () => {
   } = useHeroSlider();
   const [mediaError, setMediaError] = useState(false);
 
+  // ✅ دالة مساعدة لجلب النص حسب اللغة
+  const getLocalizedText = (item: any, field: 'title' | 'description') => {
+    if (!item) return '';
+    
+    const isEnglish = lang === 'en';
+    const enField = field === 'title' ? 'title_en' : 'description_en';
+    
+    // لو اللغة إنجليزية والـ API مدعوم
+    if (isEnglish && item[enField]) {
+      return item[enField];
+    }
+    
+    // غير كده استخدم العربية
+    return item[field] || '';
+  };
+
   // التنقل التلقائي كل 5 ثواني
   useEffect(() => {
     if (sliders.length <= 1) return;
     
     const interval = setInterval(() => {
       goToNext();
-    }, 5000); // 5 seconds
+    }, 5000);
     
     return () => clearInterval(interval);
   }, [sliders.length, goToNext]);
@@ -72,7 +89,6 @@ const HeroSection = () => {
   // تحديد الخلفية (فيديو أو صورة)
   const renderBackground = () => {
     if (mediaError || !currentSlider) {
-      // خلفية احتياطية
       return <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-gray-800" />;
     }
 
@@ -98,11 +114,10 @@ const HeroSection = () => {
       );
     }
 
-    // صورة خلفية
     return (
       <img
         src={mediaUrl}
-        alt={currentSlider.title || "Hero background"}
+        alt={getLocalizedText(currentSlider, 'title') || "Hero background"}
         className="absolute inset-0 w-full h-full object-cover"
         onError={() => setMediaError(true)}
       />
@@ -139,16 +154,16 @@ const HeroSection = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            {/* عنوان - من API */}
+            {/* ✅ عنوان - حسب اللغة */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-3 sm:mb-4 md:mb-6 leading-tight">
-              {currentSlider?.title || t.hero.title}
+              {getLocalizedText(currentSlider, 'title') || t.hero.title}
               <br className="hidden sm:block" />
             </h1>
             
-            {/* وصف - من API */}
-            {currentSlider?.description && (
+            {/* ✅ وصف - حسب اللغة */}
+            {currentSlider && (
               <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-3xl mx-auto mb-4 sm:mb-6 px-4">
-                {currentSlider.description}
+                {getLocalizedText(currentSlider, 'description')}
               </p>
             )}
             
@@ -160,7 +175,7 @@ const HeroSection = () => {
             >
               <Link
                 to="/about"
-                className="inline-block mt-6 sm:mt-8 px-6 sm:px-8 py-2.5 sm:py-3 border-2 border-white text-white  text-sm sm:text-base font-semibold hover:bg-primary hover:border-primary transition-all duration-300 hover:scale-105 transform"
+                className="inline-block mt-6 sm:mt-8 px-6 sm:px-8 py-2.5 sm:py-3 border-2 border-white text-white text-sm sm:text-base font-semibold hover:bg-primary hover:border-primary transition-all duration-300 hover:scale-105 transform"
                 style={{borderRadius:"10px"}}
               >
                 {t.hero.cta}
@@ -172,7 +187,6 @@ const HeroSection = () => {
         {/* أزرار التنقل - تظهر فقط لو في أكثر من سلايدر */}
         {sliders.length > 1 && (
           <>
-            {/* زر السابق */}
             <button
               onClick={goToPrev}
               className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-black/40 hover:bg-black/60 p-2 rounded-full transition-all duration-300 text-white backdrop-blur-sm"
@@ -181,7 +195,6 @@ const HeroSection = () => {
               <ChevronLeft className="w-6 h-6" />
             </button>
 
-            {/* زر التالي */}
             <button
               onClick={goToNext}
               className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-black/40 hover:bg-black/60 p-2 rounded-full transition-all duration-300 text-white backdrop-blur-sm"
@@ -189,12 +202,8 @@ const HeroSection = () => {
             >
               <ChevronRight className="w-6 h-6" />
             </button>
-
           </>
         )}
-
-        {/* مؤشر التمرير للأسفل */}
-     
       </div>
     </section>
   );

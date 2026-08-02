@@ -13,13 +13,18 @@ import {
   Share2,
   Heart,
   Eye,
-  Globe,
   Building,
   Award,
   Users,
   Clock,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Home,
+  Hotel,
+  Castle,
+  Warehouse,
+  Briefcase,
+  Building2
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import Navbar from "@/components/Navbar";
@@ -56,6 +61,20 @@ const CompanyDetails = () => {
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // ✅ دالة مساعدة لجلب النص حسب اللغة
+  const getLocalizedText = (item: any, field: 'title' | 'long_description' | 'description' | 'location') => {
+    if (!item) return '';
+    
+    const isEnglish = lang === 'en';
+    const enField = `${field}_en`;
+    
+    if (isEnglish && item[enField]) {
+      return item[enField];
+    }
+    
+    return item[field] || '';
+  };
 
   // حالة التحميل
   if (loading) {
@@ -101,17 +120,19 @@ const CompanyDetails = () => {
     );
   }
 
-  // ✅ بناء بيانات الشركة
+  // ✅ بناء بيانات الشركة مع دعم اللغات
   const companyData = {
     id: company.id,
-    name: company.title || company.name || `شركة ${company.id}`,
-    description: company.long_description || company.description || "شركة رائدة في مجالها",
+    name: getLocalizedText(company, 'title') || company.title || company.name || `شركة ${company.id}`,
+    description: getLocalizedText(company, 'long_description') || 
+                 getLocalizedText(company, 'description') || 
+                 company.long_description || 
+                 company.description || 
+                 "شركة رائدة في مجالها",
     image: company.image?.fullUrl || company.imageUrl || fallbackImages[0],
     gallery: company.gallery || [],
-    location: company.location || "غير محدد",
-    founded: company.year_founded || "غير محدد",
-    year_founded: company.year_founded || "غير محدد",
-    website: company.website || "",
+    location: getLocalizedText(company, 'location') || company.location || "غير محدد",
+    yearFounded: company.year_founded || "غير محدد",
     active: company.active ?? true,
   };
 
@@ -180,7 +201,7 @@ const CompanyDetails = () => {
             </button>
           </div>
 
-          {/* معلومات الشركة */}
+          {/* ✅ معلومات الشركة */}
           <div className="absolute bottom-8 md:bottom-12 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -188,22 +209,27 @@ const CompanyDetails = () => {
               transition={{ duration: 0.6 }}
               className="text-center text-white"
             >
+              {/* ✅ العنوان - حسب اللغة */}
               <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3">
                 {companyData.name}
               </h1>
               
               <div className="flex flex-wrap items-center justify-center gap-4 text-gray-200 text-sm md:text-base">
-                {/* الموقع */}
-                <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                  <MapPin className="w-4 h-4" />
-                  <span>{companyData.location}</span>
-                </div>
+                {/* ✅ الموقع - حسب اللغة */}
+                {companyData.location && companyData.location !== "غير محدد" && (
+                  <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                    <MapPin className="w-4 h-4" />
+                    <span>{companyData.location}</span>
+                  </div>
+                )}
                 
-                {/* سنة التأسيس */}
-                <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                  <Calendar className="w-4 h-4" />
-                  <span>{lang === 'ar' ? 'تأسست: ' : 'Founded: '}{companyData.founded}</span>
-                </div>
+                {/* ✅ سنة التأسيس */}
+                {companyData.yearFounded && companyData.yearFounded !== "غير محدد" && (
+                  <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                    <Calendar className="w-4 h-4" />
+                    <span>{lang === 'ar' ? 'تأسست: ' : 'Founded: '}{companyData.yearFounded}</span>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
@@ -221,44 +247,43 @@ const CompanyDetails = () => {
               isDark ? 'bg-gray-800/50' : 'bg-white'
             } shadow-lg`}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* الموقع */}
+                {/* ✅ الموقع - حسب اللغة */}
                 <div className={`flex items-center gap-3 p-4 rounded-xl ${
                   isDark ? 'bg-gray-700/50' : 'bg-gray-50'
                 }`}>
-                  <MapPin className={`w-8 h-8 text-[#e0b277]`} />
+                  <div className={`p-2 rounded-full ${
+                    isDark ? 'bg-[#e0b277]/20' : 'bg-[#e0b277]/10'
+                  }`}>
+                    <MapPin className={`w-6 h-6 text-[#e0b277]`} />
+                  </div>
                   <div>
-                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                      {lang === 'ar' ? 'الموقع' : 'Location'}
+                    <p className={`text-xs font-medium ${
+                      isDark ? 'text-gray-400' : 'text-gray-500'
+                    }`}>
+                      {lang === 'ar' ? '📍 الموقع' : '📍 Location'}
                     </p>
-                    <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                    <p className={`font-semibold ${
+                      isDark ? 'text-white' : 'text-gray-800'
+                    }`}>
                       {companyData.location}
                     </p>
                   </div>
                 </div>
 
-                {/* سنة التأسيس */}
+                {/* ✅ حالة الشركة */}
                 <div className={`flex items-center gap-3 p-4 rounded-xl ${
                   isDark ? 'bg-gray-700/50' : 'bg-gray-50'
                 }`}>
-                  <Calendar className={`w-8 h-8 text-[#e0b277]`} />
-                  <div>
-                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                      {lang === 'ar' ? 'سنة التأسيس' : 'Founded'}
-                    </p>
-                    <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'}`}>
-                      {companyData.founded}
-                    </p>
+                  <div className={`p-2 rounded-full ${
+                    isDark ? 'bg-[#e0b277]/20' : 'bg-[#e0b277]/10'
+                  }`}>
+                    <Building className={`w-6 h-6 text-[#e0b277]`} />
                   </div>
-                </div>
-
-                {/* حالة الشركة */}
-                <div className={`flex items-center gap-3 p-4 rounded-xl ${
-                  isDark ? 'bg-gray-700/50' : 'bg-gray-50'
-                }`}>
-                  <Award className={`w-8 h-8 text-[#e0b277]`} />
                   <div>
-                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                      {lang === 'ar' ? 'الحالة' : 'Status'}
+                    <p className={`text-xs font-medium ${
+                      isDark ? 'text-gray-400' : 'text-gray-500'
+                    }`}>
+                      {lang === 'ar' ? '📋 الحالة' : '📋 Status'}
                     </p>
                     <p className={`font-semibold ${
                       companyData.active ? 'text-green-500' : 'text-red-500'
@@ -270,10 +295,33 @@ const CompanyDetails = () => {
                     </p>
                   </div>
                 </div>
+
+                {/* ✅ سنة التأسيس */}
+                <div className={`flex items-center gap-3 p-4 rounded-xl ${
+                  isDark ? 'bg-gray-700/50' : 'bg-gray-50'
+                }`}>
+                  <div className={`p-2 rounded-full ${
+                    isDark ? 'bg-[#e0b277]/20' : 'bg-[#e0b277]/10'
+                  }`}>
+                    <Calendar className={`w-6 h-6 text-[#e0b277]`} />
+                  </div>
+                  <div>
+                    <p className={`text-xs font-medium ${
+                      isDark ? 'text-gray-400' : 'text-gray-500'
+                    }`}>
+                      {lang === 'ar' ? '📅 سنة التأسيس' : '📅 Founded'}
+                    </p>
+                    <p className={`font-semibold ${
+                      isDark ? 'text-white' : 'text-gray-800'
+                    }`}>
+                      {companyData.yearFounded}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* وصف الشركة */}
+            {/* ✅ وصف الشركة - حسب اللغة */}
             <div className={`rounded-2xl p-6 md:p-8 mb-8 ${
               isDark ? 'bg-gray-800/50' : 'bg-white'
             } shadow-lg`}>
@@ -282,11 +330,17 @@ const CompanyDetails = () => {
               }`}>
                 {lang === 'ar' ? 'عن الشركة' : 'About Company'}
               </h2>
-              <p className={`text-base md:text-lg leading-relaxed ${
+              
+              {/* ✅ الوصف مع دعم الفقرات */}
+              <div className={`text-base md:text-lg leading-relaxed ${
                 isDark ? 'text-gray-300' : 'text-gray-700'
               }`}>
-                {companyData.description}
-              </p>
+                {companyData.description.split('\n').map((paragraph: string, index: number) => (
+                  <p key={index} className="mb-4 last:mb-0">
+                    {paragraph.trim()}
+                  </p>
+                ))}
+              </div>
             </div>
 
             {/* ✅ معرض الصور - Swiper مع تحكم كامل */}
@@ -301,7 +355,7 @@ const CompanyDetails = () => {
                     {lang === 'ar' ? 'معرض الصور' : 'Gallery'}
                   </h3>
                   
-                  {/* ✅ أزرار التحكم */}
+                  {/* أزرار التحكم */}
                   <div className="flex gap-2">
                     <button
                       onClick={goPrev}
@@ -388,8 +442,8 @@ const CompanyDetails = () => {
                     ))}
                   </Swiper>
 
-                  {/* ✅ Pagination مخصصة */}
-                  <style jsx>{`
+                  {/* Pagination مخصصة */}
+                  <style>{`
                     .gallery-swiper :global(.swiper-pagination) {
                       position: relative;
                       margin-top: 20px;

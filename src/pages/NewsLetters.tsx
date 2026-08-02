@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
-import heroImage from "@/assets/news.jpeg"
+import heroImage from "@/assets/news.jpeg";
 import { 
   Calendar, 
   ArrowRight, 
@@ -30,6 +30,20 @@ const NewsLetters = () => {
   const isRTL = dir === "rtl";
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
+
+  // ✅ دالة مساعدة لجلب النص حسب اللغة
+  const getLocalizedText = (item: any, field: 'title' | 'description' | 'long_description') => {
+    if (!item) return '';
+    
+    const isEnglish = lang === 'en';
+    const enField = `${field}_en`;
+    
+    if (isEnglish && item[enField]) {
+      return item[enField];
+    }
+    
+    return item[field] || '';
+  };
 
   // حساب عدد الصفحات
   const totalPages = Math.ceil(newsLetters.length / itemsPerPage);
@@ -110,7 +124,7 @@ const NewsLetters = () => {
               <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
                 isDark ? 'text-white' : 'text-gray-800'
               }`}>
-                {lang === 'ar' ? ' لا توجد أخبار' : '📰 No News Available'}
+                {lang === 'ar' ? 'لا توجد أخبار' : '📰 No News Available'}
               </h2>
               <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 {lang === 'ar' ? 'سيتم إضافة الأخبار قريباً' : 'News will be added soon'}
@@ -123,14 +137,12 @@ const NewsLetters = () => {
     );
   }
 
-  // صورة الـ Hero من أول خبر
-
   return (
     <>
       <Navbar />
       <div className={`min-h-screen ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
         
-        {/* Hero Section مع صورة أول خبر */}
+        {/* Hero Section */}
         <div className="relative h-[70vh] min-h-[350px] md:min-h-[450px] overflow-hidden">
           {/* صورة الخلفية */}
           <div 
@@ -148,8 +160,9 @@ const NewsLetters = () => {
               transition={{ duration: 0.6 }}
               className="text-center"
             >
+              {/* ✅ العنوان - حسب اللغة */}
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
-                {lang === 'ar' ? ' الأخبار' : ' News'}
+                {lang === 'ar' ? 'الأخبار' : 'News'}
               </h1>
               <div className="w-20 h-1 bg-[#e0b277] mx-auto mb-4 rounded-full" />
               <p className="text-base md:text-lg max-w-2xl mx-auto text-gray-200">
@@ -164,81 +177,93 @@ const NewsLetters = () => {
         {/* قائمة الأخبار */}
         <div className="container mx-auto px-4 py-12 max-w-7xl">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {currentNews.map((news, index) => (
-              <motion.div
-                key={news.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -8 }}
-                className={`group rounded-2xl overflow-hidden shadow-lg transition-all duration-300 cursor-pointer ${
-                  isDark 
-                    ? 'bg-gray-800 hover:shadow-2xl hover:shadow-[#e0b277]/10' 
-                    : 'bg-white hover:shadow-2xl hover:shadow-gray-300/30'
-                }`}
-                onClick={() => navigate(`/news/${news.id}`)}
-              >
-                {/* صورة الخبر */}
-                <div className="relative h-56 md:h-64 overflow-hidden">
-                  <img
-                    src={news.image?.fullUrl || news.imageUrl}
-                    alt={news.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    loading="lazy"
-                    onError={(e) => {
-                      e.currentTarget.src = "https://via.placeholder.com/400x300/1a1a1a/e0b277?text=News";
-                    }}
-                  />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${
+            {currentNews.map((news, index) => {
+              // ✅ جلب النص حسب اللغة
+              const title = getLocalizedText(news, 'title');
+              const description = getLocalizedText(news, 'description');
+              
+              return (
+                <motion.div
+                  key={news.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ y: -8 }}
+                  className={`group rounded-2xl overflow-hidden shadow-lg transition-all duration-300 cursor-pointer ${
                     isDark 
-                      ? 'from-black/80 via-black/30 to-transparent'
-                      : 'from-black/60 via-black/20 to-transparent'
-                  }`} />
-                  
-                  {/* رقم الخبر */}
-                  <div className="absolute top-4 right-4 bg-[#e0b277] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
-                    {String(news.id).padStart(2, '0')}
-                  </div>
-                </div>
-
-                {/* محتوى الخبر */}
-                <div className="p-5 md:p-6">
-                  <h3 className={`text-xl md:text-2xl font-bold mb-2 transition-colors line-clamp-2 ${
-                    isDark ? 'text-white group-hover:text-[#e0b277]' : 'text-gray-800 group-hover:text-[#e0b277]'
-                  }`}>
-                    {news.title}
-                  </h3>
-                  
-                  <p className={`text-sm md:text-base line-clamp-3 mb-4 ${
-                    isDark ? 'text-gray-300' : 'text-gray-600'
-                  }`}>
-                    {news.description}
-                  </p>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Calendar className="w-4 h-4 text-[#e0b277]" />
-                      <span className={isDark ? 'text-gray-400' : 'text-gray-500'}>
-                        {new Date().toLocaleDateString()}
-                      </span>
-                    </div>
+                      ? 'bg-gray-800 hover:shadow-2xl hover:shadow-[#e0b277]/10' 
+                      : 'bg-white hover:shadow-2xl hover:shadow-gray-300/30'
+                  }`}
+                  onClick={() => navigate(`/news/${news.id}`)}
+                >
+                  {/* صورة الخبر */}
+                  <div className="relative h-56 md:h-64 overflow-hidden">
+                    <img
+                      src={news.image?.fullUrl || news.imageUrl}
+                      alt={title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.src = "https://via.placeholder.com/400x300/1a1a1a/e0b277?text=News";
+                      }}
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-t ${
+                      isDark 
+                        ? 'from-black/80 via-black/30 to-transparent'
+                        : 'from-black/60 via-black/20 to-transparent'
+                    }`} />
                     
-                    <div className={`flex items-center gap-2 text-[#e0b277] font-semibold transition-all duration-300 group-hover:gap-4 ${
-                      isRTL ? 'flex-row-reverse' : ''
-                    }`}>
-                      <span className="text-sm">
-                        {lang === 'ar' ? 'اقرأ المزيد' : 'Read More'}
-                      </span>
-                      {isRTL ? (
-                        <ChevronLeft className="w-4 h-4" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4" />
-                      )}
+                    {/* رقم الخبر */}
+                    <div className="absolute top-4 right-4 bg-[#e0b277] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                      {String(news.id).padStart(2, '0')}
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+
+                  {/* محتوى الخبر */}
+                  <div className="p-5 md:p-6">
+                    {/* ✅ العنوان - حسب اللغة */}
+                    <h3 className={`text-xl md:text-2xl font-bold mb-2 transition-colors line-clamp-2 ${
+                      isDark ? 'text-white group-hover:text-[#e0b277]' : 'text-gray-800 group-hover:text-[#e0b277]'
+                    }`}>
+                      {title}
+                    </h3>
+                    
+                    {/* ✅ الوصف - حسب اللغة */}
+                    <p className={`text-sm md:text-base line-clamp-3 mb-4 ${
+                      isDark ? 'text-gray-300' : 'text-gray-600'
+                    }`}>
+                      {description}
+                    </p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Calendar className="w-4 h-4 text-[#e0b277]" />
+                        <span className={isDark ? 'text-gray-400' : 'text-gray-500'}>
+                          {news.createdAt 
+                            ? new Date(news.createdAt).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-US')
+                            : new Date().toLocaleDateString()
+                          }
+                        </span>
+                      </div>
+                      
+                      {/* ✅ زر "اقرأ المزيد" - حسب اللغة */}
+                      <div className={`flex items-center gap-2 text-[#e0b277] font-semibold transition-all duration-300 group-hover:gap-4 ${
+                        isRTL ? 'flex-row-reverse' : ''
+                      }`}>
+                        <span className="text-sm">
+                          {lang === 'ar' ? 'اقرأ المزيد' : 'Read More'}
+                        </span>
+                        {isRTL ? (
+                          <ChevronLeft className="w-4 h-4" />
+                        ) : (
+                          <ChevronRight className="w-4 h-4" />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
 
           {/* Pagination */}
@@ -254,6 +279,7 @@ const NewsLetters = () => {
                       ? 'bg-gray-700 hover:bg-gray-600 text-white'
                       : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
                 }`}
+                aria-label={lang === 'ar' ? 'السابق' : 'Previous'}
               >
                 <ChevronLeft className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
               </button>
@@ -284,6 +310,7 @@ const NewsLetters = () => {
                       ? 'bg-gray-700 hover:bg-gray-600 text-white'
                       : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
                 }`}
+                aria-label={lang === 'ar' ? 'التالي' : 'Next'}
               >
                 <ChevronRight className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
               </button>

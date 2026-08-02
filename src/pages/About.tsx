@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/pages/About.tsx
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -18,6 +19,35 @@ const About = () => {
   const { lang, dir } = useLanguage();
   const { isDark } = useTheme();
   const { about, loading, error } = useAbout();
+
+  // ✅ دالة مساعدة لجلب النص حسب اللغة
+  const getLocalizedText = (item: any, field: 'title' | 'description' | 'long_description') => {
+    if (!item) return '';
+    
+    const isEnglish = lang === 'en';
+    const enField = `${field}_en`;
+    
+    // لو اللغة إنجليزية والـ API مدعوم
+    if (isEnglish && item[enField]) {
+      return item[enField];
+    }
+    
+    // غير كده استخدم العربية
+    return item[field] || '';
+  };
+
+  // ✅ ترجمات ثابتة للعناصر
+  const translations = {
+    title: lang === 'ar' ? 'من نحن' : 'About Us',
+    brief: lang === 'ar' ? 'نبذة مختصرة' : 'Brief',
+    story: lang === 'ar' ? 'قصتنا' : 'Our Story',
+    workTogether: lang === 'ar' ? 'لنعمل معاً' : "Let's Work Together",
+    contactDesc: lang === 'ar' 
+      ? 'تواصل معنا اليوم لبدء مشروعك القادم' 
+      : 'Contact us today to start your next project',
+    contactBtn: lang === 'ar' ? 'تواصل معنا' : 'Contact Us',
+    errorMsg: lang === 'ar' ? 'حدث خطأ في تحميل البيانات' : 'Error loading data',
+  };
 
   // حالة التحميل
   if (loading) {
@@ -48,7 +78,7 @@ const About = () => {
         <div className={`min-h-screen flex items-center justify-center ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
           <div className="text-center px-4">
             <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 px-6 py-4 rounded-lg max-w-md mx-auto">
-              <p className="font-semibold text-lg">⚠️ {error || (lang === 'ar' ? 'حدث خطأ في تحميل البيانات' : 'Error loading data')}</p>
+              <p className="font-semibold text-lg">⚠️ {error || translations.errorMsg}</p>
             </div>
           </div>
         </div>
@@ -84,40 +114,40 @@ const About = () => {
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
-            {/* العنوان */}
+            {/* ✅ العنوان - حسب اللغة */}
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-                {lang === 'ar' ? 'من نحن' : 'About Us'}
+                {getLocalizedText(data, 'title') || translations.title}
               </h1>
               <div className="w-24 h-1 bg-[#e0b277] mx-auto rounded-full" />
             </div>
 
-            {/* وصف مختصر - description */}
-            {data.description && (
+            {/* ✅ وصف مختصر - description حسب اللغة */}
+            {getLocalizedText(data, 'description') && (
               <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-10 border border-white/20 shadow-2xl">
                 <div className="flex items-center gap-3 mb-4">
                   <h2 className="text-2xl md:text-3xl font-bold text-white">
-                    {lang === 'ar' ? 'نبذة مختصرة' : 'Brief'}
+                    {translations.brief}
                   </h2>
                 </div>
                 
-                <p className="text-base md:text-lg leading-relaxed text-white/90">
-                  {data.description}
+                <p className="text-base md:text-lg leading-relaxed text-white/90 whitespace-pre-line">
+                  {getLocalizedText(data, 'description')}
                 </p>
               </div>
             )}
 
-            {/* وصف تفصيلي - long_description */}
-            {data.long_description && (
+            {/* ✅ وصف تفصيلي - long_description حسب اللغة */}
+            {getLocalizedText(data, 'long_description') && (
               <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-10 border border-white/20 shadow-2xl">
                 <div className="flex items-center gap-3 mb-4">
                   <h2 className="text-2xl md:text-3xl font-bold text-white">
-                    {lang === 'ar' ? 'قصتنا' : 'Our Story'}
+                    {translations.story}
                   </h2>
                 </div>
                 
                 <div className="space-y-4 text-white/90">
-                  {data.long_description.split('\n').map((paragraph, index) => (
+                  {getLocalizedText(data, 'long_description').split('\n').map((paragraph, index) => (
                     <p key={index} className="text-base md:text-lg leading-relaxed">
                       {paragraph.trim()}
                     </p>
@@ -126,22 +156,20 @@ const About = () => {
               </div>
             )}
 
-            {/* زر التواصل - كرت شفاف */}
+            {/* ✅ زر التواصل - حسب اللغة */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-white/20 text-center">
               <h3 className="text-xl md:text-2xl font-bold text-white mb-3">
-                {lang === 'ar' ? ' لنعمل معاً' : ' Let\'s Work Together'}
+                {translations.workTogether}
               </h3>
               <p className="text-sm md:text-base text-white/70 mb-6">
-                {lang === 'ar' 
-                  ? 'تواصل معنا اليوم لبدء مشروعك القادم' 
-                  : 'Contact us today to start your next project'}
+                {translations.contactDesc}
               </p>
               <Link
                 to="/contact"
                 style={{borderRadius:"10px"}}
-                className="inline-flex items-center gap-2 bg-[#e0b277] hover:bg-[#b88d2e] text-black px-8 py-3  font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/50"
+                className="inline-flex items-center gap-2 bg-[#e0b277] hover:bg-[#b88d2e] text-black px-8 py-3 font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/50"
               >
-                {lang === 'ar' ? ' تواصل معنا' : ' Contact Us'}
+                {translations.contactBtn}
                 <ArrowRight className={`w-4 h-4 ${dir === 'rtl' ? 'rotate-180' : ''}`} />
               </Link>
             </div>

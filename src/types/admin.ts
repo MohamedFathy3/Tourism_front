@@ -392,7 +392,9 @@ export const FormConfigs = {
         title: 'معلومات السلايدر',
         fields: [
           { name: 'title', label: 'العنوان', type: 'text', required: true },
+          { name: 'title_en', label: 'العنوان (بالإنجليزية)', type: 'text', required: true },
           { name: 'description', label: 'الوصف', type: 'textarea', required: true, rows: 3 },
+          { name: 'description_en', label: 'الوصف (بالإنجليزية)', type: 'textarea', required: true, rows: 3 },
           { name: 'active', label: 'نشط', type: 'toggle' },
           { name: 'image', label: 'الصورة', type: 'file', required: true },
         ]
@@ -406,8 +408,11 @@ export const FormConfigs = {
         title: 'معلومات الصفحة',
         fields: [
           { name: 'title', label: 'العنوان', type: 'text', required: true },
+          { name: 'title_en', label: 'العنوان (بالإنجليزية)', type: 'text', required: true },
           { name: 'description', label: 'الوصف المختصر', type: 'textarea', required: true, rows: 3 },
+          { name: 'description_en', label: 'الوصف المختصر (بالإنجليزية)', type: 'textarea', required: true, rows: 3 },
           { name: 'long_description', label: 'الوصف التفصيلي', type: 'textarea', required: true, rows: 6 },
+          { name: 'long_description_en', label: 'الوصف التفصيلي (بالإنجليزية)', type: 'textarea', required: true, rows: 6 },
           { name: 'image', label: 'الصورة', type: 'file', required: true },
         ]
       }
@@ -435,9 +440,11 @@ export const FormConfigs = {
         title: 'المعلومات الأساسية',
         fields: [
           { name: 'title', label: 'اسم الشركة', type: 'text', required: true },
+          { name: 'title_en', label: 'اسم الشركة (بالإنجليزية)', type: 'text', required: true },
           { name: 'year_founded', label: 'سنة التأسيس', type: 'text', required: true },
           { name: 'location', label: 'الموقع', type: 'text', required: true, rows: 6 },
           { name: 'long_description', label: 'الوصف التفصيلي', type: 'textarea', required: true, rows: 6 },
+          { name: 'long_description_en', label: 'الوصف التفصيلي (بالإنجليزية)', type: 'textarea', required: true, rows: 6 },
           { name: 'image', label: 'الصورة الرئيسية', type: 'file' },
           { name: 'gallery', label: 'معرض الصور', type: 'gallery' },
         ]
@@ -451,7 +458,9 @@ export const FormConfigs = {
         title: 'معلومات المشروع',
         fields: [
           { name: 'title', label: 'العنوان', type: 'text', required: true },
+          { name: 'title_en', label: 'العنوان (بالإنجليزية)', type: 'text', required: true },
           { name: 'description', label: 'الوصف المختصر', type: 'textarea', required: true, rows: 3 },
+          { name: 'description_en', label: 'الوصف المختصر (بالإنجليزية)', type: 'textarea', required: true, rows: 3 },
           { name: 'location', label: 'الموقع', type: 'text', required: true },
           { name: 'active', label: 'نشط', type: 'toggle' },
           { name: 'image', label: 'الصورة الرئيسية', type: 'file', required: true },
@@ -503,7 +512,10 @@ export const FormConfigs = {
         title: 'معلومات النشرة',
         fields: [
           { name: 'title', label: 'العنوان', type: 'text', required: true },
+          { name: 'title_en', label: 'العنوان (بالإنجليزية)', type: 'text', required: true },
           { name: 'description', label: 'المحتوى', type: 'textarea', required: true, rows: 8 },
+          { name: 'description_en', label: 'المحتوى (بالإنجليزية)', type: 'textarea', required: true, rows: 8 },
+
           { name: 'active', label: 'نشط', type: 'toggle' },
           { name: 'image', label: 'الصورة', type: 'file' },
         ]
@@ -544,37 +556,52 @@ export const FormConfigs = {
       }
     ]
   },
-    faq: {
-    title: 'FAQ',
-    sections: [
-      {
-        title: 'بيانات السؤال',
-        fields: [
-          {
-            name: 'name',
-            label: 'السؤال',
-            type: 'text',
-            required: true,
-            placeholder: 'أدخل السؤال...'
-          },
-          {
-            name: 'des',
-            label: 'الإجابة',
-            type: 'textarea',
-            required: true,
-            rows: 5,
-            placeholder: 'أدخل الإجابة...'
-          },
-          {
-            name: 'active',
-            label: 'حالة النشر',
-            type: 'toggle',
-            required: false
-          }
-        ]
-      }
-    ]
-  }
+ faq: {
+  title: 'FAQ',
+  sections: [
+    {
+      title: 'بيانات السؤال',
+      fields: [
+        {
+          name: 'name',
+          label: 'السؤال (العربية)',
+          type: 'text',
+          required: true,
+          placeholder: 'أدخل السؤال بالعربية...'
+        },
+        {
+          name: 'name_en',
+          label: 'السؤال (English)',
+          type: 'text',
+          required: true,
+          placeholder: 'Enter question in English...'
+        },
+        {
+          name: 'des',
+          label: 'الإجابة (العربية)',
+          type: 'textarea',
+          required: true,
+          rows: 5,
+          placeholder: 'أدخل الإجابة بالعربية...'
+        },
+        {
+          name: 'des_en',
+          label: 'Answer (English)',
+          type: 'textarea',
+          required: true,
+          rows: 5,
+          placeholder: 'Enter answer in English...'
+        },
+        {
+          name: 'active',
+          label: 'حالة النشر',
+          type: 'toggle',
+          required: false
+        }
+      ]
+    }
+  ]
+}
 };
 
 // ============================================

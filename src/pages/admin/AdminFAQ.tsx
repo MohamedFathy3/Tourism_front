@@ -1,240 +1,198 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/pages/admin/AdminFAQ.tsx
-import { useState, useEffect } from 'react';
-import { useLanguage } from '@/i18n/LanguageContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { AdminTable } from '@/components/admin/AdminTable';
-import { AdminForm } from '@/components/admin/AdminForm';
-import { faqAdminService, FAQType } from '@/services/admin/faq.admin.service';
-import { toast } from 'sonner';
-import { 
-  Edit, 
-  Trash2, 
-  Eye,
-  EyeOff,
-  RefreshCw
-} from 'lucide-react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useAdminResource } from "@/hooks/admin";
+import { faqAdminService } from "@/services/admin";
+import { AdminTable, TableConfigs } from "@/components/admin/AdminTable";
+import { AdminForm } from "@/components/admin/AdminForm";
+import { Edit, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/i18n/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import { X } from "lucide-react";
 
 const AdminFAQ = () => {
   const { lang } = useLanguage();
   const { isDark } = useTheme();
-  const [faqs, setFaqs] = useState<FAQType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [formOpen, setFormOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<FAQType | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<any>(null);
   
-  // Pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [filters, setFilters] = useState<Record<string, any>>({});
+  const {
+    data: faqs,
+    loading,
+    error,
+    currentPage,
+    totalPages,
+    filters,
+    setFilter,
+    clearFilters,
+    createItem,
+    updateItem,
+    deleteItem,
+    goToPage,
+    refresh,
+    changePerPage,
+  } = useAdminResource(faqAdminService, { 
+    perPage: 5,
+    initialFilters: {},
+    orderBy: 'id',
+    orderByDirection: 'desc'
+  });
 
-  // جلب البيانات
-  const fetchFAQs = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await faqAdminService.getAll({
-        page: currentPage,
-        perPage: perPage,
-        filters: filters,
-        orderBy: 'id',
-        orderByDirection: 'desc',
-      });
-      
-      setFaqs(response.data || []);
-      setTotalPages(response.meta?.last_page || 1);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load FAQs');
-      console.error('Error fetching FAQs:', err);
-    } finally {
-      setLoading(false);
+  const handleEdit = (item: any) => {
+    console.log('📝 Edit clicked:', item);
+    setEditingItem(item);
+    setShowModal(true);
+  };
+
+  const handleAdd = () => {
+    console.log('➕ Add clicked');
+    setEditingItem(null);
+    setShowModal(true);
+  };
+
+  const handleDelete = async (item: any) => {
+    if (confirm(lang === 'ar' ? `حذف "${item.name}"؟` : `Delete "${item.name}"?`)) {
+      console.log('🗑️ Deleting:', item.id);
+      await deleteItem(item.id);
     }
   };
 
-  useEffect(() => {
-    fetchFAQs();
-  }, [currentPage, perPage, filters]);
-
-  // معالج إضافة جديد
-  const handleAdd = () => {
-    setEditingItem(null);
-    setFormOpen(true);
+  const handleToggleStatus = async (id: number, active: boolean) => {
+    console.log(`🔄 Toggling status for ${id} to ${active}`);
+    await updateItem(id, { active });
+    await refresh();
   };
 
-  // ✅ معالج تعديل - تأكد من وجود البيانات
-  const handleEdit = (item: FAQType) => {
-    console.log('📝 Editing FAQ:', item); // للتأكد
-    setEditingItem(item);
-    setFormOpen(true);
+// في AdminFAQ.tsx - handleSubmit
+const handleSubmit = async (data: any) => {
+  console.log('📤 1. Form submitted with raw data:', data);
+  
+  // ✅ نبعت كل البيانات للـ API (زي ما هي)
+  const formData = {
+    name: data.name || '',
+    name_en: data.name_en || '',  // ✅ أضف هذا
+    des: data.des || '',
+    des_en: data.des_en || '',    // ✅ أضف هذا
+    active: data.active ?? true,
   };
-
-  // معالج حذف
-  const handleDelete = async (item: FAQType) => {
-    if (!confirm(lang === 'ar' ? 'هل أنت متأكد من حذف هذا السؤال؟' : 'Are you sure you want to delete this FAQ?')) {
-      return;
+  
+  console.log('📤 2. Sending to API:', formData);
+  
+  try {
+    if (editingItem) {
+      console.log(`📤 Updating item ${editingItem.id}...`);
+      await updateItem(editingItem.id, formData);
+    } else {
+      console.log('📤 Creating new item...');
+      await createItem(formData);
     }
     
-    try {
-      await faqAdminService.delete(item.id);
-      toast.success(lang === 'ar' ? 'تم الحذف بنجاح' : 'Deleted successfully');
-      fetchFAQs();
-    } catch (err) {
-      toast.error(lang === 'ar' ? 'فشل الحذف' : 'Delete failed');
-      console.error('Error deleting FAQ:', err);
-    }
-  };
+    await refresh();
+    setShowModal(false);
+    setEditingItem(null);
+    toast.success(editingItem ? 'تم التحديث بنجاح' : 'تم الإضافة بنجاح');
+  } catch (error: any) {
+    console.error('❌ Error:', error);
+    toast.error(error?.response?.data?.message || 'فشل الحفظ');
+  }
+};
 
-  // معالج تبديل الحالة
-  const handleToggleStatus = async (id: number, active: boolean) => {
-    try {
-      await faqAdminService.toggleStatus(id, active);
-      toast.success(lang === 'ar' ? 'تم تغيير الحالة' : 'Status updated');
-      fetchFAQs();
-    } catch (err) {
-      toast.error(lang === 'ar' ? 'فشل تغيير الحالة' : 'Status update failed');
-      console.error('Error toggling status:', err);
-    }
-  };
-
-  // معالج حفظ النموذج
-  const handleSubmit = async (data: any) => {
-    try {
-      setSubmitting(true);
-      
-      console.log('📤 Submitting data:', data); // للتأكد
-      console.log('📝 Editing item:', editingItem); // للتأكد
-      
-      // تحويل البيانات للشكل المطلوب
-      const formData = {
-        name: data.name,
-        des: data.des,
-        active: data.active ?? true,
-      };
-      
-      if (editingItem) {
-        // ✅ تأكد من الـ ID
-        console.log('🔄 Updating FAQ ID:', editingItem.id);
-        await faqAdminService.update(editingItem.id, formData);
-        toast.success(lang === 'ar' ? 'تم التحديث بنجاح' : 'Updated successfully');
-      } else {
-        await faqAdminService.create(formData);
-        toast.success(lang === 'ar' ? 'تم الإضافة بنجاح' : 'Added successfully');
-      }
-      
-      setFormOpen(false);
-      setEditingItem(null);
-      fetchFAQs();
-    } catch (err) {
-      toast.error(lang === 'ar' ? 'فشل الحفظ' : 'Save failed');
-      console.error('Error saving FAQ:', err);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // معالج الفلترة
-  const handleFilterChange = (key: string, value: any) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-    setCurrentPage(1);
-  };
-
-  // معالج مسح الفلاتر
-  const handleClearFilters = () => {
-    setFilters({});
-    setCurrentPage(1);
-  };
-
-  // معالج تغيير عدد العناصر في الصفحة
-  const handlePerPageChange = (newPerPage: number) => {
-    setPerPage(newPerPage);
-    setCurrentPage(1);
-  };
-
-  // أزرار الإجراءات
   const actions = [
-    {
-      label: lang === 'ar' ? 'تعديل' : 'Edit',
-      icon: Edit,
-      onClick: handleEdit,
-      color: 'primary' as const,
+    { 
+      label: lang === 'ar' ? 'تعديل' : 'Edit', 
+      icon: Edit, 
+      onClick: handleEdit, 
+      color: 'primary' as const 
     },
-    {
-      label: lang === 'ar' ? 'حذف' : 'Delete',
-      icon: Trash2,
-      onClick: handleDelete,
-      color: 'danger' as const,
+    { 
+      label: lang === 'ar' ? 'حذف' : 'Delete', 
+      icon: Trash2, 
+      onClick: handleDelete, 
+      color: 'danger' as const 
     },
   ];
 
   return (
-    <div className="p-4 md:p-6">
+    <>
       <AdminTable
         data={faqs}
-        columns={[
-          { key: 'id', label: '#', type: 'number', width: 'w-16' },
-          { key: 'name', label: lang === 'ar' ? 'السؤال' : 'Question', filterable: true },
-          { 
-            key: 'des', 
-            label: lang === 'ar' ? 'الإجابة' : 'Answer',
-            render: (item) => (
-              <div className="max-w-xs truncate">
-                {item.des}
-              </div>
-            )
-          },
-          { key: 'createdAt', label: lang === 'ar' ? 'التاريخ' : 'Date', type: 'date' },
-          { 
-            key: 'active', 
-            label: lang === 'ar' ? 'الحالة' : 'Status', 
-            type: 'switch',
-            filterable: false 
-          },
-        ]}
+        columns={TableConfigs.faq.columns}
         actions={actions}
         loading={loading}
         error={error}
-        onRefresh={fetchFAQs}
+        onRefresh={refresh}
         onAdd={handleAdd}
         addLabel={lang === 'ar' ? 'إضافة سؤال جديد' : 'Add New FAQ'}
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={setCurrentPage}
-        onPerPageChange={handlePerPageChange}
-        perPage={perPage}
+        onPageChange={goToPage}
+        onPerPageChange={changePerPage}
+        perPage={5}
         filters={filters}
-        onFilterChange={handleFilterChange}
-        onClearFilters={handleClearFilters}
+        onFilterChange={setFilter}
+        onClearFilters={clearFilters}
         searchable={true}
-        onSearch={(query) => handleFilterChange('name', query)}
+        onSearch={(query) => setFilter('name', query)}
         searchPlaceholder={lang === 'ar' ? 'بحث عن سؤال...' : 'Search for a question...'}
         onToggleStatus={handleToggleStatus}
       />
 
-      {/* ✅ نموذج الإضافة والتعديل - تأكد من تمرير البيانات صح */}
-      <AdminForm
-        type="faq"
-        isOpen={formOpen}
-        initialData={editingItem ? {
-          name: editingItem.name,
-          des: editingItem.des,
-          active: editingItem.active ?? true,
-        } : { active: true }}
-        onSubmit={handleSubmit}
-        onCancel={() => {
-          setFormOpen(false);
-          setEditingItem(null);
-        }}
-        loading={submitting}
-        title={
-          editingItem
-            ? lang === 'ar' ? 'تعديل السؤال' : 'Edit FAQ'
-            : lang === 'ar' ? 'إضافة سؤال جديد' : 'Add New FAQ'
-        }
-      />
-    </div>
+      <AnimatePresence>
+        {showModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className={`w-full max-w-2xl rounded-2xl ${isDark ? 'bg-gray-800/50' : 'bg-white'} border ${isDark ? 'border-gray-700' : 'border-gray-200'} p-6 max-h-[90vh] overflow-y-auto`}
+            >
+              <div className="flex justify-between items-start mb-4">
+                <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>
+                  {editingItem 
+                    ? (lang === 'ar' ? '✏️ تعديل السؤال' : '✏️ Edit FAQ')
+                    : (lang === 'ar' ? '➕ إضافة سؤال جديد' : '➕ Add New FAQ')}
+                </h2>
+                <button
+                  onClick={() => {
+                    console.log('❌ Modal closed');
+                    setShowModal(false);
+                    setEditingItem(null);
+                  }}
+                  className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'} transition-colors`}
+                >
+                  <X className={`w-5 h-5 ${isDark ? 'text-gray-400' : 'text-gray-500'}`} />
+                </button>
+              </div>
+              
+              <AdminForm
+                type="faq"
+                initialData={editingItem ? {
+                  name: editingItem.name,
+                  name_en: editingItem.name,
+                  des: editingItem.des,
+                  des_en: editingItem.des,
+                  active: editingItem.active ?? true,
+                } : { 
+                  active: true,
+                  name: '',
+                  name_en: '',
+                  des: '',
+                  des_en: ''
+                }}
+                onSubmit={handleSubmit}
+                onCancel={() => {
+                  console.log('❌ Form cancelled');
+                  setShowModal(false);
+                  setEditingItem(null);
+                }}
+                loading={loading}
+              />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

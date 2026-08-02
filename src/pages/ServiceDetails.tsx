@@ -51,6 +51,20 @@ const ProjectDetails = () => {
     setIsClient(true);
   }, []);
 
+  // ✅ دالة مساعدة لجلب النص حسب اللغة
+  const getLocalizedText = (item: any, field: 'title' | 'description' | 'location' | 'long_description') => {
+    if (!item) return '';
+    
+    const isEnglish = lang === 'en';
+    const enField = `${field}_en`;
+    
+    if (isEnglish && item[enField]) {
+      return item[enField];
+    }
+    
+    return item[field] || '';
+  };
+
   // حالة التحميل
   if (loading) {
     return (
@@ -90,8 +104,19 @@ const ProjectDetails = () => {
     );
   }
 
+  // ✅ بناء بيانات المشروع مع دعم اللغات
+  const projectData = {
+    id: service.id,
+    title: getLocalizedText(service, 'title') || service.title,
+    description: getLocalizedText(service, 'description') || getLocalizedText(service, 'long_description') || service.description || "",
+    location: getLocalizedText(service, 'location') || service.location || "",
+    image: service.image?.fullUrl || service.imageUrl,
+    gallery: service.gallery || [],
+    active: service.active ?? true,
+  };
+
   // معرض الصور
-  const galleryImages = service.gallery || [];
+  const galleryImages = projectData.gallery || [];
   const hasGallery = galleryImages.length > 0;
 
   // دوال التحكم في الـ Swiper
@@ -118,7 +143,7 @@ const ProjectDetails = () => {
     return Building2;
   };
 
-  const ProjectIcon = getProjectIcon(service.title);
+  const ProjectIcon = getProjectIcon(projectData.title);
 
   return (
     <>
@@ -128,8 +153,8 @@ const ProjectDetails = () => {
         {/* Hero Section */}
         <div className="relative h-[60vh] min-h-[400px] md:min-h-[500px]">
           <img
-            src={service.image?.fullUrl || service.imageUrl}
-            alt={service.title}
+            src={projectData.image}
+            alt={projectData.title}
             className="w-full h-full object-cover"
             onError={(e) => {
               e.currentTarget.src = "https://via.placeholder.com/1920x1080/1a1a1a/e0b277?text=Project";
@@ -159,8 +184,8 @@ const ProjectDetails = () => {
               onClick={() => {
                 if (navigator.share) {
                   navigator.share({
-                    title: service.title,
-                    text: service.description,
+                    title: projectData.title,
+                    text: projectData.description,
                     url: window.location.href,
                   });
                 }
@@ -178,19 +203,21 @@ const ProjectDetails = () => {
               transition={{ duration: 0.6 }}
               className="text-center text-white"
             >
-              {/* رقم المشروع */}
+              {/* ✅ رقم المشروع */}
               <div className="inline-block bg-[#e0b277] text-white px-4 py-1 rounded-full text-sm font-semibold mb-4">
-                #{String(service.id).padStart(3, '0')}
+                #{String(projectData.id).padStart(3, '0')}
               </div>
               
+              {/* ✅ العنوان - حسب اللغة */}
               <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3">
-                {service.title}
+                {projectData.title}
               </h1>
               
-              {service.location && (
+              {/* ✅ الموقع - حسب اللغة */}
+              {projectData.location && (
                 <div className="flex items-center justify-center gap-2 text-gray-200 text-sm md:text-base">
                   <MapPin className="w-4 h-4" />
-                  <span>{service.location}</span>
+                  <span>{projectData.location}</span>
                 </div>
               )}
             </motion.div>
@@ -204,7 +231,7 @@ const ProjectDetails = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            {/* وصف المشروع */}
+            {/* ✅ وصف المشروع - حسب اللغة */}
             <div className={`rounded-2xl p-6 md:p-8 mb-8 ${
               isDark ? 'bg-gray-800/50' : 'bg-white'
             } shadow-lg`}>
@@ -213,11 +240,21 @@ const ProjectDetails = () => {
               }`}>
                 {lang === 'ar' ? 'وصف المشروع' : 'Project Description'}
               </h2>
-              <p className={`text-base md:text-lg leading-relaxed ${
+              
+              {/* ✅ الوصف مع دعم الفقرات */}
+              <div className={`text-base md:text-lg leading-relaxed ${
                 isDark ? 'text-gray-300' : 'text-gray-700'
               }`}>
-                {service.description || service.location || (lang === 'ar' ? 'لا يوجد وصف لهذا المشروع' : 'No description available')}
-              </p>
+                {projectData.description ? (
+                  projectData.description.split('\n').map((paragraph: string, index: number) => (
+                    <p key={index} className="mb-4 last:mb-0">
+                      {paragraph.trim()}
+                    </p>
+                  ))
+                ) : (
+                  <p>{lang === 'ar' ? 'لا يوجد وصف لهذا المشروع' : 'No description available'}</p>
+                )}
+              </div>
             </div>
 
             {/* ✅ معرض الصور - Swiper مع تحكم كامل */}
@@ -232,7 +269,7 @@ const ProjectDetails = () => {
                     {lang === 'ar' ? 'معرض الصور' : 'Gallery'}
                   </h3>
                   
-                  {/* ✅ أزرار التحكم */}
+                  {/* أزرار التحكم */}
                   <div className="flex gap-2">
                     <button
                       onClick={goPrev}
@@ -299,7 +336,7 @@ const ProjectDetails = () => {
                         >
                           <img
                             src={image.fullUrl}
-                            alt={`${service.title} - ${index + 1}`}
+                            alt={`${projectData.title} - ${index + 1}`}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             loading="lazy"
                             onError={(e) => {
@@ -317,8 +354,8 @@ const ProjectDetails = () => {
                     ))}
                   </Swiper>
 
-                  {/* ✅ Pagination مخصصة */}
-                  <style jsx>{`
+                  {/* Pagination مخصصة */}
+                  <style>{`
                     .gallery-swiper :global(.swiper-pagination) {
                       position: relative;
                       margin-top: 20px;

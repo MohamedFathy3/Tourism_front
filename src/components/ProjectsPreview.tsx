@@ -1,16 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/ServicesSection.tsx
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, Ruler, FileCheck, Map, Palette, HardHat, Shield, Lightbulb, MapPin } from "lucide-react";
+import { ChevronLeft, ChevronRight, Building2, Home, Castle, Warehouse, Hotel, Store, Landmark, TreePine } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useCompany } from "@/hooks/useCompany";
-import { Skeleton } from "@/components/ui/skeleton"; // لو عندك shadcn/ui
+import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 
-// صور احتياطية (fallback)
-
-const icons = [Ruler, FileCheck, Map, Palette, HardHat, Shield, Lightbulb, MapPin];
+// ✅ أيقونات مناسبة للمشاريع العقارية
+const icons = [Building2, Home, Castle, Warehouse, Hotel, Store, Landmark, TreePine];
 
 const ServicesSection = () => {
   const { t, dir, lang } = useLanguage();
@@ -30,28 +30,40 @@ const ServicesSection = () => {
 
   const totalItems = companies.length;
 
-  // بناء بيانات الخدمات من API أو استخدام fallback
+  // ✅ دالة مساعدة لجلب النص حسب اللغة
+  const getLocalizedText = (item: any, field: 'title' | 'long_description' | 'description' | 'location') => {
+    if (!item) return '';
+    
+    const isEnglish = lang === 'en';
+    const enField = `${field}_en`;
+    
+    if (isEnglish && item[enField]) {
+      return item[enField];
+    }
+    
+    return item[field] || '';
+  };
+
+  // بناء بيانات المشاريع من API
   const buildServicesData = () => {
     if (companies.length > 0) {
-      return companies.map((service, index) => ({
-        id: service.id,
-        title: service.title || `خدمة ${index + 1}`,
-        description: service.description || service.location || "خدمة مميزة",
-        image: service.image?.fullUrl || service.imageUrl ,
-        location: service.location || "القاهره",
-        active: service.active,
+      return companies.map((company, index) => ({
+        id: company.id,
+        title: getLocalizedText(company, 'title') || company.title || `مشروع ${index + 1}`,
+        description: getLocalizedText(company, 'long_description') || 
+                     getLocalizedText(company, 'description') || 
+                     company.long_description || 
+                     company.description || 
+                     "مشروع مميز",
+        image: company.image?.fullUrl || company.imageUrl,
+        location: getLocalizedText(company, 'location') || company.location || "مصر",
+        yearFounded: company.year_founded || "",
+        active: company.active,
+        raw: company,
       }));
     }
 
-    // Fallback: استخدام البيانات من ملف اللغة
-    const langServices = t.engineeringServices?.items || [];
-    return langServices.map((service, index) => ({
-      id: index + 1,
-      title: service.title || `خدمة ${index + 1}`,
-      description: service.description || "خدمة مميزة",
-      location: "القاهره",
-      active: true,
-    }));
+    return [];
   };
 
   const servicesData = buildServicesData();
@@ -255,7 +267,7 @@ const ServicesSection = () => {
               onClick={() => window.location.reload()}
               className="mt-4 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full transition-colors"
             >
-              إعادة المحاولة
+              {lang === 'ar' ? 'إعادة المحاولة' : 'Retry'}
             </button>
           </div>
         </div>
@@ -263,7 +275,7 @@ const ServicesSection = () => {
     );
   }
 
-  // لو مفيش خدمات
+  // لو مفيش مشاريع
   if (totalItems === 0) {
     return (
       <section className={`py-12 sm:py-16 md:py-20 min-h-screen transition-all duration-500 overflow-hidden ${
@@ -273,10 +285,10 @@ const ServicesSection = () => {
           <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-4 ${
             isDark ? 'text-white' : 'text-gray-800'
           }`}>
-            {t.services?.title || "خدماتنا"}
+            {lang === 'ar' ? 'مشاريعنا' : 'Our Projects'}
           </h2>
           <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-            {lang === 'ar' ? 'لا توجد خدمات حالياً' : 'No services available'}
+            {lang === 'ar' ? 'لا توجد مشاريع حالياً' : 'No projects available'}
           </p>
         </div>
       </section>
@@ -303,14 +315,14 @@ const ServicesSection = () => {
               ? 'bg-gradient-to-r from-[#e0b277] to-[#e6b84e] bg-clip-text text-transparent'
               : 'bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent'
           }`}>
-            {servicesData[0]?.title ? 'شركتنا' : t.services?.title || "our Projects"}
+            {lang === 'ar' ? 'مشاريعنا' : 'Our Projects'}
           </h2>
           <p className={`text-sm mt-5 mb-11 sm:text-base md:text-lg max-w-2xl mx-auto px-4 transition-all duration-500 ${
             isDark ? 'text-gray-300' : 'text-gray-600'
           }`}>
             {lang === 'ar' 
-              ? 'نفخر بتقديم أفضل المشاريع التي تعكس جودة عملنا واحترافيتنا'
-              : 'Explore our premium company - Choose the right company for you'}
+              ? 'استكشف مشاريعنا المتميزة - اختر المشروع المناسب لك'
+              : 'Explore our premium projects - Choose the right project for you'}
           </p>
           <div className="w-20 sm:w-24 h-1 bg-[#e0b277] mx-auto mt-4 sm:mt-6 rounded-full"></div>
         </motion.div>
@@ -363,7 +375,6 @@ const ServicesSection = () => {
                         alt={service.title}
                         className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                         loading="lazy"
-                    
                       />
                       <div className={`absolute inset-0 bg-gradient-to-t ${
                         isDark 
@@ -371,7 +382,7 @@ const ServicesSection = () => {
                           : 'from-black/60 via-black/20 to-transparent'
                       }`} />
 
-                      {/* أيقونة الخدمة */}
+                      {/* أيقونة المشروع */}
                       <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10">
                         <div className={`p-2 sm:p-2.5 rounded-full ${
                           isDark ? 'bg-black/60' : 'bg-white/90'
@@ -388,6 +399,7 @@ const ServicesSection = () => {
                         ? (isDark ? 'bg-gray-800' : 'bg-white')
                         : ''
                     }`}>
+                      {/* ✅ العنوان - حسب اللغة */}
                       <h3 className={`font-bold transition-all duration-500 text-center
                         ${isActive 
                           ? `text-base sm:text-lg md:text-xl ${isDark ? 'text-[#e0b277]' : 'text-gray-800'} mb-2 sm:mb-3` 
@@ -397,7 +409,7 @@ const ServicesSection = () => {
                         {service.title}
                       </h3>
                       
-                      {/* عرض الوصف للعنصر النشط */}
+                      {/* ✅ عرض التفاصيل للعنصر النشط - حسب اللغة */}
                       <AnimatePresence>
                         {isActive && showDetails && (
                           <motion.div
@@ -407,6 +419,25 @@ const ServicesSection = () => {
                             transition={{ duration: 0.3 }}
                             className="overflow-hidden"
                           >
+                            {/* ✅ الموقع - حسب اللغة */}
+                            {service.location && service.location !== "." && (
+                              <p className={`text-xs sm:text-sm text-center mb-2 ${
+                                isDark ? 'text-gray-400' : 'text-gray-500'
+                              }`}>
+                                📍 {service.location}
+                              </p>
+                            )}
+                            
+                            {/* ✅ سنة التأسيس */}
+                            {service.yearFounded && service.yearFounded !== "." && (
+                              <p className={`text-xs sm:text-sm text-center mb-2 ${
+                                isDark ? 'text-gray-400' : 'text-gray-500'
+                              }`}>
+                                📅 {lang === 'ar' ? 'تأسست: ' : 'Founded: '}{service.yearFounded}
+                              </p>
+                            )}
+                            
+                            {/* ✅ الوصف - حسب اللغة */}
                             <p className={`text-xs sm:text-sm text-center ${
                               isDark ? 'text-gray-400' : 'text-gray-600'
                             }`}>
@@ -446,7 +477,7 @@ const ServicesSection = () => {
                     ? 'bg-[#e0b277] hover:bg-[#b88d2e] text-white' 
                     : 'bg-gray-800 hover:bg-gray-900 text-white'
                   }`}
-                aria-label="السابق"
+                aria-label={lang === 'ar' ? 'السابق' : 'Previous'}
               >
                 <ChevronLeft className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${isRTL ? 'rotate-180' : ''}`} />
               </button>
@@ -459,7 +490,7 @@ const ServicesSection = () => {
                     ? 'bg-[#e0b277] hover:bg-[#b88d2e] text-white' 
                     : 'bg-gray-800 hover:bg-gray-900 text-white'
                   }`}
-                aria-label="التالي"
+                aria-label={lang === 'ar' ? 'التالي' : 'Next'}
               >
                 <ChevronRight className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${isRTL ? 'rotate-180' : ''}`} />
               </button>

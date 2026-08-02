@@ -1,4 +1,5 @@
-// src/pages/About.tsx (أو src/components/about.tsx)
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/pages/About.tsx
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
@@ -8,16 +9,32 @@ import { Eye, Flag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAbout } from "@/hooks/useAbout";
 import { useTheme } from "@/contexts/ThemeContext";
-import { Skeleton } from "@/components/ui/skeleton"; // لو عندك shadcn/ui
+import { Skeleton } from "@/components/ui/skeleton";
 
 // صور احتياطية (fallback)
 import section from "@/assets/about/e2f9bad7e3d21af8906f8741cafa70f86c77cdfd.png";
 
 const About = () => {
-  const { t, dir } = useLanguage();
+  const { t, dir, lang } = useLanguage(); // ✅ أضف lang
   const { isDark } = useTheme();
   const { about, loading, error } = useAbout();
   const isRTL = dir === "rtl";
+
+  // ✅ دالة مساعدة لجلب النص حسب اللغة
+  const getLocalizedText = (item: any, field: 'title' | 'description' | 'long_description') => {
+    if (!item) return '';
+    
+    const isEnglish = lang === 'en';
+    const enField = `${field}_en`;
+    
+    // لو اللغة إنجليزية والـ API مدعوم
+    if (isEnglish && item[enField]) {
+      return item[enField];
+    }
+    
+    // غير كده استخدم العربية
+    return item[field] || '';
+  };
 
   // حالة تحميل
   if (loading) {
@@ -26,7 +43,6 @@ const About = () => {
         <Navbar />
         <div className="py-20 px-4">
           <div className="container mx-auto max-w-6xl">
-            {/* Skeleton Loading */}
             <div className="text-center mb-12">
               <Skeleton className="h-16 w-64 mx-auto bg-gray-300 dark:bg-gray-700" />
             </div>
@@ -91,8 +107,9 @@ const About = () => {
       <Navbar />
 
       <section className="py-20 px-4">
+        {/* ✅ العنوان - حسب اللغة */}
         <h1 className="text-center font-bold mb-12 text-4xl md:text-5xl lg:text-6xl text-gray-800 dark:text-white">
-          {aboutData.title || t.about.pageTitle}
+          {getLocalizedText(aboutData, 'title') || t.about.pageTitle}
         </h1>
         
         <div className="container mx-auto max-w-6xl">
@@ -106,17 +123,16 @@ const About = () => {
               viewport={{ once: true }}
               className="order-2 lg:order-1"
             >
-              <div className="relative rounded-2xl overflow-hidden ">
+              <div className="relative rounded-2xl overflow-hidden">
                 <img 
                   src={aboutData.image?.fullUrl || aboutData.imageUrl || section}
-                  alt={aboutData.title || "About"}
+                  alt={getLocalizedText(aboutData, 'title') || "About"}
                   className="w-full h-auto object-cover rounded-2xl"
-             
                 />
               </div>
             </motion.div>
 
-            {/* المحتوى النصي - من API أو fallback */}
+            {/* المحتوى النصي - حسب اللغة */}
             <motion.div
               initial={{ opacity: 0, x: isRTL ? -50 : 50 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -124,16 +140,28 @@ const About = () => {
               viewport={{ once: true }}
               className="order-1 lg:order-2"
             >
+              {/* ✅ العنوان - حسب اللغة */}
               <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 dark:text-white">
-                {aboutData.title || t.about.title}
+                {getLocalizedText(aboutData, 'title') || t.about.title}
               </h2>
               
-              <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8">
-                {aboutData.description || aboutData.description || t.about.desc}
+              {/* ✅ الوصف المختصر - حسب اللغة */}
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 whitespace-pre-line">
+                {getLocalizedText(aboutData, 'description') || t.about.desc}
               </p>
 
+              {/* ✅ الوصف الطويل - حسب اللغة (لو موجود) */}
+              {getLocalizedText(aboutData, 'long_description') && (
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8 whitespace-pre-line">
+                  {getLocalizedText(aboutData, 'long_description')}
+                </p>
+              )}
+
               <Link to="/about" className="inline-block">
-                <button className="bg-[#e0b277] hover:bg-[#b58a2e] text-black px-8 py-3  font-semibold transition-colors duration-300"style={{borderRadius: '10px'}}>
+                <button 
+                  className="bg-[#e0b277] hover:bg-[#b58a2e] text-black px-8 py-3 font-semibold transition-colors duration-300"
+                  style={{borderRadius: '10px'}}
+                >
                   {t.hero.cta}
                 </button>
               </Link> 
