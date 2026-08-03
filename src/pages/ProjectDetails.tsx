@@ -224,12 +224,22 @@ const CompanyDetails = () => {
                 )}
                 
                 {/* ✅ سنة التأسيس */}
-                {companyData.yearFounded && companyData.yearFounded !== "غير محدد" && (
-                  <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                    <Calendar className="w-4 h-4" />
-                    <span>{lang === 'ar' ? 'تأسست: ' : 'Founded: '}{companyData.yearFounded}</span>
-                  </div>
-                )}
+              {companyData.yearFounded && companyData.yearFounded !== "غير محدد" && (
+  <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
+    <Calendar className="w-4 h-4" />
+    <span>
+      {lang === 'ar' ? 'تأسست: ' : 'Founded: '}
+      {new Date(companyData.yearFounded).toLocaleDateString(
+        lang === 'ar' ? 'ar-EG' : 'en-US',
+        {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric',
+        }
+      )}
+    </span>
+  </div>
+)}
               </div>
             </motion.div>
           </div>
@@ -308,11 +318,15 @@ const CompanyDetails = () => {
                     }`}>
                       {lang === 'ar' ? ' سنة التأسيس' : ' Founded'}
                     </p>
-                    <p className={`font-semibold ${
-                      isDark ? 'text-white' : 'text-gray-800'
-                    }`}>
-                      {companyData.yearFounded}
-                    </p>
+                 <p
+  className={`font-semibold ${
+    isDark ? 'text-white' : 'text-gray-800'
+  }`}
+>
+  {companyData.yearFounded
+    ? new Date(companyData.yearFounded).getFullYear()
+    : '-'}
+</p>
                   </div>
                 </div>
               </div>
