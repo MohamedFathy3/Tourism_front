@@ -260,7 +260,7 @@ const CompanyDetails = () => {
                     <p className={`text-xs font-medium ${
                       isDark ? 'text-gray-400' : 'text-gray-500'
                     }`}>
-                      {lang === 'ar' ? '📍 الموقع' : '📍 Location'}
+                      {lang === 'ar' ? ' الموقع' : ' Location'}
                     </p>
                     <p className={`font-semibold ${
                       isDark ? 'text-white' : 'text-gray-800'
@@ -283,7 +283,7 @@ const CompanyDetails = () => {
                     <p className={`text-xs font-medium ${
                       isDark ? 'text-gray-400' : 'text-gray-500'
                     }`}>
-                      {lang === 'ar' ? '📋 الحالة' : '📋 Status'}
+                      {lang === 'ar' ? ' الحالة' : ' Status'}
                     </p>
                     <p className={`font-semibold ${
                       companyData.active ? 'text-green-500' : 'text-red-500'
@@ -303,13 +303,12 @@ const CompanyDetails = () => {
                   <div className={`p-2 rounded-full ${
                     isDark ? 'bg-[#e0b277]/20' : 'bg-[#e0b277]/10'
                   }`}>
-                    <Calendar className={`w-6 h-6 text-[#e0b277]`} />
                   </div>
                   <div>
                     <p className={`text-xs font-medium ${
                       isDark ? 'text-gray-400' : 'text-gray-500'
                     }`}>
-                      {lang === 'ar' ? '📅 سنة التأسيس' : '📅 Founded'}
+                      {lang === 'ar' ? ' سنة التأسيس' : ' Founded'}
                     </p>
                     <p className={`font-semibold ${
                       isDark ? 'text-white' : 'text-gray-800'
@@ -366,7 +365,6 @@ const CompanyDetails = () => {
                       }`}
                       aria-label="Previous"
                     >
-                      <ChevronLeft className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
                     </button>
                     <button
                       onClick={goNext}
@@ -377,7 +375,6 @@ const CompanyDetails = () => {
                       }`}
                       aria-label="Next"
                     >
-                      <ChevronRight className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
                     </button>
                   </div>
                 </div>
@@ -487,7 +484,6 @@ const CompanyDetails = () => {
                     isRTL ? 'flex-row-reverse' : ''
                   }`}
                 >
-                  <ArrowLeft className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
                   {lang === 'ar' ? 'العودة للشركات' : 'Back to Companies'}
                 </button>
                 
@@ -497,7 +493,6 @@ const CompanyDetails = () => {
                   style={{borderRadius: '10px'}}
                 >
                   {lang === 'ar' ? 'تواصل معنا' : 'Contact Us'}
-                  <ArrowRight className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
                 </Link>
               </div>
             </div>
