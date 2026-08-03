@@ -254,7 +254,6 @@ const CompanyDetails = () => {
                   <div className={`p-2 rounded-full ${
                     isDark ? 'bg-[#e0b277]/20' : 'bg-[#e0b277]/10'
                   }`}>
-                    <MapPin className={`w-6 h-6 text-[#e0b277]`} />
                   </div>
                   <div>
                     <p className={`text-xs font-medium ${
@@ -277,7 +276,6 @@ const CompanyDetails = () => {
                   <div className={`p-2 rounded-full ${
                     isDark ? 'bg-[#e0b277]/20' : 'bg-[#e0b277]/10'
                   }`}>
-                    <Building className={`w-6 h-6 text-[#e0b277]`} />
                   </div>
                   <div>
                     <p className={`text-xs font-medium ${
