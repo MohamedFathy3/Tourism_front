@@ -318,16 +318,19 @@ const CompanyDetails = () => {
                     }`}>
                       {lang === 'ar' ? ' سنة التأسيس' : ' Founded'}
                     </p>
-                 <p
+              <p
   className={`font-semibold ${
     isDark ? 'text-white' : 'text-gray-800'
   }`}
 >
-  {companyData.yearFounded
-    ? new Date(companyData.yearFounded).getFullYear()
-    : '-'}
+  {companyData.yearFounded &&
+  companyData.yearFounded !== "غير محدد"
+    ? /^\d{4}$/.test(companyData.yearFounded)
+      ? companyData.yearFounded
+      : new Date(companyData.yearFounded).getFullYear()
+    : "-"}
 </p>
-                  </div>
+                  </div>  
                 </div>
               </div>
             </div>
