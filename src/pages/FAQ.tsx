@@ -58,7 +58,6 @@ filters
       setLoading(false);
     }
   };
-  // جلب البيانات عند تحميل المكون
   useState(() => {
     fetchFAQs();
   }, []);
