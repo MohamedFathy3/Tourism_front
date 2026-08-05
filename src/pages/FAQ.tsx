@@ -2,7 +2,7 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,13 +13,15 @@ import {
   MessageCircle
 } from "lucide-react";
 import api from "@/lib/api";
-import faqHeroImage from "@/assets/faq-hero.jpeg"; // ← استورد الصورة
+import faqHeroImage from "@/assets/faq-hero.jpeg";
 
-// Interface للـ FAQ
+// Interface للـ FAQ - أضفنا الحقول الإنجليزية
 interface FAQItem {
   id: number;
-  name: string;      // السؤال
-  des: string;       // الإجابة
+  name: string;      // السؤال بالعربية
+  name_en: string;   // السؤال بالإنجليزية
+  des: string;       // الإجابة بالعربية
+  des_en: string;    // الإجابة بالإنجليزية
   active: boolean;
   deleted: boolean;
 }
@@ -38,13 +40,10 @@ const FAQ = () => {
   const fetchFAQs = async () => {
     try {
       setLoading(true);
-      const response = await api.post('faq/index',{
-        
-filters
-: 
-{active: true}
+      const response = await api.post('faq/index', {
+        filters: { active: true }
       });
-      console.log('FAQ Response:', response.data); // للتأكد من البيانات
+      console.log('FAQ Response:', response.data);
       
       if (response.data.status === 200 && response.data.result === 'Success') {
         setFaqs(response.data.data);
@@ -58,9 +57,19 @@ filters
       setLoading(false);
     }
   };
-  useState(() => {
+
+  // استخدام useEffect بدلاً من useState
+  useEffect(() => {
     fetchFAQs();
   }, []);
+
+  // دالة مساعدة للحصول على النص حسب اللغة
+  const getText = (arabic: string, english: string) => {
+    if (lang === 'ar') {
+      return arabic || english; // لو العربي فاضي، استخدم الإنجليزي كاحتياطي
+    }
+    return english || arabic; // لو الإنجليزي فاضي، استخدم العربي كاحتياطي
+  };
 
   // حالة التحميل
   if (loading) {
@@ -122,7 +131,7 @@ filters
               <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${
                 isDark ? 'text-white' : 'text-gray-800'
               }`}>
-                {lang === 'ar' ? ' لا توجد أسئلة شائعة' : ' No FAQs Available'}
+                {lang === 'ar' ? 'لا توجد أسئلة شائعة' : 'No FAQs Available'}
               </h2>
               <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                 {lang === 'ar' ? 'سيتم إضافة الأسئلة قريباً' : 'FAQs will be added soon'}
@@ -145,18 +154,15 @@ filters
       <Navbar />
       <div className={`min-h-screen ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
         
-        {/* Hero Section مع صورة خلفية - نفس ستايل NewsLetters */}
+        {/* Hero Section */}
         <div className="relative h-[50vh] min-h-[300px] md:min-h-[600px] overflow-hidden">
-          {/* صورة الخلفية */}
           <div 
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${faqHeroImage})` }}
           >
-            {/* overlay داكن عشان النص يبان */}
             <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
           </div>
           
-          {/* المحتوى فوق الصورة */}
           <div className="relative z-10 h-full flex flex-col items-center justify-center text-white px-4">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -179,78 +185,83 @@ filters
           </div>
         </div>
 
-
         {/* قائمة الأسئلة */}
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <motion.div
-                key={faq.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className={`rounded-2xl overflow-hidden shadow-lg transition-all duration-300 ${
-                  isDark 
-                    ? 'bg-gray-800/50 hover:shadow-2xl hover:shadow-[#e0b277]/5' 
-                    : 'bg-white hover:shadow-2xl hover:shadow-gray-300/20'
-                } ${openIndex === index ? 'ring-2 ring-[#e0b277]' : ''}`}
-              >
-                {/* السؤال - زر الضغط */}
-                <button
-                  onClick={() => toggleFAQ(index)}
-                  className="w-full p-5 md:p-6 text-left flex items-start justify-between gap-4 transition-colors"
-                >
-                  <div className="flex items-start gap-3 flex-1">
-                    <div className="flex-shrink-0 mt-1">
-                      <MessageCircle className={`w-5 h-5 ${isDark ? 'text-[#e0b277]' : 'text-[#e0b277]'}`} />
-                    </div>
-                    <h3 className={`text-lg md:text-xl font-semibold transition-colors ${
-                      isDark 
-                        ? 'text-white group-hover:text-[#e0b277]' 
-                        : 'text-gray-800 group-hover:text-[#e0b277]'
-                    }`}>
-                      {faq.name}
-                    </h3>
-                  </div>
-                  
-                  <div className={`flex-shrink-0 transition-transform duration-300 ${
-                    openIndex === index ? 'rotate-180' : ''
-                  }`}>
-                    {openIndex === index ? (
-                      <ChevronUp className={`w-6 h-6 ${isDark ? 'text-[#e0b277]' : 'text-[#e0b277]'}`} />
-                    ) : (
-                      <ChevronDown className={`w-6 h-6 ${isDark ? 'text-gray-400' : 'text-gray-400'}`} />
-                    )}
-                  </div>
-                </button>
-
-                {/* الإجابة - تظهر عند الضغط */}
+            {faqs.map((faq, index) => {
+              // الحصول على السؤال والإجابة حسب اللغة
+              const question = getText(faq.name, faq.name_en);
+              const answer = getText(faq.des, faq.des_en);
+              
+              return (
                 <motion.div
-                  initial={false}
-                  animate={{
-                    height: openIndex === index ? 'auto' : 0,
-                    opacity: openIndex === index ? 1 : 0,
-                  }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className="overflow-hidden"
+                  key={faq.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className={`rounded-2xl overflow-hidden shadow-lg transition-all duration-300 ${
+                    isDark 
+                      ? 'bg-gray-800/50 hover:shadow-2xl hover:shadow-[#e0b277]/5' 
+                      : 'bg-white hover:shadow-2xl hover:shadow-gray-300/20'
+                  } ${openIndex === index ? 'ring-2 ring-[#e0b277]' : ''}`}
                 >
-                  <div className={`px-5 md:px-6 pb-5 md:pb-6 ${
-                    isDark ? 'text-gray-300' : 'text-gray-600'
-                  }`}>
-                    <div className={`pt-2 border-t ${
-                      isDark ? 'border-gray-700' : 'border-gray-200'
+                  {/* السؤال - زر الضغط */}
+                  <button
+                    onClick={() => toggleFAQ(index)}
+                    className="w-full p-5 md:p-6 text-left flex items-start justify-between gap-4 transition-colors"
+                  >
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className="flex-shrink-0 mt-1">
+                        <MessageCircle className={`w-5 h-5 ${isDark ? 'text-[#e0b277]' : 'text-[#e0b277]'}`} />
+                      </div>
+                      <h3 className={`text-lg md:text-xl font-semibold transition-colors ${
+                        isDark 
+                          ? 'text-white group-hover:text-[#e0b277]' 
+                          : 'text-gray-800 group-hover:text-[#e0b277]'
+                      }`}>
+                        {question}
+                      </h3>
+                    </div>
+                    
+                    <div className={`flex-shrink-0 transition-transform duration-300 ${
+                      openIndex === index ? 'rotate-180' : ''
                     }`}>
-                      <div className="flex items-start gap-3">
-                        <div className="w-1 h-full min-h-[20px] bg-[#e0b277] rounded-full flex-shrink-0" />
-                        <p className="text-sm md:text-base leading-relaxed">
-                          {faq.des}
-                        </p>
+                      {openIndex === index ? (
+                        <ChevronUp className={`w-6 h-6 ${isDark ? 'text-[#e0b277]' : 'text-[#e0b277]'}`} />
+                      ) : (
+                        <ChevronDown className={`w-6 h-6 ${isDark ? 'text-gray-400' : 'text-gray-400'}`} />
+                      )}
+                    </div>
+                  </button>
+
+                  {/* الإجابة - تظهر عند الضغط */}
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      height: openIndex === index ? 'auto' : 0,
+                      opacity: openIndex === index ? 1 : 0,
+                    }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="overflow-hidden"
+                  >
+                    <div className={`px-5 md:px-6 pb-5 md:pb-6 ${
+                      isDark ? 'text-gray-300' : 'text-gray-600'
+                    }`}>
+                      <div className={`pt-2 border-t ${
+                        isDark ? 'border-gray-700' : 'border-gray-200'
+                      }`}>
+                        <div className="flex items-start gap-3">
+                          <div className="w-1 h-full min-h-[20px] bg-[#e0b277] rounded-full flex-shrink-0" />
+                          <p className="text-sm md:text-base leading-relaxed">
+                            {answer}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-            ))}
+              );
+            })}
           </div>
 
           {/* إحصائيات */}

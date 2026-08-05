@@ -151,11 +151,11 @@ const About = () => {
               </p>
 
               {/* ✅ الوصف الطويل - حسب اللغة (لو موجود) */}
-              {getLocalizedText(aboutData, 'long_description') && (
+              {/* {getLocalizedText(aboutData, 'long_description') && (
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8 whitespace-pre-line">
                   {getLocalizedText(aboutData, 'long_description')}
                 </p>
-              )}
+              )} */}
 
               <Link to="/about" className="inline-block">
                 <button 
