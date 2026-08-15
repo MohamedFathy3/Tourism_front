@@ -223,13 +223,7 @@ const CompanyDetails = () => {
                   </div>
                 )}
                 
-                {/* ✅ سنة التأسيس */}
-                {companyData.yearFounded && companyData.yearFounded !== "غير محدد" && (
-                  <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                    <Calendar className="w-4 h-4" />
-                    <span>{lang === 'ar' ? 'تأسست: ' : 'Founded: '}{companyData.yearFounded}</span>
-                  </div>
-                )}
+              
               </div>
             </motion.div>
           </div>
@@ -246,7 +240,7 @@ const CompanyDetails = () => {
             <div className={`rounded-2xl p-6 md:p-8 mb-8 ${
               isDark ? 'bg-gray-800/50' : 'bg-white'
             } shadow-lg`}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* ✅ الموقع - حسب اللغة */}
                 <div className={`flex items-center gap-3 p-4 rounded-xl ${
                   isDark ? 'bg-gray-700/50' : 'bg-gray-50'
@@ -295,26 +289,7 @@ const CompanyDetails = () => {
                 </div>
 
                 {/* ✅ سنة التأسيس */}
-                <div className={`flex items-center gap-3 p-4 rounded-xl ${
-                  isDark ? 'bg-gray-700/50' : 'bg-gray-50'
-                }`}>
-                  <div className={`p-2 rounded-full ${
-                    isDark ? 'bg-[#e0b277]/20' : 'bg-[#e0b277]/10'
-                  }`}>
-                  </div>
-                  <div>
-                    <p className={`text-xs font-medium ${
-                      isDark ? 'text-gray-400' : 'text-gray-500'
-                    }`}>
-                      {lang === 'ar' ? ' سنة التأسيس' : ' Founded'}
-                    </p>
-                    <p className={`font-semibold ${
-                      isDark ? 'text-white' : 'text-gray-800'
-                    }`}>
-                      {companyData.yearFounded}
-                    </p>
-                  </div>
-                </div>
+               
               </div>
             </div>
 

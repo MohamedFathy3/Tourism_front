@@ -127,7 +127,7 @@ const NewsLetters = () => {
                 {lang === 'ar' ? 'لا توجد أخبار' : '📰 No News Available'}
               </h2>
               <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                {lang === 'ar' ? 'سيتم إضافة الأخبار قريباً' : 'News will be added soon'}
+                {lang === 'ar' ? 'سيتم إضافة ألأخبار قريباً' : 'News will be added soon'}
               </p>
             </div>
           </div>
@@ -162,19 +162,19 @@ const NewsLetters = () => {
             >
               {/* ✅ العنوان - حسب اللغة */}
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
-                {lang === 'ar' ? 'الأخبار' : 'News'}
+                {lang === 'ar' ? 'ألأخبار' : 'News'}
               </h1>
               <div className="w-20 h-1 bg-[#e0b277] mx-auto mb-4 rounded-full" />
               <p className="text-base md:text-lg max-w-2xl mx-auto text-gray-200">
                 {lang === 'ar' 
-                  ? 'آخر الأخبار والتحديثات من شركتنا'
-                  : 'Latest news and updates from our company'}
+                  ? 'اخر أخبار شركاتنا'
+                  : 'Stay updated with the latest news from our companies'}
               </p>
             </motion.div>
           </div>
         </div>
 
-        {/* قائمة الأخبار */}
+        {/* قائمة ألأخبار */}
         <div className="container mx-auto px-4 py-12 max-w-7xl">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {currentNews.map((news, index) => {

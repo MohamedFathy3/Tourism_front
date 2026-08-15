@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
-import ServicesSection from "@/components/ServicesSection";
+import ServicesSection from "@/components/ServicesSectionpage";
 import { useLanguage } from "@/i18n/LanguageContext";
 import Hero from "@/assets/2.jpeg";
 

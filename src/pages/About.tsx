@@ -41,9 +41,9 @@ const About = () => {
     title: lang === 'ar' ? 'من نحن' : 'About Us',
     brief: lang === 'ar' ? 'نبذة مختصرة' : 'Brief',
     story: lang === 'ar' ? 'قصتنا' : 'Our Story',
-    workTogether: lang === 'ar' ? 'لنعمل معاً' : "Let's Work Together",
+    workTogether: lang === 'ar' ? 'للإستفسار عن مشاريعنا' : "Let's Work Together",
     contactDesc: lang === 'ar' 
-      ? 'تواصل معنا اليوم لبدء مشروعك القادم' 
+      ? 'تواصل معنا' 
       : 'Contact us today to start your next project',
     contactBtn: lang === 'ar' ? 'تواصل معنا' : 'Contact Us',
     errorMsg: lang === 'ar' ? 'حدث خطأ في تحميل البيانات' : 'Error loading data',

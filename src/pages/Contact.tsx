@@ -213,12 +213,12 @@ const Contact = () => {
               className="text-center"
             >
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
-                {lang === 'ar' ? 'اتصل بنا' : 'Contact Us'}
+                {lang === 'ar' ? 'تواصل معنا' : 'Contact Us'}
               </h1>
               <div className="w-20 h-1 bg-[#e0b277] mx-auto mb-4 rounded-full" />
               <p className="text-base md:text-lg max-w-2xl mx-auto text-gray-200">
                 {lang === 'ar' 
-                  ? 'نحن هنا لخدمتك - تواصل معنا لأي استفسار'
+                  ? 'للمزيد من التفاصيل'
                   : 'We are here to serve you - Contact us for any inquiry'}
               </p>
             </motion.div>

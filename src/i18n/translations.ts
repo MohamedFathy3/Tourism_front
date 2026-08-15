@@ -5,7 +5,7 @@ export const translations = {
     nav: {
       home: "الرئيسية",
       about: "من نحن",
-      projects: "شركتنا",
+      projects: "شركاتنا  ",
       services: "مشاريعنا",
       blog: "المدونة",
       contact: "تواصل معنا",

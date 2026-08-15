@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/ServicesSection.tsx
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Building2, Home, Castle, Warehouse, Hotel, Store, Landmark, TreePine } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useCompany } from "@/hooks/useCompany";
+import { useServices } from "@/hooks/useServices";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router-dom";
 
@@ -15,7 +14,7 @@ const icons = [Building2, Home, Castle, Warehouse, Hotel, Store, Landmark, TreeP
 const ServicesSection = () => {
   const { t, dir, lang } = useLanguage();
   const { isDark } = useTheme();
-  const { companies, loading, error } = useCompany({ perPage: 20 });
+  const { services, loading, error } = useServices({ perPage: 20 });
   const navigate = useNavigate(); 
   const isRTL = dir === "rtl";
   const [activeIndex, setActiveIndex] = useState(0);
@@ -28,10 +27,10 @@ const ServicesSection = () => {
   const containerRef = useRef(null);
   const autoPlayRef = useRef(null);
 
-  const totalItems = companies.length;
+  const totalItems = services.length;
 
   // ✅ دالة مساعدة لجلب النص حسب اللغة
-  const getLocalizedText = (item: any, field: 'title' | 'long_description' | 'description' | 'location') => {
+  const getLocalizedText = (item: any, field: 'title' | 'description' | 'location') => {
     if (!item) return '';
     
     const isEnglish = lang === 'en';
@@ -46,20 +45,15 @@ const ServicesSection = () => {
 
   // بناء بيانات المشاريع من API
   const buildServicesData = () => {
-    if (companies.length > 0) {
-      return companies.map((company, index) => ({
-        id: company.id,
-        title: getLocalizedText(company, 'title') || company.title || `مشروع ${index + 1}`,
-        description: getLocalizedText(company, 'long_description') || 
-                     getLocalizedText(company, 'description') || 
-                     company.long_description || 
-                     company.description || 
-                     "مشروع مميز",
-        image: company.image?.fullUrl || company.imageUrl,
-        location: getLocalizedText(company, 'location') || company.location || "مصر",
-        yearFounded: company.year_founded || "",
-        active: company.active,
-        raw: company,
+    if (services.length > 0) {
+      return services.map((service, index) => ({
+        id: service.id,
+        title: getLocalizedText(service, 'title') || service.title || `مشروع ${index + 1}`,
+        description: getLocalizedText(service, 'description') || service.description || "مشروع مميز",
+        location: getLocalizedText(service, 'location') || service.location || "مصر",
+        image: service.image?.fullUrl || service.imageUrl,
+        active: service.active,
+        raw: service,
       }));
     }
 
@@ -129,7 +123,7 @@ const ServicesSection = () => {
     stopAutoPlay();
     const service = servicesData[index];
     if (service?.id) {
-      navigate(`/projects/${service.id}`);
+      navigate(`/services/${service.id}`);
     }
     resetAutoPlay();
   };
@@ -315,14 +309,14 @@ const ServicesSection = () => {
               ? 'bg-gradient-to-r from-[#e0b277] to-[#e6b84e] bg-clip-text text-transparent'
               : 'bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent'
           }`}>
-            {lang === 'ar' ? 'شركاتنا' : 'Our companies'}
+            {lang === 'ar' ? 'مشاريعنا' : 'Our Projects'}
           </h2>
           <p className={`text-sm mt-5 mb-11 sm:text-base md:text-lg max-w-2xl mx-auto px-4 transition-all duration-500 ${
             isDark ? 'text-gray-300' : 'text-gray-600'
           }`}>
             {lang === 'ar' 
-              ? 'تعرف على شركات سليم فرج جروب'
-              : 'Discover the companies of Selim Farag Group'}
+              ? 'تعرف على مشاريعنا المميزة - اختر المشروع المناسب لك'
+              : 'Explore our premium projects - Choose the right project for you'}
           </p>
           <div className="w-20 sm:w-24 h-1 bg-[#e0b277] mx-auto mt-4 sm:mt-6 rounded-full"></div>
         </motion.div>
@@ -382,16 +376,7 @@ const ServicesSection = () => {
                           : 'from-black/60 via-black/20 to-transparent'
                       }`} />
 
-                      {/* أيقونة المشروع */}
-                      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10">
-                        <div className={`p-2 sm:p-2.5 rounded-full ${
-                          isDark ? 'bg-black/60' : 'bg-white/90'
-                        } backdrop-blur-sm`}>
-                          <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${
-                            isDark ? 'text-[#e0b277]' : 'text-gray-700'
-                          }`} />
-                        </div>
-                      </div>
+                      
                     </div>
 
                     <div className={`p-3 sm:p-4 md:p-5 transition-all duration-500 ${
@@ -420,20 +405,11 @@ const ServicesSection = () => {
                             className="overflow-hidden"
                           >
                             {/* ✅ الموقع - حسب اللغة */}
-                            {service.location && service.location !== "." && (
+                            {service.location && (
                               <p className={`text-xs sm:text-sm text-center mb-2 ${
                                 isDark ? 'text-gray-400' : 'text-gray-500'
                               }`}>
                                 📍 {service.location}
-                              </p>
-                            )}
-                            
-                            {/* ✅ سنة التأسيس */}
-                            {service.yearFounded && service.yearFounded !== "." && (
-                              <p className={`text-xs sm:text-sm text-center mb-2 ${
-                                isDark ? 'text-gray-400' : 'text-gray-500'
-                              }`}>
-                                📅 {lang === 'ar' ? 'تأسست: ' : 'Founded: '}{service.yearFounded}
                               </p>
                             )}
                             

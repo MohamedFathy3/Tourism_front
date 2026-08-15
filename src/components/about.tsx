@@ -108,9 +108,9 @@ const About = () => {
 
       <section className="py-20 px-4">
         {/* ✅ العنوان - حسب اللغة */}
-        <h1 className="text-center font-bold mb-12 text-4xl md:text-5xl lg:text-6xl text-gray-800 dark:text-white">
+        {/* <h1 className="text-center font-bold mb-12 text-4xl md:text-5xl lg:text-6xl text-gray-800 dark:text-white">
           {getLocalizedText(aboutData, 'title') || t.about.pageTitle}
-        </h1>
+        </h1> */}
         
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
