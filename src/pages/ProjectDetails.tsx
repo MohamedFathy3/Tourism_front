@@ -236,63 +236,199 @@ const CompanyDetails = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            {/* بطاقة المعلومات السريعة */}
-            <div
-              className={`rounded-2xl p-6 md:p-8 mb-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
-                } shadow-lg`}
-            >
-              {/* الموقع */}
-              <div
-                className={`flex items-center gap-3 p-4 rounded-xl w-full ${isDark ? 'bg-gray-700/50' : 'bg-gray-50'
-                  }`}
-              >
-                <div
-                  className={`p-2 rounded-full ${isDark ? 'bg-[#e0b277]/20' : 'bg-[#e0b277]/10'
-                    }`}
-                >
+            {/* ✅ بطاقة المعلومات السريعة */}
+            <div className={`rounded-2xl p-6 md:p-8 mb-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
+              } shadow-lg`}>
+             <div className="grid grid-cols-1 gap-4">
+                {/* ✅ الموقع - حسب اللغة */}
+                <div className={`flex items-center gap-3 p-4 rounded-xl ${isDark ? 'bg-gray-700/50' : 'bg-gray-50'
+                  }`}>
+                  <div className={`p-2 rounded-full ${isDark ? 'bg-[#e0b277]/20' : 'bg-[#e0b277]/10'
+                    }`}>
+                  </div>
+                  <div>
+                    <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'
+                      }`}>
+                      {lang === 'ar' ? ' الموقع' : ' Location'}
+                    </p>
+                    <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'
+                      }`}>
+                      {companyData.location}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="flex-1">
-                  <p
-                    className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'
-                      }`}
-                  >
-                    {lang === 'ar' ? 'الموقع' : 'Location'}
-                  </p>
+            
+                {/* ✅ سنة التأسيس */}
 
-                  <p
-                    className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'
-                      }`}
-                  >
-                    {companyData.location}
-                  </p>
-                </div>
               </div>
             </div>
 
-            {/* وصف الشركة */}
-            <div
-              className={`rounded-2xl p-6 md:p-8 mb-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
-                } shadow-lg`}
-            >
-              <h2
-                className={`text-2xl md:text-3xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'
-                  }`}
-              >
+            {/* ✅ وصف الشركة - حسب اللغة */}
+            <div className={`rounded-2xl p-6 md:p-8 mb-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
+              } shadow-lg`}>
+              <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'
+                }`}>
                 {lang === 'ar' ? 'عن الشركة' : 'About Company'}
               </h2>
 
-              <div
-                className={`text-base md:text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'
-                  }`}
-              >
-                {companyData.description.split('\n').map(
-                  (paragraph: string, index: number) => (
-                    <p key={index} className="mb-4 last:mb-0">
-                      {paragraph.trim()}
-                    </p>
-                  )
-                )}
+              {/* ✅ الوصف مع دعم الفقرات */}
+              <div className={`text-base md:text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'
+                }`}>
+                {companyData.description.split('\n').map((paragraph: string, index: number) => (
+                  <p key={index} className="mb-4 last:mb-0">
+                    {paragraph.trim()}
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            {/* ✅ معرض الصور - Swiper مع تحكم كامل */}
+            {isClient && galleryImages.length > 0 && (
+              <div className={`rounded-2xl p-6 md:p-8 mb-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
+                } shadow-lg`}>
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-800'
+                    }`}>
+                    {lang === 'ar' ? 'معرض الصور' : 'Gallery'}
+                  </h3>
+
+                  {/* أزرار التحكم */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={goPrev}
+                      className={`p-2 rounded-full transition-all duration-300 ${isDark
+                        ? 'bg-gray-700 hover:bg-gray-600 text-white'
+                        : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                        }`}
+                      aria-label="Previous"
+                    >
+                    </button>
+                    <button
+                      onClick={goNext}
+                      className={`p-2 rounded-full transition-all duration-300 ${isDark
+                        ? 'bg-gray-700 hover:bg-gray-600 text-white'
+                        : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                        }`}
+                      aria-label="Next"
+                    >
+                    </button>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <Swiper
+                    modules={[Navigation, Pagination, Autoplay, EffectFade]}
+                    spaceBetween={20}
+                    slidesPerView={1}
+                    navigation={false}
+                    pagination={{
+                      clickable: true,
+                      dynamicBullets: true,
+                    }}
+                    autoplay={false}
+                    effect="slide"
+                    speed={500}
+                    loop={galleryImages.length > 1}
+                    onSwiper={(swiper) => {
+                      swiperRef.current = swiper;
+                    }}
+                    className="gallery-swiper"
+                    breakpoints={{
+                      640: {
+                        slidesPerView: 1,
+                        spaceBetween: 20,
+                      },
+                      768: {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                      },
+                      1024: {
+                        slidesPerView: 3,
+                        spaceBetween: 30,
+                      },
+                    }}
+                  >
+                    {galleryImages.map((imageUrl: string, index: number) => (
+                      <SwiperSlide key={index}>
+                        <div
+                          className="relative group rounded-xl overflow-hidden cursor-pointer aspect-[4/3]"
+                          onClick={() => setSelectedImage(imageUrl)}
+                        >
+                          <img
+                            src={imageUrl}
+                            alt={`${companyData.name} - ${index + 1}`}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            loading="lazy"
+                            onError={(e) => {
+                              const fallbackIndex = index % fallbackImages.length;
+                              e.currentTarget.src = fallbackImages[fallbackIndex];
+                            }}
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <Eye className="w-10 h-10 text-white" />
+                            <span className="absolute bottom-4 left-4 text-white text-sm bg-black/50 px-3 py-1 rounded-full">
+                              {index + 1} / {galleryImages.length}
+                            </span>
+                          </div>
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+
+                  {/* Pagination مخصصة */}
+                  <style>{`
+                    .gallery-swiper :global(.swiper-pagination) {
+                      position: relative;
+                      margin-top: 20px;
+                      display: flex;
+                      justify-content: center;
+                      gap: 8px;
+                    }
+                    
+                    .gallery-swiper :global(.swiper-pagination-bullet) {
+                      width: 10px;
+                      height: 10px;
+                      background: ${isDark ? '#4a4a4a' : '#d1d5db'};
+                      opacity: 1;
+                      border-radius: 50%;
+                      transition: all 0.3s ease;
+                    }
+                    
+                    .gallery-swiper :global(.swiper-pagination-bullet-active) {
+                      background: #e0b277;
+                      transform: scale(1.2);
+                      width: 14px;
+                      height: 14px;
+                    }
+                    
+                    .gallery-swiper :global(.swiper-pagination-bullet):hover {
+                      transform: scale(1.1);
+                    }
+                  `}</style>
+                </div>
+              </div>
+            )}
+
+           {/* أزرار التنقل */} 
+            <div className={`rounded-2xl p-6 md:p-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
+              } shadow-lg`}>
+              <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+                <button
+                  onClick={() => navigate('/projects')}
+                  className={`flex items-center gap-2 text-[#e0b277] hover:text-[#b88d2e] transition-colors font-semibold ${isRTL ? 'flex-row-reverse' : ''
+                    }`}
+                >
+                  {lang === 'ar' ? 'العودة للشركات' : 'Back to Companies'}
+                </button>
+
+                <Link
+                  to="/contact"
+                  className="bg-[#e0b277] hover:bg-[#b88d2e] text-black px-6 md:px-8 py-3 font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
+                  style={{ borderRadius: '10px' }}
+                >
+                  {lang === 'ar' ? 'تواصل معنا' : 'Contact Us'}
+                </Link>
               </div>
             </div>
           </motion.div>
