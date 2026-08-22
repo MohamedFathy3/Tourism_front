@@ -43,6 +43,7 @@ export interface ContactFormData {
   address: string;
   subject: string;
   message: string;
+  service_id: number | null;
 }
 
 export interface ContactFormResponse {
@@ -62,10 +63,10 @@ export class ContactService extends BaseService<ContactData> {
       const response = await api.post('/page-contact-us/index', {
         filters: { active: true },
       });
-      
+
       // ✅ طباعة الرد للتصحيح
       console.log('📡 API Response:', response.data);
-      
+
       return response.data;
     } catch (error) {
       console.error('Error fetching contact page:', error);
