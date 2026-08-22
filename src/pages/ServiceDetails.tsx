@@ -10,7 +10,7 @@ import {
   Calendar,
   User,
   ArrowRight,
-  
+
   CheckCircle,
   Star,
   Clock,
@@ -241,16 +241,24 @@ const ProjectDetails = () => {
               </h2>
 
               {/* ✅ الوصف مع دعم الفقرات */}
-              <div className={`text-base md:text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'
-                }`}>
+              <div
+                className={`text-base md:text-lg leading-relaxed font-bold ${isDark ? 'text-gray-300' : 'text-gray-700'
+                  }`}
+              >
                 {projectData.description ? (
-                  projectData.description.split('\n').map((paragraph: string, index: number) => (
-                    <p key={index} className="mb-4 last:mb-0">
-                      {paragraph.trim()}
-                    </p>
-                  ))
+                  projectData.description.split('\n').map(
+                    (paragraph: string, index: number) => (
+                      <p key={index} className="mb-4 last:mb-0">
+                        {paragraph.trim()}
+                      </p>
+                    )
+                  )
                 ) : (
-                  <p>{lang === 'ar' ? 'لا يوجد وصف لهذا المشروع' : 'No description available'}</p>
+                  <p>
+                    {lang === 'ar'
+                      ? 'لا يوجد وصف لهذا المشروع'
+                      : 'No description available'}
+                  </p>
                 )}
               </div>
             </div>
@@ -270,8 +278,8 @@ const ProjectDetails = () => {
                     <button
                       onClick={goPrev}
                       className={`p-2 rounded-full transition-all duration-300 ${isDark
-                          ? 'bg-gray-700 hover:bg-gray-600 text-white'
-                          : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                        ? 'bg-gray-700 hover:bg-gray-600 text-white'
+                        : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
                         }`}
                       aria-label="Previous"
                     >
@@ -280,8 +288,8 @@ const ProjectDetails = () => {
                     <button
                       onClick={goNext}
                       className={`p-2 rounded-full transition-all duration-300 ${isDark
-                          ? 'bg-gray-700 hover:bg-gray-600 text-white'
-                          : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                        ? 'bg-gray-700 hover:bg-gray-600 text-white'
+                        : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
                         }`}
                       aria-label="Next"
                     >

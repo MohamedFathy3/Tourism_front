@@ -162,7 +162,7 @@ const NewsLetters = () => {
             >
               {/* ✅ العنوان - حسب اللغة */}
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
-                {lang === 'ar' ? 'ألأخبار' : 'News'}
+                {lang === 'ar' ? 'الأخبار' : 'News'}
               </h1>
               <div className="w-20 h-1 bg-[#e0b277] mx-auto mb-4 rounded-full" />
               <p className="text-base md:text-lg max-w-2xl mx-auto text-gray-200">

@@ -10,7 +10,7 @@ export const translations = {
       blog: "المدونة",
       contact: "تواصل معنا",
       name: " نبني  علي أسس  وننجز بإتقان",
-      news:" الاخبار",
+      news:" الأخبار",
       careers:"تقديم علي وظيفه",
       faq:"الأسئلة الشائعة"
     },
