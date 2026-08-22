@@ -4,11 +4,11 @@ import { useServiceById } from "@/hooks/useServices";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowLeft, 
-  MapPin, 
-  Calendar, 
-  User, 
+import {
+  ArrowLeft,
+  MapPin,
+  Calendar,
+  User,
   ArrowRight,
   CheckCircle,
   Star,
@@ -54,14 +54,14 @@ const ProjectDetails = () => {
   // ✅ دالة مساعدة لجلب النص حسب اللغة
   const getLocalizedText = (item: any, field: 'title' | 'description' | 'location' | 'long_description') => {
     if (!item) return '';
-    
+
     const isEnglish = lang === 'en';
     const enField = `${field}_en`;
-    
+
     if (isEnglish && item[enField]) {
       return item[enField];
     }
-    
+
     return item[field] || '';
   };
 
@@ -91,7 +91,7 @@ const ProjectDetails = () => {
           <div className="text-center px-4">
             <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 px-6 py-4 rounded-lg max-w-md mx-auto">
               <p className="font-semibold text-lg">⚠️ {error || (lang === 'ar' ? 'المشروع غير موجود' : 'Project not found')}</p>
-              <button 
+              <button
                 onClick={() => navigate('/services')}
                 className="mt-4 bg-[#e0b277] hover:bg-[#b88d2e] text-white px-6 py-2 rounded-full transition-colors"
               >
@@ -149,7 +149,7 @@ const ProjectDetails = () => {
     <>
       <Navbar />
       <div className={`min-h-screen ${isDark ? 'bg-black' : 'bg-gray-50'}`}>
-        
+
         {/* Hero Section */}
         <div className="relative h-[60vh] min-h-[400px] md:min-h-[500px]">
           <img
@@ -161,7 +161,7 @@ const ProjectDetails = () => {
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
-          
+
           {/* زر العودة */}
           <button
             onClick={() => navigate('/services')}
@@ -173,13 +173,13 @@ const ProjectDetails = () => {
 
           {/* أزرار المشاركة */}
           <div className={`absolute top-4 ${isRTL ? 'left-4' : 'right-4'} z-20 flex gap-2`}>
-            <button 
+            <button
               className="bg-white/20 backdrop-blur-sm p-2 md:p-3 rounded-full hover:bg-white/30 transition-all duration-300 hover:scale-110"
               onClick={() => setIsLiked(!isLiked)}
             >
               <Heart className={`w-5 h-5 md:w-6 md:h-6 ${isLiked ? 'text-red-500 fill-red-500' : 'text-white'}`} />
             </button>
-            <button 
+            <button
               className="bg-white/20 backdrop-blur-sm p-2 md:p-3 rounded-full hover:bg-white/30 transition-all duration-300 hover:scale-110"
               onClick={() => {
                 if (navigator.share) {
@@ -207,12 +207,12 @@ const ProjectDetails = () => {
               <div className="inline-block bg-[#e0b277] text-white px-4 py-1 rounded-full text-sm font-semibold mb-4">
                 #{String(projectData.id).padStart(3, '0')}
               </div>
-              
+
               {/* ✅ العنوان - حسب اللغة */}
               <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3">
                 {projectData.title}
               </h1>
-              
+
               {/* ✅ الموقع - حسب اللغة */}
               {projectData.location && (
                 <div className="flex items-center justify-center gap-2 text-gray-200 text-sm md:text-base">
@@ -232,19 +232,16 @@ const ProjectDetails = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             {/* ✅ وصف المشروع - حسب اللغة */}
-            <div className={`rounded-2xl p-6 md:p-8 mb-8 ${
-              isDark ? 'bg-gray-800/50' : 'bg-white'
-            } shadow-lg`}>
-              <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${
-                isDark ? 'text-white' : 'text-gray-800'
-              }`}>
+            <div className={`rounded-2xl p-6 md:p-8 mb-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
+              } shadow-lg`}>
+              <h2 className={`text-2xl md:text-3xl font-bold mb-4 ${isDark ? 'text-white' : 'text-gray-800'
+                }`}>
                 {lang === 'ar' ? 'وصف المشروع' : 'Project Description'}
               </h2>
-              
+
               {/* ✅ الوصف مع دعم الفقرات */}
-              <div className={`text-base md:text-lg leading-relaxed ${
-                isDark ? 'text-gray-300' : 'text-gray-700'
-              }`}>
+              <div className={`text-base md:text-lg leading-relaxed ${isDark ? 'text-gray-300' : 'text-gray-700'
+                }`}>
                 {projectData.description ? (
                   projectData.description.split('\n').map((paragraph: string, index: number) => (
                     <p key={index} className="mb-4 last:mb-0">
@@ -259,50 +256,46 @@ const ProjectDetails = () => {
 
             {/* ✅ معرض الصور - Swiper مع تحكم كامل */}
             {isClient && hasGallery && (
-              <div className={`rounded-2xl p-6 md:p-8 mb-8 ${
-                isDark ? 'bg-gray-800/50' : 'bg-white'
-              } shadow-lg`}>
+              <div className={`rounded-2xl p-6 md:p-8 mb-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
+                } shadow-lg`}>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className={`text-2xl md:text-3xl font-bold ${
-                    isDark ? 'text-white' : 'text-gray-800'
-                  }`}>
+                  <h3 className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-800'
+                    }`}>
                     {lang === 'ar' ? 'معرض الصور' : 'Gallery'}
                   </h3>
-                  
+
                   {/* أزرار التحكم */}
                   <div className="flex gap-2">
                     <button
                       onClick={goPrev}
-                      className={`p-2 rounded-full transition-all duration-300 ${
-                        isDark 
-                          ? 'bg-gray-700 hover:bg-gray-600 text-white' 
+                      className={`p-2 rounded-full transition-all duration-300 ${isDark
+                          ? 'bg-gray-700 hover:bg-gray-600 text-white'
                           : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                      }`}
+                        }`}
                       aria-label="Previous"
                     >
                       <ChevronLeft className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
                     </button>
                     <button
                       onClick={goNext}
-                      className={`p-2 rounded-full transition-all duration-300 ${
-                        isDark 
-                          ? 'bg-gray-700 hover:bg-gray-600 text-white' 
+                      className={`p-2 rounded-full transition-all duration-300 ${isDark
+                          ? 'bg-gray-700 hover:bg-gray-600 text-white'
                           : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                      }`}
+                        }`}
                       aria-label="Next"
                     >
                       <ChevronRight className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
                     </button>
                   </div>
                 </div>
-                
+
                 <div className="relative">
                   <Swiper
                     modules={[Navigation, Pagination, Autoplay]}
                     spaceBetween={20}
                     slidesPerView={1}
                     navigation={false}
-                    pagination={{ 
+                    pagination={{
                       clickable: true,
                       dynamicBullets: true,
                     }}
@@ -330,7 +323,7 @@ const ProjectDetails = () => {
                   >
                     {galleryImages.map((image, index) => (
                       <SwiperSlide key={index}>
-                        <div 
+                        <div
                           className="relative group rounded-xl overflow-hidden cursor-pointer aspect-[4/3]"
                           onClick={() => setSelectedImage(image.fullUrl)}
                         >
@@ -389,20 +382,18 @@ const ProjectDetails = () => {
             )}
 
             {/* أزرار التنقل */}
-            <div className={`rounded-2xl p-6 md:p-8 ${
-              isDark ? 'bg-gray-800/50' : 'bg-white'
-            } shadow-lg`}>
+            <div className={`rounded-2xl p-6 md:p-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
+              } shadow-lg`}>
               <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
                 <button
                   onClick={() => navigate('/services')}
-                  className={`flex items-center gap-2 text-[#e0b277] hover:text-[#b88d2e] transition-colors font-semibold ${
-                    isRTL ? 'flex-row-reverse' : ''
-                  }`}
+                  className={`flex items-center gap-2 text-[#e0b277] hover:text-[#b88d2e] transition-colors font-semibold ${isRTL ? 'flex-row-reverse' : ''
+                    }`}
                 >
                   <ArrowLeft className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
                   {lang === 'ar' ? 'العودة للمشاريع' : 'Back to Projects'}
                 </button>
-                
+
                 <Link
                   to="/contact"
                   className="bg-[#e0b277] hover:bg-[#b88d2e] text-black px-6 md:px-8 py-3 rounded-full font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
