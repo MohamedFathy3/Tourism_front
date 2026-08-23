@@ -268,7 +268,7 @@ const Contact = () => {
                 } shadow-lg`}>
                 <h2 className={`text-2xl md:text-3xl font-bold mb-6 ${isDark ? 'text-white' : 'text-gray-800'
                   }`}>
-                  {lang === 'ar' ? 'معلومات الاتصال' : 'Contact Information'}
+                  {lang === 'ar' ? 'معلومات الإتصال' : 'Contact Information'}
                 </h2>
 
                 <div className="space-y-6">
@@ -280,7 +280,7 @@ const Contact = () => {
                       </div>
                       <div>
                         <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                          {lang === 'ar' ? 'الهاتف' : 'Phone'}
+                          {lang === 'ar' ? 'الخط الساخن' : 'Hotline'}
                         </p>
                         <a
                           href={`tel:${phoneOne}`}
@@ -301,7 +301,7 @@ const Contact = () => {
                       </div>
                       <div>
                         <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                          {lang === 'ar' ? 'هاتف آخر' : 'Phone 2'}
+                          {lang === 'ar' ? ' رقم الهاتف' : 'Phone Number'}
                         </p>
                         <a
                           href={`tel:${phoneTwo}`}
@@ -465,7 +465,7 @@ const Contact = () => {
                 <div>
                   <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'
                     }`}>
-                    {lang === 'ar' ? 'الاسم الكامل' : 'Full Name'} *
+                    {lang === 'ar' ? 'الإسم الكامل' : 'Full Name'} *
                   </label>
                   <input
                     type="text"
@@ -545,8 +545,8 @@ const Contact = () => {
                     onChange={handleChange}
                     disabled={servicesLoading}
                     className={`w-full px-4 py-2 rounded-lg border transition-colors ${isDark
-                        ? 'border-gray-600 bg-gray-700 text-white focus:border-[#e0b277]'
-                        : 'border-gray-300 bg-white text-gray-900 focus:border-[#e0b277]'
+                      ? 'border-gray-600 bg-gray-700 text-white focus:border-[#e0b277]'
+                      : 'border-gray-300 bg-white text-gray-900 focus:border-[#e0b277]'
                       } ${servicesLoading
                         ? 'opacity-70 cursor-not-allowed'
                         : ''
@@ -578,7 +578,7 @@ const Contact = () => {
                 <div>
                   <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'
                     }`}>
-                    {lang === 'ar' ? 'الرسالة' : 'Message'} *
+                    {lang === 'ar' ? 'الإستفسار' : 'lnquiry'} *
                   </label>
                   <textarea
                     name="message"
