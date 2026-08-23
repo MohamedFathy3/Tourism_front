@@ -205,9 +205,9 @@ const ProjectDetails = () => {
               className="text-center text-white"
             >
               {/* ✅ رقم المشروع */}
-              <div className="inline-block bg-[#e0b277] text-white px-4 py-1 rounded-full text-sm font-semibold mb-4">
+              {/* <div className="inline-block bg-[#e0b277] text-white px-4 py-1 rounded-full text-sm font-semibold mb-4">
                 #{String(projectData.id).padStart(3, '0')}
-              </div>
+              </div> */}
 
               {/* ✅ العنوان - حسب اللغة */}
               <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3">
@@ -270,7 +270,7 @@ const ProjectDetails = () => {
                 <div className="flex items-center justify-between mb-6">
                   <h3 className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-800'
                     }`}>
-                    {lang === 'ar' ? 'معرض الصور' : 'Gallery'}
+                    {lang === 'ar' ? ' الصورالمشروع ' : 'Gallery'}
                   </h3>
 
                   {/* أزرار التحكم */}

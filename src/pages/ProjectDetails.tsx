@@ -239,7 +239,7 @@ const CompanyDetails = () => {
             {/* ✅ بطاقة المعلومات السريعة */}
             <div className={`rounded-2xl p-6 md:p-8 mb-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
               } shadow-lg`}>
-              <div className="grid grid-cols-1 gap-4">
+             <div className="grid grid-cols-1 gap-4">
                 {/* ✅ الموقع - حسب اللغة */}
                 <div className={`flex items-center gap-3 p-4 rounded-xl ${isDark ? 'bg-gray-700/50' : 'bg-gray-50'
                   }`}>
@@ -258,7 +258,7 @@ const CompanyDetails = () => {
                   </div>
                 </div>
 
-
+            
                 {/* ✅ سنة التأسيس */}
 
               </div>
@@ -290,7 +290,7 @@ const CompanyDetails = () => {
                 <div className="flex items-center justify-between mb-6">
                   <h3 className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-800'
                     }`}>
-                    {lang === 'ar' ? ' الصورالمشورع ' : 'Gallery'}
+                    {lang === 'ar' ? 'معرض الصور' : 'Gallery'}
                   </h3>
 
                   {/* أزرار التحكم */}
@@ -410,7 +410,7 @@ const CompanyDetails = () => {
               </div>
             )}
 
-            {/* أزرار التنقل */}
+           {/* أزرار التنقل */} 
             <div className={`rounded-2xl p-6 md:p-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
               } shadow-lg`}>
               <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">

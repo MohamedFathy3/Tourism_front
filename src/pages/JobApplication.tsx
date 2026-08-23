@@ -206,7 +206,7 @@ const JobApplication = () => {
             <h2 className={`text-2xl md:text-3xl font-bold mb-6 ${
               isDark ? 'text-white' : 'text-gray-800'
             }`}>
-              {lang === 'ar' ? ' املأ البيانات' : ' Fill in the details'}
+              {lang === 'ar' ? ' املأ البيانات' : ' Aplly Now'}
             </h2>
 
             {/* رسالة النجاح */}

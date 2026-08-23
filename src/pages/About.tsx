@@ -3,8 +3,8 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { motion } from "framer-motion";
-import { 
-  Building2, 
+import {
+  Building2,
   ArrowRight,
   FileText,
   AlignJustify
@@ -23,15 +23,15 @@ const About = () => {
   // ✅ دالة مساعدة لجلب النص حسب اللغة
   const getLocalizedText = (item: any, field: 'title' | 'description' | 'long_description') => {
     if (!item) return '';
-    
+
     const isEnglish = lang === 'en';
     const enField = `${field}_en`;
-    
+
     // لو اللغة إنجليزية والـ API مدعوم
     if (isEnglish && item[enField]) {
       return item[enField];
     }
-    
+
     // غير كده استخدم العربية
     return item[field] || '';
   };
@@ -41,9 +41,9 @@ const About = () => {
     title: lang === 'ar' ? 'من نحن' : 'About Us',
     brief: lang === 'ar' ? 'نبذة مختصرة' : 'Brief',
     story: lang === 'ar' ? 'قصتنا' : 'Our Story',
-    workTogether: lang === 'ar' ? 'للإستفسار عن مشاريعنا' : "Let's Work Together",
-    contactDesc: lang === 'ar' 
-      ? 'تواصل معنا' 
+    workTogether: lang === 'ar' ? 'للإستفسار عن مشاريعنا' : "For more details",
+    contactDesc: lang === 'ar'
+      ? 'تواصل معنا'
       : 'Contact us today to start your next project',
     contactBtn: lang === 'ar' ? 'تواصل معنا' : 'Contact Us',
     errorMsg: lang === 'ar' ? 'حدث خطأ في تحميل البيانات' : 'Error loading data',
@@ -92,9 +92,9 @@ const About = () => {
   return (
     <>
       <Navbar />
-      
+
       {/* الصفحة كاملة - صورة خلفية مع نص في المنتصف */}
-      <div 
+      <div
         className="min-h-screen relative flex items-center justify-center"
         style={{
           backgroundImage: `url(${data.image?.fullUrl || data.imageUrl})`,
@@ -105,7 +105,7 @@ const About = () => {
       >
         {/* طبقة التعتيم */}
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-        
+
         {/* المحتوى في المنتصف */}
         <div className="relative z-10 mt-20 container mx-auto px-4 py-12 md:py-20 max-w-5xl">
           <motion.div
@@ -130,7 +130,7 @@ const About = () => {
                     {translations.brief}
                   </h2>
                 </div>
-                
+
                 <p className="text-base md:text-lg leading-relaxed text-white/90 whitespace-pre-line">
                   {getLocalizedText(data, 'description')}
                 </p>
@@ -145,7 +145,7 @@ const About = () => {
                     {translations.story}
                   </h2>
                 </div>
-                
+
                 <div className="space-y-4 text-white/90">
                   {getLocalizedText(data, 'long_description').split('\n').map((paragraph, index) => (
                     <p key={index} className="text-base md:text-lg leading-relaxed">
@@ -166,7 +166,7 @@ const About = () => {
               </p>
               <Link
                 to="/contact"
-                style={{borderRadius:"10px"}}
+                style={{ borderRadius: "10px" }}
                 className="inline-flex items-center gap-2 bg-[#e0b277] hover:bg-[#b88d2e] text-black px-8 py-3 font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/50"
               >
                 {translations.contactBtn}
@@ -176,7 +176,7 @@ const About = () => {
           </motion.div>
         </div>
       </div>
-      
+
       <Footer />
     </>
   );
