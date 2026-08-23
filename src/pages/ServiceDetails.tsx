@@ -270,7 +270,7 @@ const ProjectDetails = () => {
                 <div className="flex items-center justify-between mb-6">
                   <h3 className={`text-2xl md:text-3xl font-bold ${isDark ? 'text-white' : 'text-gray-800'
                     }`}>
-                    {lang === 'ar' ? ' الصورالمشروع ' : 'Gallery'}
+                    {lang === 'ar' ? ' صور المشروع' : 'Gallery'}
                   </h3>
 
                   {/* أزرار التحكم */}
