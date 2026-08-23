@@ -425,7 +425,7 @@ const ServicesSection = () => {
                               <p className={`text-xs sm:text-sm text-center mb-2 ${
                                 isDark ? 'text-gray-400' : 'text-gray-500'
                               }`}>
-                                📅 {lang === 'ar' ? 'تأسست: ' : 'Founded: '}{service.yearFounded}
+                                 {lang === 'ar' ? 'تأسست: ' : 'Founded: '}{service.yearFounded}
                               </p>
                             )}
                             
