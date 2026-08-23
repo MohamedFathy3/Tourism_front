@@ -212,13 +212,13 @@ Description:"تصاميم عصرية تراعي المعايير الوظيفي�
   en: {
     nav: {
       home: "Home",
-      about: "About",
-      projects: "Projects",
+      about: "About us",
+      projects: "Our Projects",
       services: "Our Company",
       blog: "Blog",
-      contact: "Contact",
+      contact: "Contact us",
       name: "Building on Foundations, Delivering with Precision",
-      news:"news-letters",
+      news:"News",
       careers:"careers",
       faq:"FAQ"
     },

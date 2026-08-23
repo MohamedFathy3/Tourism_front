@@ -409,7 +409,7 @@ const ServicesSection = () => {
                               <p className={`text-xs sm:text-sm text-center mb-2 ${
                                 isDark ? 'text-gray-400' : 'text-gray-500'
                               }`}>
-                                📍 {service.location}
+                                 {service.location}
                               </p>
                             )}
                             

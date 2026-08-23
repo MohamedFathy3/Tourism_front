@@ -383,15 +383,7 @@ const ServicesSection = () => {
                       }`} />
 
                       {/* أيقونة المشروع */}
-                      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10">
-                        <div className={`p-2 sm:p-2.5 rounded-full ${
-                          isDark ? 'bg-black/60' : 'bg-white/90'
-                        } backdrop-blur-sm`}>
-                          <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${
-                            isDark ? 'text-[#e0b277]' : 'text-gray-700'
-                          }`} />
-                        </div>
-                      </div>
+                     
                     </div>
 
                     <div className={`p-3 sm:p-4 md:p-5 transition-all duration-500 ${
@@ -424,7 +416,7 @@ const ServicesSection = () => {
                               <p className={`text-xs sm:text-sm text-center mb-2 ${
                                 isDark ? 'text-gray-400' : 'text-gray-500'
                               }`}>
-                                📍 {service.location}
+                                 {service.location}
                               </p>
                             )}
                             

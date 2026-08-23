@@ -460,7 +460,7 @@ const ProjectsPreview = () => {
                               {project.location && project.location !== "." && (
                                 <p className={`text-xs sm:text-sm text-center mb-1 ${isDark ? 'text-gray-400' : 'text-gray-500'
                                   }`}>
-                                  📍 {project.location}
+                                   {project.location}
                                 </p>
                               )}
 
