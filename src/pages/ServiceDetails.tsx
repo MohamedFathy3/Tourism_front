@@ -403,12 +403,23 @@ const ProjectDetails = () => {
                   {lang === 'ar' ? 'العودة للمشاريع' : 'Back to Projects'}
                 </button>
 
-                <Link
+                {/* <Link
                   to="/contact"
-                  className="bg-[#e0b277] hover:bg-[#b88d2e] text-black px-6 md:px-8 py-3 rounded-full font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
+                  className="bg-[#e0b277] hover:bg-[#b88d2e] text-black px-8 md:px-10 py-3.5 rounded-full font-semibold transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
                 >
                   {lang === 'ar' ? 'استفسر عن المشروع' : 'Inquire About Project'}
-                  <ArrowRight className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`} />
+
+                  <ArrowRight
+                    className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`}
+                  />
+                </Link> */}
+                <Link
+                  to="/contact"
+                  className="bg-[#e0b277] hover:bg-[#b88d2e] text-black px-6 md:px-8 py-3 font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
+                  style={{ borderRadius: '10px' }}
+                >
+                  {lang === 'ar' ? 'استفسر عن المشروع' : 'Inquire About Project'}
+
                 </Link>
               </div>
             </div>
