@@ -279,7 +279,7 @@ const ServicesSection = () => {
           <h2 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-4 ${
             isDark ? 'text-white' : 'text-gray-800'
           }`}>
-            {lang === 'ar' ? 'مشاريعنا' : 'Our Projects'}
+            {lang === 'ar' ? ' تعرف على مشاريعنا المميزة ' : 'Our Projects'}
           </h2>
           <p className={`text-lg ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
             {lang === 'ar' ? 'لا توجد مشاريع حالياً' : 'No projects available'}
@@ -309,13 +309,13 @@ const ServicesSection = () => {
               ? 'bg-gradient-to-r from-[#e0b277] to-[#e6b84e] bg-clip-text text-transparent'
               : 'bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent'
           }`}>
-            {lang === 'ar' ? 'مشاريعنا' : 'Our Projects'}
+            {lang === 'ar' ? ' تعرف على مشاريعنا المميزة ' : 'Our Projects'}
           </h2>
           <p className={`text-sm mt-5 mb-11 sm:text-base md:text-lg max-w-2xl mx-auto px-4 transition-all duration-500 ${
             isDark ? 'text-gray-300' : 'text-gray-600'
           }`}>
             {lang === 'ar' 
-              ? 'تعرف على مشاريعنا المميزة - اختر المشروع المناسب لك'
+              ? ' اختر المشروع المناسب لك'
               : 'Explore our premium projects - Choose the right project for you'}
           </p>
           <div className="w-20 sm:w-24 h-1 bg-[#e0b277] mx-auto mt-4 sm:mt-6 rounded-full"></div>

@@ -182,7 +182,7 @@ const Navbar = () => {
                                 onClick={() => setOpenDropdown(null)}
                                 className={`block px-4 py-2 text-sm font-semibold text-[#e0b277] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors`}
                               >
-                                {lang === 'ar' ? 'عرض جميع المشاريع →' : 'View all projects →'}
+                                {lang === 'ar' ? 'عرض جميع المشاريع →' : 'Our Projects →'}
                               </Link>
                             </div>
                           </div>
@@ -253,7 +253,7 @@ const Navbar = () => {
             onClick={() => setOpenDropdown(null)}
             className={`block px-4 py-2 text-sm font-semibold text-[#e0b277] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors`}
           >
-            {lang === 'ar' ? 'عرض جميع الشركات →' : 'View all companies →'}
+            {lang === 'ar' ? 'عرض جميع الشركات →' : 'Our Companies →'}
           </Link>
         </div>
       </div>

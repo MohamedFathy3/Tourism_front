@@ -413,7 +413,7 @@ const ProjectDetails = () => {
                     className={`w-4 h-4 ${isRTL ? 'rotate-180' : ''}`}
                   />
                 </Link> */}
-                <Link
+                <Link 
                   to="/contact"
                   className="bg-[#e0b277] hover:bg-[#b88d2e] text-black px-6 md:px-8 py-3 font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/30"
                   style={{ borderRadius: '10px' }}

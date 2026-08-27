@@ -7,7 +7,8 @@ import {
   Building2,
   ArrowRight,
   FileText,
-  AlignJustify
+  AlignJustify,
+  MessageCircle
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -157,22 +158,32 @@ const About = () => {
             )}
 
             {/* ✅ زر التواصل - حسب اللغة */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-white/20 text-center">
-              <h3 className="text-xl md:text-2xl font-bold text-white mb-3">
-                {translations.workTogether}
-              </h3>
-              <p className="text-sm md:text-base text-white/70 mb-6">
-                {translations.contactDesc}
-              </p>
-              <Link
-                to="/contact"
-                style={{ borderRadius: "10px" }}
-                className="inline-flex items-center gap-2 bg-[#e0b277] hover:bg-[#b88d2e] text-black px-8 py-3 font-semibold transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-[#e0b277]/50"
-              >
-                {translations.contactBtn}
-                <ArrowRight className={`w-4 h-4 ${dir === 'rtl' ? 'rotate-180' : ''}`} />
-              </Link>
-            </div>
+           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-white/20 text-center flex flex-col items-center justify-center">
+  <h3 className="text-xl md:text-2xl font-bold text-white mb-3">
+    {translations.workTogether}
+  </h3>
+
+  <p className="text-sm md:text-base text-white/70 mb-6">
+    {translations.contactDesc}
+  </p>
+
+  <Link
+    to="/contact"
+    style={{
+      borderRadius: "10px",
+      width: "fit-content",
+      textAlign: "center"
+    }}
+    className={`flex items-center gap-2 px-4 py-2 transition-all duration-300 font-medium ${
+      isDark
+        ? 'bg-[#e0b277] hover:bg-[#b88d2e] text-black'
+        : 'bg-[#e0b277] hover:bg-[#b88d2e] text-black'
+    } shadow-lg hover:shadow-[#e0b277]/30 hover:scale-105`}
+  >
+    <MessageCircle size={16} />
+    <span>{lang === 'ar' ? 'تواصل معنا' : 'Contact Us'}</span>
+  </Link>
+</div>
           </motion.div>
         </div>
       </div>
