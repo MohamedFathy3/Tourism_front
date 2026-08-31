@@ -5,8 +5,8 @@ export const translations = {
     nav: {
       home: "الرئيسية",
       about: "من نحن",
-      projects: "شركاتنا  ",
-      services: "مشاريعنا",
+      projects: "مشاريعنا  ",
+      services: "شركاتنا",
       blog: "المدونة",
       contact: "تواصل معنا",
       name: " نبني  علي أسس  وننجز بإتقان",
@@ -219,7 +219,7 @@ Description:"تصاميم عصرية تراعي المعايير الوظيفي�
       contact: "Contact us",
       name: "Building on Foundations, Delivering with Precision",
       news:"News",
-      careers:"careers",
+      careers:"Careers",
       faq:"FAQ"
     },
     hero: {

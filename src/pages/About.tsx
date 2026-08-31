@@ -105,7 +105,7 @@ const About = () => {
         }}
       >
         {/* طبقة التعتيم */}
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" />
 
         {/* المحتوى في المنتصف */}
         <div className="relative z-10 mt-20 container mx-auto px-4 py-12 md:py-20 max-w-5xl">

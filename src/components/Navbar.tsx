@@ -31,6 +31,20 @@ const Navbar = () => {
   // 🔥 اختيار الشعار المناسب حسب الوضع
   const logoSrc = isDark ? logoWhite : logoDark;
 
+  // 🔥 دالة لجلب العنوان حسب اللغة
+  const getTitle = (item: any) => {
+    if (!item) return '';
+    
+    // إذا كانت اللغة عربية
+    if (lang === 'ar') {
+      return item.title || item.title_ar || '';
+    }
+    
+    // إذا كانت اللغة إنجليزية
+    // جرب title_en أولاً، لو مش موجود جرب title، لو مش موجود جرب title_ar
+    return item.title_en || item.title || item.title_ar || '';
+  };
+
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
@@ -67,8 +81,8 @@ const Navbar = () => {
   const links = [
     { to: "/", label: t.nav.home },
     { to: "/about", label: t.nav.about },
-    { to: "/services", label: t.nav.services },
-    { to: "/projects", label: t.nav.projects },
+    { to: "/services", label: t.nav.services },     // شركاتنا
+    { to: "/projects", label: t.nav.projects },     // مشاريعنا
     { to: "/contact", label: t.nav.contact },
     { to: "/news", label: t.nav.news },
     { to: "/careers", label: t.nav.careers },
@@ -125,7 +139,7 @@ const Navbar = () => {
             
             {/* الروابط العادية */}
             {links.map((l) => {
-              // 🔥 استثناء خدمات وشركات عشان نضيف لهم Dropdown
+              // 🔥 services تعرض الشركات (companies)
               if (l.to === "/services") {
                 return (
                   <div key={l.to} className="relative" ref={dropdownRef}>
@@ -143,7 +157,7 @@ const Navbar = () => {
                       <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${openDropdown === 'services' ? 'rotate-180' : ''}`} />
                     </button>
                     
-                    {/* 🔥 Dropdown الخدمات */}
+                    {/* 🔥 Dropdown services - يعرض الشركات (companies) */}
                     <AnimatePresence>
                       {openDropdown === 'services' && (
                         <motion.div
@@ -156,11 +170,11 @@ const Navbar = () => {
                           }`}
                         >
                           <div className="py-2 max-h-72 overflow-y-auto">
-                            {services.length > 0 ? (
-                              services.slice(0, 10).map((service) => (
+                            {companies.length > 0 ? (
+                              companies.slice(0, 10).map((company) => (
                                 <Link
-                                  key={service.id}
-                                  to={`/services/${service.id}`}
+                                  key={company.id}
+                                  to={`/services/${company.id}`}
                                   onClick={() => setOpenDropdown(null)}
                                   className={`block px-4 py-2 text-sm transition-colors ${
                                     isDark 
@@ -168,12 +182,12 @@ const Navbar = () => {
                                       : 'text-gray-700 hover:bg-gray-50 hover:text-[#e0b277]'
                                   }`}
                                 >
-                                  {service.title}
+                                  {getTitle(company)}
                                 </Link>
                               ))
                             ) : (
                               <div className={`px-4 py-2 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                                {lang === 'ar' ? 'لا توجد خدمات' : 'No services'}
+                                {lang === 'ar' ? 'لا توجد شركات' : 'No companies'}
                               </div>
                             )}
                             <div className={`border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} mt-2 pt-2`}>
@@ -182,7 +196,7 @@ const Navbar = () => {
                                 onClick={() => setOpenDropdown(null)}
                                 className={`block px-4 py-2 text-sm font-semibold text-[#e0b277] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors`}
                               >
-                                {lang === 'ar' ? 'عرض جميع المشاريع →' : 'Our Projects →'}
+                                {lang === 'ar' ? 'عرض جميع الشركات →' : 'All Companies →'}
                               </Link>
                             </div>
                           </div>
@@ -193,7 +207,7 @@ const Navbar = () => {
                 );
               }
 
-              // 🔥 استثناء الشركات
+              // 🔥 projects تعرض المشاريع (services)
               if (l.to === "/projects") {
                 return (
                   <div key={l.to} className="relative" ref={dropdownRef}>
@@ -211,55 +225,52 @@ const Navbar = () => {
                       <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${openDropdown === 'company' ? 'rotate-180' : ''}`} />
                     </button>
                     
-                    {/* 🔥 Dropdown الشركات */}
-                   {/* 🔥 Dropdown الشركات - التعديل */}
-{/* 🔥 Dropdown الشركات - عرض كل الشركات */}
-<AnimatePresence>
-  {openDropdown === 'company' && (
-    <motion.div
-      initial={{ opacity: 0, y: -10, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -10, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
-      className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 rounded-xl shadow-2xl overflow-hidden ${
-        isDark ? 'bg-gray-900 border border-gray-700' : 'bg-white border border-gray-200'
-      }`}
-    >
-      <div className="py-2 max-h-72 overflow-y-auto">
-        {companies.length > 0 ? (
-          // 🔥 عرض كل الشركات (أو أول 10)
-          companies.slice(0, 10).map((company) => (
-            <Link
-              key={company.id}
-              to={`/projects/${company.id}`}
-              onClick={() => setOpenDropdown(null)}
-              className={`block px-4 py-2 text-sm transition-colors ${
-                isDark 
-                  ? 'text-gray-300 hover:bg-gray-800 hover:text-[#e0b277]' 
-                  : 'text-gray-700 hover:bg-gray-50 hover:text-[#e0b277]'
-              }`}
-            >
-              {company.title}
-            </Link>
-          ))
-        ) : (
-          <div className={`px-4 py-2 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-            {lang === 'ar' ? 'لا توجد شركات' : 'No companies'}
-          </div>
-        )}
-        <div className={`border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} mt-2 pt-2`}>
-          <Link
-            to="/projects"
-            onClick={() => setOpenDropdown(null)}
-            className={`block px-4 py-2 text-sm font-semibold text-[#e0b277] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors`}
-          >
-            {lang === 'ar' ? 'عرض جميع الشركات →' : 'Our Companies →'}
-          </Link>
-        </div>
-      </div>
-    </motion.div>
-  )}
-</AnimatePresence>
+                    {/* 🔥 Dropdown projects - يعرض المشاريع (services) */}
+                    <AnimatePresence>
+                      {openDropdown === 'company' && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                          transition={{ duration: 0.2 }}
+                          className={`absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 rounded-xl shadow-2xl overflow-hidden ${
+                            isDark ? 'bg-gray-900 border border-gray-700' : 'bg-white border border-gray-200'
+                          }`}
+                        >
+                          <div className="py-2 max-h-72 overflow-y-auto">
+                            {services.length > 0 ? (
+                              services.slice(0, 10).map((service) => (
+                                <Link
+                                  key={service.id}
+                                  to={`/projects/${service.id}`}
+                                  onClick={() => setOpenDropdown(null)}
+                                  className={`block px-4 py-2 text-sm transition-colors ${
+                                    isDark 
+                                      ? 'text-gray-300 hover:bg-gray-800 hover:text-[#e0b277]' 
+                                      : 'text-gray-700 hover:bg-gray-50 hover:text-[#e0b277]'
+                                  }`}
+                                >
+                                  {getTitle(service)}
+                                </Link>
+                              ))
+                            ) : (
+                              <div className={`px-4 py-2 text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                                {lang === 'ar' ? 'لا توجد مشاريع' : 'No projects'}
+                              </div>
+                            )}
+                            <div className={`border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} mt-2 pt-2`}>
+                              <Link
+                                to="/projects"
+                                onClick={() => setOpenDropdown(null)}
+                                className={`block px-4 py-2 text-sm font-semibold text-[#e0b277] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors`}
+                              >
+                                {lang === 'ar' ? 'عرض جميع المشاريع →' : 'All Projects →'}
+                              </Link>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 );
               }
