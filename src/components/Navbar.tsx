@@ -140,7 +140,7 @@ const Navbar = () => {
             {/* الروابط العادية */}
             {links.map((l) => {
               // 🔥 services تعرض الشركات (companies)
-              if (l.to === "/services") {
+              if (l.to === "/projects") { 
                 return (
                   <div key={l.to} className="relative" ref={dropdownRef}>
                     <button
@@ -208,7 +208,7 @@ const Navbar = () => {
               }
 
               // 🔥 projects تعرض المشاريع (services)
-              if (l.to === "/projects") {
+              if (l.to === "/services") {
                 return (
                   <div key={l.to} className="relative" ref={dropdownRef}>
                     <button
