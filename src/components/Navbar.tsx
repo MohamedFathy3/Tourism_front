@@ -170,11 +170,11 @@ const Navbar = () => {
                           }`}
                         >
                           <div className="py-2 max-h-72 overflow-y-auto">
-                            {companies.length > 0 ? (
-                              companies.slice(0, 10).map((company) => (
+                            {services.length > 0 ? (
+                              services.slice(0, 10).map((company) => (
                                 <Link
                                   key={company.id}
-                                  to={`/projects/${company.id}`}
+                                  to={`/services/${company.id}`}
                                   onClick={() => setOpenDropdown(null)}
                                   className={`block px-4 py-2 text-sm transition-colors ${
                                     isDark 
@@ -236,11 +236,11 @@ const Navbar = () => {
                           }`}
                         >
                           <div className="py-2 max-h-72 overflow-y-auto">
-                            {services.length > 0 ? (
-                              services.slice(0, 10).map((service) => (
+                            {companies.length > 0 ? (
+                              companies.slice(0, 10).map((service) => (
                                 <Link
                                   key={service.id}
-                                  to={`/services/${service.id}`}
+                                  to={`/projects/${service.id}`}
                                   onClick={() => setOpenDropdown(null)}
                                   className={`block px-4 py-2 text-sm transition-colors ${
                                     isDark 
