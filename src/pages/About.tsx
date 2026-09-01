@@ -98,14 +98,15 @@ const About = () => {
       <div
         className="min-h-screen relative flex items-center justify-center"
         style={{
-          backgroundImage: `url(${data.image?.fullUrl || data.imageUrl})`,
+          // ✅ تم دمج تدرج التعتيم مع الصورة نفسها بدل طبقة overlay منفصلة وحيدة
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url(${data.image?.fullUrl || data.imageUrl})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed',
         }}
       >
-        {/* طبقة التعتيم */}
-        <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" />
+        {/* ✅ طبقة تعتيم إضافية متدرجة بدل اللون الأسود الموحد، وblur أخف عشان الصورة تفضل واضحة */}
+        <div className="absolute inset-0 " />
 
         {/* المحتوى في المنتصف */}
         <div className="relative z-10 mt-20 container mx-auto px-4 py-12 md:py-20 max-w-5xl">
@@ -125,7 +126,7 @@ const About = () => {
 
             {/* ✅ وصف مختصر - description حسب اللغة */}
             {getLocalizedText(data, 'description') && (
-              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-10 border border-white/20 shadow-2xl">
+              <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 md:p-10 border border-white/10 shadow-2xl">
                 <div className="flex items-center gap-3 mb-4">
                   <h2 className="text-2xl md:text-3xl font-bold text-white">
                     {translations.brief}
@@ -140,7 +141,7 @@ const About = () => {
 
             {/* ✅ وصف تفصيلي - long_description حسب اللغة */}
             {getLocalizedText(data, 'long_description') && (
-              <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-10 border border-white/20 shadow-2xl">
+              <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 md:p-10 border border-white/20 shadow-2xl">
                 <div className="flex items-center gap-3 mb-4">
                   <h2 className="text-2xl md:text-3xl font-bold text-white">
                     {translations.story}
@@ -157,8 +158,8 @@ const About = () => {
               </div>
             )}
 
-            {/* ✅ زر التواصل - حسب اللغة */}
-           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-white/20 text-center flex flex-col items-center justify-center">
+            {/* ✅ زر التواصل - حسب اللغة، كارت أغمق شوية عشان يفرق عن كروت المحتوى */}
+           <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 md:p-8 border border-white/10 text-center flex flex-col items-center justify-center">
   <h3 className="text-xl md:text-2xl font-bold text-white mb-3">
     {translations.workTogether}
   </h3>

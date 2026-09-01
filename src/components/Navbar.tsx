@@ -146,7 +146,7 @@ const Navbar = () => {
                     <button
                       onClick={() => toggleDropdown('services')}
                       className={`relative flex items-center gap-1 text-sm md:text-base font-medium transition duration-300 ${
-                        location.pathname === l.to || location.pathname.startsWith('/services/')
+                        location.pathname === l.to || location.pathname.startsWith('/projects/')
                           ? "text-[#e0b277]"
                           : isDark
                           ? "text-white/80 hover:text-white"
@@ -174,7 +174,7 @@ const Navbar = () => {
                               companies.slice(0, 10).map((company) => (
                                 <Link
                                   key={company.id}
-                                  to={`/services/${company.id}`}
+                                  to={`/projects/${company.id}`}
                                   onClick={() => setOpenDropdown(null)}
                                   className={`block px-4 py-2 text-sm transition-colors ${
                                     isDark 
@@ -196,8 +196,7 @@ const Navbar = () => {
                                 onClick={() => setOpenDropdown(null)}
                                 className={`block px-4 py-2 text-sm font-semibold text-[#e0b277] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors`}
                               >
-                                {lang === 'ar' ? 'عرض جميع الشركات →' : 'All Companies →'}
-                              </Link>
+{lang === 'ar' ? 'عرض جميع المشاريع →' : 'All Companies →'}                              </Link>
                             </div>
                           </div>
                         </motion.div>
@@ -214,7 +213,7 @@ const Navbar = () => {
                     <button
                       onClick={() => toggleDropdown('company')}
                       className={`relative flex items-center gap-1 text-sm md:text-base font-medium transition duration-300 ${
-                        location.pathname === l.to || location.pathname.startsWith('/projects/')
+                        location.pathname === l.to || location.pathname.startsWith('/services/')
                           ? "text-[#e0b277]"
                           : isDark
                           ? "text-white/80 hover:text-white"
@@ -224,7 +223,6 @@ const Navbar = () => {
                       {l.label}
                       <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${openDropdown === 'company' ? 'rotate-180' : ''}`} />
                     </button>
-                    
                     {/* 🔥 Dropdown projects - يعرض المشاريع (services) */}
                     <AnimatePresence>
                       {openDropdown === 'company' && (
@@ -242,7 +240,7 @@ const Navbar = () => {
                               services.slice(0, 10).map((service) => (
                                 <Link
                                   key={service.id}
-                                  to={`/projects/${service.id}`}
+                                  to={`/services/${service.id}`}
                                   onClick={() => setOpenDropdown(null)}
                                   className={`block px-4 py-2 text-sm transition-colors ${
                                     isDark 
@@ -264,8 +262,7 @@ const Navbar = () => {
                                 onClick={() => setOpenDropdown(null)}
                                 className={`block px-4 py-2 text-sm font-semibold text-[#e0b277] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors`}
                               >
-                                {lang === 'ar' ? 'عرض جميع المشاريع →' : 'All Projects →'}
-                              </Link>
+{lang === 'ar' ? 'عرض جميع الشركات →' : 'All Companies →'}                              </Link>
                             </div>
                           </div>
                         </motion.div>
