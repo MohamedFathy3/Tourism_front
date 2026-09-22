@@ -164,9 +164,7 @@ const About = () => {
     {translations.workTogether}
   </h3>
 
-  <p className="text-sm md:text-base text-white/70 mb-6">
-    {translations.contactDesc}
-  </p>
+  
 
   <Link
     to="/contact"
