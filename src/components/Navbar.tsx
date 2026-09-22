@@ -81,8 +81,8 @@ const Navbar = () => {
   const links = [
     { to: "/", label: t.nav.home },
     { to: "/about", label: t.nav.about },
-    { to: "/services", label: t.nav.services },     // شركاتنا
-    { to: "/projects", label: t.nav.projects },     // مشاريعنا
+    { to: "/services", label: t.nav.projects },     // مشاريعنا
+    { to: "/projects", label: t.nav.services },     // شركاتنا
     { to: "/contact", label: t.nav.contact },
     { to: "/news", label: t.nav.news },
     { to: "/careers", label: t.nav.careers },
@@ -139,7 +139,7 @@ const Navbar = () => {
             
             {/* الروابط العادية */}
             {links.map((l) => {
-              // 🔥 services تعرض الشركات (companies)
+              // 🔥 projects تعرض الشركات (companies)
               if (l.to === "/projects") { 
                 return (
                   <div key={l.to} className="relative" ref={dropdownRef}>
@@ -157,7 +157,7 @@ const Navbar = () => {
                       <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${openDropdown === 'services' ? 'rotate-180' : ''}`} />
                     </button>
                     
-                    {/* 🔥 Dropdown services - يعرض الشركات (companies) */}
+                    {/* 🔥 Dropdown companies - يعرض الشركات */}
                     <AnimatePresence>
                       {openDropdown === 'services' && (
                         <motion.div
@@ -170,11 +170,11 @@ const Navbar = () => {
                           }`}
                         >
                           <div className="py-2 max-h-72 overflow-y-auto">
-                            {services.length > 0 ? (
-                              services.slice(0, 10).map((company) => (
+                            {companies.length > 0 ? (
+                              companies.slice(0, 10).map((company) => (
                                 <Link
                                   key={company.id}
-                                  to={`/services/${company.id}`}
+                                  to={`/projects/${company.id}`}
                                   onClick={() => setOpenDropdown(null)}
                                   className={`block px-4 py-2 text-sm transition-colors ${
                                     isDark 
@@ -192,11 +192,12 @@ const Navbar = () => {
                             )}
                             <div className={`border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} mt-2 pt-2`}>
                               <Link
-                                to="/services"
+                                to="/projects"
                                 onClick={() => setOpenDropdown(null)}
                                 className={`block px-4 py-2 text-sm font-semibold text-[#e0b277] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors`}
                               >
-{lang === 'ar' ? 'عرض جميع المشاريع →' : 'All Companies →'}                              </Link>
+                                {lang === 'ar' ? 'عرض جميع الشركات →' : 'All Companies →'}
+                              </Link>
                             </div>
                           </div>
                         </motion.div>
@@ -236,11 +237,11 @@ const Navbar = () => {
                           }`}
                         >
                           <div className="py-2 max-h-72 overflow-y-auto">
-                            {companies.length > 0 ? (
-                              companies.slice(0, 10).map((service) => (
+                            {services.length > 0 ? (
+                              services.slice(0, 10).map((service) => (
                                 <Link
                                   key={service.id}
-                                  to={`/projects/${service.id}`}
+                                  to={`/services/${service.id}`}
                                   onClick={() => setOpenDropdown(null)}
                                   className={`block px-4 py-2 text-sm transition-colors ${
                                     isDark 
@@ -258,11 +259,12 @@ const Navbar = () => {
                             )}
                             <div className={`border-t ${isDark ? 'border-gray-700' : 'border-gray-200'} mt-2 pt-2`}>
                               <Link
-                                to="/projects"
+                                to="/services"
                                 onClick={() => setOpenDropdown(null)}
                                 className={`block px-4 py-2 text-sm font-semibold text-[#e0b277] hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors`}
                               >
-{lang === 'ar' ? 'عرض جميع الشركات →' : 'All Companies →'}                              </Link>
+                                {lang === 'ar' ? 'عرض جميع المشاريع →' : 'All Projects →'}
+                              </Link>
                             </div>
                           </div>
                         </motion.div>

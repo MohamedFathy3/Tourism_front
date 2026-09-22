@@ -56,7 +56,7 @@ const ProjectsPreview = () => {
     if (companies.length > 0) {
       return companies.map((company) => ({
         id: company.id,
-        title: getLocalizedText(company, 'title') || company.title || 'شركتنا',
+        title: getLocalizedText(company, 'title') || company.title || 'شركاتنا ',
         description: getLocalizedText(company, 'long_description') ||
           getLocalizedText(company, 'description') ||
           company.long_description ||
@@ -331,13 +331,13 @@ const ProjectsPreview = () => {
           >
             {/* ✅ العنوان - حسب اللغة */}
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">
-              {lang === 'ar' ? 'شركتنا' : 'Our Company'}
+              {lang === 'ar' ? 'شركاتنا ' : 'Our Company'}
             </h1>
             <div className="w-20 h-1 bg-[#c9a03d] mx-auto mb-4 rounded-full" />
             <p className="text-base md:text-lg max-w-2xl mx-auto text-gray-200">
               {lang === 'ar'
                 ? 'نفخر بتقديم أفضل المشاريع التي تعكس جودة عملنا واحترافيتنا'
-                : 'We are proud to present the best projects that reflect our quality and professionalism'}
+                : 'We are proud to showcase our best projects, reflecting the quality and professionalism of our work'}
             </p>
           </motion.div>
         </div>
@@ -357,12 +357,7 @@ const ProjectsPreview = () => {
             className="text-center mb-12 sm:mb-16"
           >
             {/* ✅ العنوان - حسب اللغة */}
-            <h2 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-3 sm:mb-4 transition-all duration-500 ${isDark
-              ? 'bg-gradient-to-r from-[#e0b277] to-[#e6b84e] bg-clip-text text-transparent'
-              : 'bg-gradient-to-r from-gray-700 to-gray-900 bg-clip-text text-transparent'
-              }`}>
-              {lang === 'ar' ? 'شركاتنا' : 'Our Companies'}
-            </h2>
+         
             <p className={`text-sm mt-5 mb-11 sm:text-base md:text-lg max-w-2xl mx-auto px-4 transition-all duration-500 ${isDark ? 'text-gray-300' : 'text-gray-600'
               }`}>
               {lang === 'ar'

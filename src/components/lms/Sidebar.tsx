@@ -48,7 +48,7 @@ const sidebarTranslations = {
     slider: "السلايدر",
     about: "من نحن",
     "our project": "مشاريعنا",
-    "our company": "شركتنا",
+    "our company": "شركاتنا ",
     "profile company": "الملف التعريفي",
     newsletter: "النشرة البريدية",
     "contact us": "تواصل معنا",
