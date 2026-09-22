@@ -215,13 +215,7 @@ const CompanyDetails = () => {
               </h1>
 
               <div className="flex flex-wrap items-center justify-center gap-4 text-gray-200 text-sm md:text-base">
-                {/* ✅ الموقع - حسب اللغة */}
-                {companyData.location && companyData.location !== "غير محدد" && (
-                  <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                    <MapPin className="w-4 h-4" />
-                    <span>{companyData.location}</span>
-                  </div>
-                )}
+                
 
 
               </div>
@@ -237,32 +231,7 @@ const CompanyDetails = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             {/* ✅ بطاقة المعلومات السريعة */}
-            <div className={`rounded-2xl p-6 md:p-8 mb-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
-              } shadow-lg`}>
-             <div className="grid grid-cols-1 gap-4">
-                {/* ✅ الموقع - حسب اللغة */}
-                <div className={`flex items-center gap-3 p-4 rounded-xl ${isDark ? 'bg-gray-700/50' : 'bg-gray-50'
-                  }`}>
-                  <div className={`p-2 rounded-full ${isDark ? 'bg-[#e0b277]/20' : 'bg-[#e0b277]/10'
-                    }`}>
-                  </div>
-                  <div>
-                    <p className={`text-xs font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'
-                      }`}>
-                      {lang === 'ar' ? ' الموقع' : ' Location'}
-                    </p>
-                    <p className={`font-semibold ${isDark ? 'text-white' : 'text-gray-800'
-                      }`}>
-                      {companyData.location}
-                    </p>
-                  </div>
-                </div>
-
-            
-                {/* ✅ سنة التأسيس */}
-
-              </div>
-            </div>
+           
 
             {/* ✅ وصف الشركة - حسب اللغة */}
             <div className={`rounded-2xl p-6 md:p-8 mb-8 ${isDark ? 'bg-gray-800/50' : 'bg-white'
@@ -293,30 +262,26 @@ const CompanyDetails = () => {
                     {lang === 'ar' ? 'معرض الصور' : 'Gallery'}
                   </h3>
 
-                  {/* أزرار التحكم */}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={goPrev}
-                      className={`p-2 rounded-full transition-all duration-300 ${isDark
-                        ? 'bg-gray-700 hover:bg-gray-600 text-white'
-                        : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                        }`}
-                      aria-label="Previous"
-                    >
-                    </button>
-                    <button
-                      onClick={goNext}
-                      className={`p-2 rounded-full transition-all duration-300 ${isDark
-                        ? 'bg-gray-700 hover:bg-gray-600 text-white'
-                        : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                        }`}
-                      aria-label="Next"
-                    >
-                    </button>
-                  </div>
                 </div>
 
-                <div className="relative">
+                <div className="relative px-10 md:px-14">
+                  <button
+                    type="button"
+                    onClick={goPrev}
+                    className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-[#e0b277] p-1.5 text-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-[#b88d2e]"
+                    aria-label={lang === 'ar' ? 'الصورة السابقة' : 'Previous image'}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-[#e0b277] p-1.5 text-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-[#b88d2e]"
+                    aria-label={lang === 'ar' ? 'الصورة التالية' : 'Next image'}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+
                   <Swiper
                     modules={[Navigation, Pagination, Autoplay, EffectFade]}
                     spaceBetween={20}

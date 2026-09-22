@@ -273,32 +273,26 @@ const ProjectDetails = () => {
                     {lang === 'ar' ? ' صور المشروع' : 'Gallery'}
                   </h3>
 
-                  {/* أزرار التحكم */}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={goPrev}
-                      className={`p-2 rounded-full transition-all duration-300 ${isDark
-                        ? 'bg-gray-700 hover:bg-gray-600 text-white'
-                        : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                        }`}
-                      aria-label="Previous"
-                    >
-                      <ChevronLeft className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
-                    </button>
-                    <button
-                      onClick={goNext}
-                      className={`p-2 rounded-full transition-all duration-300 ${isDark
-                        ? 'bg-gray-700 hover:bg-gray-600 text-white'
-                        : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                        }`}
-                      aria-label="Next"
-                    >
-                      <ChevronRight className={`w-5 h-5 ${isRTL ? 'rotate-180' : ''}`} />
-                    </button>
-                  </div>
                 </div>
 
-                <div className="relative">
+                <div className="relative px-10 md:px-14">
+                  <button
+                    type="button"
+                    onClick={goPrev}
+                    className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-[#e0b277] p-1.5 text-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-[#b88d2e]"
+                    aria-label={lang === 'ar' ? 'الصورة السابقة' : 'Previous image'}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-[#e0b277] p-1.5 text-white shadow-md transition-all duration-300 hover:scale-110 hover:bg-[#b88d2e]"
+                    aria-label={lang === 'ar' ? 'الصورة التالية' : 'Next image'}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+
                   <Swiper
                     modules={[Navigation, Pagination, Autoplay]}
                     spaceBetween={20}
